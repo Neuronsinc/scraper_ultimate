@@ -1,0 +1,161 @@
+<div class="container principal">
+  <div class="row">
+    <div class="col-4">
+
+      
+      <br />
+      <br />
+      <br />
+      <form   method="post" class="formdbas-2" id="formdba2" onsubmit="return false" >
+        <div class="mb-3">
+          <label for="exampleInputEmail1" class="form-label">Nombre del
+            proyecto:</label>
+          <input
+            type="text"
+            class="form-control"
+            id="proyecto"
+            aria-describedby="emailHelp"
+            value="{{Gatewa.proyecto}}"
+            required
+          />
+        </div>
+        <div class="mb-3">
+          <label for="exampleInputEmail1" class="form-label">Whatsapp Conexión:</label>
+          <input
+            type="text"
+            class="form-control"
+            id="conexion"
+            value="{{Gatewa.conexion}}"
+            aria-describedby="emailHelp"
+            required
+          />
+        </div>
+         
+        <div class="cheq">
+          <div class="form-check">
+            
+            <p  class="variable-tipo" id="tippo">{{Gatewa.tipo_envio}}</p>
+             <p  class="variable-tipo" id="id-main">{{Gatewa._id}}</p>
+            <input
+              class="form-check-input"
+              type="radio"
+              name="tipor"
+              value="text"
+              id="texto-btnr1"
+              
+            />
+            <label class="form-check-label" for="flexRadioDefault1">
+              Texto
+            </label>
+          </div>
+          <p>&nbsp;&nbsp;&nbsp;&nbsp;</p>
+          <div class="form-check">
+         
+            <input
+              class="form-check-input"
+              type="radio"
+              value="imgr"
+              name="tipor"
+              id="imagen-btnr"
+            />
+            <label class="form-check-label" for="flexRadioDefault2">
+              Imagen
+            </label>
+          </div></div>
+          <div  id="noimg" class="form-floating mb-3 img-put">
+        <input type="url"  value="{{Gatewa.url_imagen}}" id="img" class="form-control" id="floatingInput" placeholder="https://example.com/imagen.jpg">
+
+ <a class="btn btn-outline-primary btimg" target="_blank" href="https://postimages.org/es/">Sube tu imagen</a>
+
+        <label for="floatingInput">URL Imagen</label>
+            
+        </div>
+        <div class="form-floating">
+        <p class="lead emoji-picker-container"></p>
+          <textarea
+            class="form-control"
+          
+            id="texto"
+            data-emojiable="true"
+            style="height: 100px"
+          >{{Gatewa.text}}</textarea>
+            </p>
+         
+    
+          <label for="floatingTextarea2">Texto</label>
+         
+ 
+        </div>
+          
+        <br />
+        <br />
+        <div class="btones">
+          <button
+          type="button"
+            id="btn-cancel"
+            onclick="irInicio()"
+            class="btn btn-primary btn-wid cancel"
+          >Salir</button>
+          <p>&nbsp;&nbsp;&nbsp;&nbsp;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;</p><p
+          >&nbsp;&nbsp;&nbsp;&nbsp;</p>
+          <button id="save" type="submit"  class="senders-2 btn btn-primary btn-wid ">Guardar</button>
+          <button   id="btn-nuevo" onclick="recargar()"  class="senders btn btn-primary btn-wid ">Nuevo</button>
+        </div>
+      </form>
+    </div>
+    <div class="col-8">
+      <br />
+      <br />
+      <br />
+       
+      <div id="conimg">
+        <div class="bg-wa" >
+        <div class="hed-bg"><h3 class="head-span">Vista previa</h3></div>
+        <div class="card cool " id="sin-img" style="width: 18rem;">
+          <img
+            class="imagen-wa"
+            id="img-camps"
+            src="{{Gatewa.url_imagen}}"
+            class="card-img-top"
+            alt="..."
+          />
+    
+          <div class="card-body">
+            <p id="caption" class="card-text">Ingresa aquí el texto que deseas enviar como mensajes por whatsapp.</p>
+          </div>
+        </div>
+
+        
+      </div>
+
+      </div>
+              <div class="generater">
+<div class="container cont-result">
+  <div class="row">
+    <div class="col">
+     <p class="p-titulo-codigo">Código:</p><br>
+ 
+     <div class="code-rest">
+     <h2 id="code-result" >{{Gatewa.codigo}}</h2><button type="button"   data-bs-container="body" data-bs-toggle="popover" data-bs-placement="top" data-bs-content="copiado!"  id="copy-button"><i class="fa-solid fa-copy"></i></button>
+    </div>
+    </div>
+    <div class="col">
+     <div class="contenedor-des">
+     <div class="iner-tes"><p class="tit-p">Camapaña: </p> <p id="proyecto-d" class="des-p">{{Gatewa.proyecto}}</p> </div> 
+       <div class="iner-tes"><p class="tit-p">Conexion: </p> <p id="conexion-d" class="des-p">+502 {{Gatewa.conexion}}</p> </div> 
+         <div class="iner-tes"><p class="tit-p">Tipo: </p> <p id="tipo-d" class="des-p">{{Gatewa.tipo_envio}}</p> </div> 
+         </div>
+       
+    </div>
+  </div>
+  
+</div>
+        </div>
+        
+      <div class="dialog-generate"></div>
+    </div>
+
+  </div>
+</div>
+ <script  src="/js-editar"></script>
+ 

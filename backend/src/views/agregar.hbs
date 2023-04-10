@@ -1,0 +1,155 @@
+<div class="container principal">
+  <div class="row">
+    <div class="col-4">
+ 
+  
+      <br />
+      <br />
+      <form   method="post" class="formdbas" id="formdba" onsubmit="return false" >
+        <div class="mb-3">
+          <label for="exampleInputEmail1" class="form-label">Nombre del
+            proyecto:</label>
+          <input
+            type="text"
+            class="form-control"
+            id="proyecto"
+            aria-describedby="emailHelp"
+            required
+          />
+        </div>
+        <div class="mb-3">
+          <label for="exampleInputEmail1" class="form-label">Whatsapp Conexión:</label>
+          <input
+            type="text"
+            class="form-control"
+            id="conexion"
+            aria-describedby="emailHelp"
+            required
+          />
+        </div>
+         
+        <div class="cheq">
+          <div class="form-check">
+            <input
+              class="form-check-input"
+              type="radio"
+              name="tipor"
+              value="text"
+              id="imagen-btnr"
+              checked
+            />
+            <label class="form-check-label" for="flexRadioDefault1">
+              Texto
+            </label>
+          </div>
+          <p>&nbsp;&nbsp;&nbsp;&nbsp;</p>
+          <div class="form-check">
+            <input
+              class="form-check-input"
+              type="radio"
+              value="imgr"
+              name="tipor"
+              id="imagen-btnr"
+            />
+            <label class="form-check-label" for="flexRadioDefault2">
+              Imagen
+            </label>
+          </div></div>
+          <div  id="noimg" class="form-floating mb-3">
+        <input type="url"  id="img" class="form-control" id="floatingInput" placeholder="https://example.com/imagen.jpg">
+
+ <a class="btn btn-outline-primary btimg" target="_blank" href="https://postimages.org/es/">Sube tu imagen</a>
+
+        <label for="floatingInput">URL Imagen</label>
+            
+        </div>
+        <div class="form-floating">
+            
+          <textarea
+            class="form-control"
+          id="texto"
+           data-emojiable="true"
+            id="texto"
+            style="height: 200px"
+          ></textarea>
+           
+             
+    
+          <label for="floatingTextarea">Texto</label>
+           
+ 
+        </div>
+          
+        <br />
+        <br />
+        <div class="btones">
+          <button
+          type="button"
+            id="btn-cancel"
+            onclick="irInicio()"
+            class="btn btn-primary btn-wid cancel"
+          >Salir</button>
+          <p>&nbsp;&nbsp;&nbsp;&nbsp;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;</p><p
+          >&nbsp;&nbsp;&nbsp;&nbsp;</p>
+          <button id="save" type="submit"  class="senders btn btn-primary btn-wid ">Guardar</button>
+          <button   id="btn-nuevo" onclick="recargar()"  class="senders btn btn-primary btn-wid ">Nuevo</button>
+        </div>
+      </form>
+    </div>
+    <div class="col-8">
+      <br />
+      <br />
+      <br />
+       
+      <div id="conimg">
+        <div class="bg-wa" >
+        <div class="hed-bg"><h3 class="head-span">Vista previa</h3></div>
+        <div class="card cool " id="sin-img" style="width: 18rem;">
+          <img
+            class="imagen-wa"
+            id="img-camp"
+            src="https://cdn.pixabay.com/photo/2017/01/25/17/35/picture-2008484_960_720.png"
+            class="card-img-top"
+            alt="..."
+          />
+    
+          <div class="card-body">
+            <p id="caption" class="card-text">Ingresa aquí el texto que deseas enviar como mensajes por whatsapp.</p>
+          </div>
+        </div>
+
+        
+      </div>
+
+      </div>
+              <div class="generater">
+<div class="container cont-result">
+  <div class="row">
+    <div class="col">
+     <p class="p-titulo-codigo">Código:</p><br>
+     <div class="code-rest">
+     <h2 id="code-result" >------ </h2><button type="button"   data-bs-container="body" data-bs-toggle="popover" data-bs-placement="top" data-bs-content="copiado!"  id="copy-button"><i class="fa-solid fa-copy"></i></button>
+    </div>
+    </div>
+    <div class="col">
+     <div class="contenedor-des">
+     <div class="iner-tes"><p class="tit-p">Camapaña: </p> <p id="proyecto-d" class="des-p">-------</p> </div> 
+       <div class="iner-tes"><p class="tit-p">Conexion: </p> <p id="conexion-d" class="des-p">-------</p> </div> 
+         <div class="iner-tes"><p class="tit-p">Tipo: </p> <p id="tipo-d" class="des-p">--------</p> </div> 
+         </div>
+       <div>
+        <p>Url API:</p>
+        <p>codigo={mensaje}&destinatario={destinatario}</p>
+       </div>
+    </div>
+  </div>
+  
+</div>
+        </div>
+        
+      <div class="dialog-generate"></div>
+    </div>
+
+  </div>
+</div>
+ <script  src="/js-code"></script>

@@ -1,0 +1,31 @@
+<div class="card card-body p-4 rounded-0 bg-dark text-white">
+  <h3>Add A Task</h3>
+  <form action="/tasks/add" method="post">
+
+    {{! Title Input }}
+    <div class="mb-3">
+      <label for="title">Write a title:</label>
+      <input
+        id="proyecto"
+        class="form-control rounded-0 bg-dark text-white"
+        type="text"
+        name="ptoyecto"
+        placeholder="Title"
+        autofocus
+      />
+    </div>
+
+    {{! Description Input }}
+    <div class="mb-3">
+      <label for="comexion">Description</label>
+      <textarea
+        class="form-control rounded-0 bg-dark text-white"
+        name="comexion"
+        cols="80"
+        placeholder="Add a Description"
+      ></textarea>
+    </div>
+
+    <button class="btn btn-primary" type="submit">Add</button>
+  </form>
+</div>
