@@ -13,7 +13,7 @@ Apliación para renderizar base de datos de scraper y resumir reportería  en un
 ####  Iniciar backend
  `yarn start` 
  
-## Instalación de paquetes frontend
+## Instalación de paquetes -- frontend
  `cd frontend`
  `yarn install`
 ####  Iniciar frontend
