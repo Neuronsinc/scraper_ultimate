@@ -26,6 +26,22 @@ const users = [
     about: 'Praesent turpis. Phasellus viverra nulla ut metus varius laoreet. Phasellus tempus.',
     role: 'admin',
     isPublic: true
+  },
+  {
+    id: '8864c717-587d-472a-929a-8e5f298024da-1',
+    displayName: 'Daniel de León',
+    email: 'daniel.deleon@troiatec.com',
+    password: 'DANIELxp1.*d',
+    photoURL: '/static/mock-images/avatars/avatar_default.jpg',
+    phoneNumber: '+502 40709593',
+    country: 'Ciudad de Guatemala',
+    address: 'Zona 15',
+    state: 'Guatemala',
+    city: 'Guatemala',
+    zipCode: '94116',
+    about: 'Praesent turpis. Phasellus viverra nulla ut metus varius laoreet. Phasellus tempus.',
+    role: 'admin',
+    isPublic: true
   }
 ];
 
@@ -39,7 +55,7 @@ mock.onPost('/api/account/login').reply(async (config) => {
     const user = users.find((_user) => _user.email === email);
 
     if (!user) {
-      return [400, { message: 'There is no user corresponding to the email address.' }];
+      return [400, { message: 'Credenciales inválidas, por favor verificar.' }];
     }
 
     if (user.password !== password) {

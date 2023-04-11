@@ -49,14 +49,8 @@ async function databaser() {
 
   //ENVIO DE DATOS GENERALES
   app.get("/datos-resumen", async (req, res) => {
-    const hola = {
-      nombre: "Erick Master !!",
-    };
-
-    res.send(hola);
-  });
-
-  const ddatau = await gatewa.find({ "Categoria:": { $exists: true } });
+    
+    const ddatau = await gatewa.find({ "Categoria:": { $exists: true } });
 
   const count = {};
 
@@ -67,9 +61,13 @@ async function databaser() {
     } else {
       count[categoria] = 1;
     }
+  }); 
+   //DATA CATEGORÍAS
+    console.log(count)
+    res.send(count);
   });
 
-  console.log(count);
+  
 }
 
 databaser();
@@ -89,7 +87,7 @@ app.get("/datos-mongo", (req, res) => {
 
     res.send(JSON.stringify(datos_mongos));
 
-    console.log(datos_mongos);
+    console.log('ESTOS SON!: ', datos_mongos);
   }
 
   database();

@@ -42,8 +42,8 @@ export default function LoginForm() {
 
   const formik = useFormik({
     initialValues: {
-      email: 'demo@minimals.cc',
-      password: 'demo1234',
+      email: '',
+      password: '',
       remember: true
     },
     validationSchema: LoginSchema,
@@ -117,16 +117,16 @@ export default function LoginForm() {
         <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
           <FormControlLabel
             control={<Checkbox {...getFieldProps('remember')} checked={values.remember} />}
-            label="Remember me"
+            label="Recordar accesos"
           />
 
           <Link component={RouterLink} variant="subtitle2" to={PATH_AUTH.resetPassword}>
-            Forgot password?
+            Olvidó su contraseña?
           </Link>
         </Stack>
 
         <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
-          Login
+          Ingresar
         </LoadingButton>
       </Form>
     </FormikProvider>

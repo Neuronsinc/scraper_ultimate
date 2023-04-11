@@ -37,16 +37,16 @@ export default function AppWelcome({ displayName }) {
         }}
       >
         <Typography gutterBottom variant="h4">
-          Welcome back,
+          Bienvenido!,
           <br /> {!displayName ? '...' : displayName}!
         </Typography>
 
         <Typography variant="body2" sx={{ pb: { xs: 3, xl: 5 }, maxWidth: 480, mx: 'auto' }}>
-          If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything
+          Revise los últimos proyectos de scraper haciendo click en el botón
         </Typography>
 
-        <Button variant="contained" to="#" component={RouterLink}>
-          Go Now
+        <Button variant="contained" to="/dashboard/proyectos" component={RouterLink}>
+          Ver Scrapers
         </Button>
       </CardContent>
 
