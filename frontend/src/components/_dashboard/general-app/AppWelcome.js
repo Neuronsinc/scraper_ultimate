@@ -45,8 +45,8 @@ export default function AppWelcome({ displayName }) {
           Revise los últimos proyectos de scraper haciendo click en el botón
         </Typography>
 
-        <Button variant="contained" to="/dashboard/proyectos" component={RouterLink}>
-          Ver Scrapers
+        <Button variant="contained" to="/dashboard/analytics" component={RouterLink}>
+          Ver Scraper
         </Button>
       </CardContent>
 

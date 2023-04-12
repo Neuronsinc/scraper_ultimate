@@ -30,6 +30,7 @@ mongoose
   .then(() => console.log("Conexión exitosa a MongoDB"))
   .catch((err) => console.error("Error al conectar a MongoDB:", err));
 
+  
 //gatewa.create(data, function(err, result) {
 // if (err) {
 //  console.log(err);
@@ -48,29 +49,23 @@ async function databaser() {
   // console.log('RENDER SOLO CATEGORÍA: ' +  JSON.stringify(Gateware3['Categoria:']))
 
   //ENVIO DE DATOS GENERALES
-  app.get("/datos-resumen", async (req, res) => {
-    
-    const ddatau = await gatewa.find({ "Categoria:": { $exists: true } });
-
-  const count = {};
-
-  ddatau.forEach((element) => {
-    const categoria = element["Categoria:"];
-    if (count[categoria]) {
-      count[categoria] += 1;
-    } else {
-      count[categoria] = 1;
-    }
-  }); 
-   //DATA CATEGORÍAS
-    console.log(count)
-    res.send(count);
-  });
+ 
 
   
 }
 
 databaser();
+
+app.post('/filtracion', (req, res) => {
+  const data = req.body.dator; // Obtener los datos enviados en la petición POST
+  // Aquí puedes procesar los datos como lo necesites
+  console.log('esto se recibio: ', data)
+  const response = {
+    message: 'Petición POST exitosa',
+    data: data
+  };
+  res.json(response); // Responder con los datos procesados en formato JSON
+});
 
 app.get("/datos-mongo", (req, res) => {
   async function database() {

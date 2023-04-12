@@ -1,5 +1,5 @@
 // material
-import { Container, Grid } from '@material-ui/core';
+import { Container, Grid, Stack } from '@material-ui/core';
 // hooks
 import useAuth from '../../hooks/useAuth';
 import useSettings from '../../hooks/useSettings';
@@ -7,13 +7,19 @@ import useSettings from '../../hooks/useSettings';
 import Page from '../../components/Page';
 import {
   AppWelcome,
+  AppWidgets1,
+  AppWidgets2,
   AppFeatured,
+  AppNewInvoice,
+  AppTopAuthors,
+  AppTopRelated,
+  AppAreaInstalled,
   AppTotalDownloads,
   AppTotalInstalled,
   AppCurrentDownload,
-  AppTotalActiveUsers
+  AppTotalActiveUsers,
+  AppTopInstalledCountries
 } from '../../components/_dashboard/general-app';
-import { EcommerceYearlySales } from '../../components/_dashboard/general-ecommerce';
 
 // ----------------------------------------------------------------------
 
@@ -50,7 +56,30 @@ export default function GeneralApp() {
           </Grid>
 
           <Grid item xs={12} md={6} lg={8}>
-            <EcommerceYearlySales />
+            <AppAreaInstalled />
+          </Grid>
+
+          <Grid item xs={12} lg={8}>
+            <AppNewInvoice />
+          </Grid>
+
+          <Grid item xs={12} md={6} lg={4}>
+            <AppTopRelated />
+          </Grid>
+
+          <Grid item xs={12} md={6} lg={4}>
+            <AppTopInstalledCountries />
+          </Grid>
+
+          <Grid item xs={12} md={6} lg={4}>
+            <AppTopAuthors />
+          </Grid>
+
+          <Grid item xs={12} md={6} lg={4}>
+            <Stack spacing={3}>
+              <AppWidgets1 />
+              <AppWidgets2 />
+            </Stack>
           </Grid>
         </Grid>
       </Container>

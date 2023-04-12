@@ -1,0 +1,41 @@
+.item-s {
+    font-size: 9pt;
+    padding: 9px;
+}
+.title-item {
+    border: solid 1px #259e3f;
+    border-radius: 17px;
+    padding: 2px 15px 2px 15px;
+}
+.quetzal {
+    background: #1483ff2e;
+    padding: 8px 0px 8px 0px;
+    border-radius: 11px;
+    font-size: 10pt;
+    text-align: center;
+}
+.dolar {
+    background: #1483ff2e;
+    padding: 8px 0px 8px 0px;
+    border-radius: 11px;
+    font-size: 10pt;
+    text-align: center;
+}
+.btns {
+    width: 100%;
+    height: 52px;
+}
+.dolar {
+    background: #24983d29;
+    padding: 8px 0px 8px 0px;
+    border-radius: 11px;
+    font-size: 10pt;
+    text-align: center;
+}
+.dolar-total {
+    padding: 8px 0px 8px 0px;
+    border-radius: 11px;
+    font-size: 10pt;
+    text-align: center;
+    border: solid 1px #24983d47;
+}

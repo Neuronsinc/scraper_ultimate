@@ -36,8 +36,8 @@ const sidebarConfig = [
         icon: ICONS.dashboard
       },
       // { title: 'e-commerce', path: PATH_DASHBOARD.general.ecommerce, icon: ICONS.ecommerce },
-      { title: 'Scraper', path: PATH_DASHBOARD.general.analytics, icon: ICONS.analytics },
-      { title: 'Proyectos', path: PATH_DASHBOARD.general.proyectos, icon: ICONS.analytics }
+      { title: 'Scraper', path: PATH_DASHBOARD.general.analytics, icon: ICONS.analytics }
+      // { title: 'Proyectos', path: PATH_DASHBOARD.general.proyectos, icon: ICONS.analytics }
       // { title: 'banking', path: PATH_DASHBOARD.general.banking, icon: ICONS.banking },
       // { title: 'booking', path: PATH_DASHBOARD.general.booking, icon: ICONS.booking }
     ]
@@ -46,18 +46,18 @@ const sidebarConfig = [
   // MANAGEMENT
   // ----------------------------------------------------------------------
   {
-    subheader: 'management',
+    subheader: 'Manejo',
     items: [
       // MANAGEMENT : USER
       {
-        title: 'user',
+        title: 'Usuarios',
         path: PATH_DASHBOARD.user.root,
         icon: ICONS.user,
         children: [
-          { title: 'list', path: PATH_DASHBOARD.user.list },
-          { title: 'create', path: PATH_DASHBOARD.user.newUser },
-          { title: 'edit', path: PATH_DASHBOARD.user.editById },
-          { title: 'account', path: PATH_DASHBOARD.user.account }
+          { title: 'Lista de usuarios', path: PATH_DASHBOARD.user.list },
+          { title: 'Crear nuevo', path: PATH_DASHBOARD.user.newUser },
+          { title: 'Editar', path: PATH_DASHBOARD.user.editById },
+          { title: 'Mi cuenta', path: PATH_DASHBOARD.user.account }
         ]
       }
     ]
