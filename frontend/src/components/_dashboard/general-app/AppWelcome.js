@@ -12,7 +12,7 @@ const RootStyle = styled(Card)(({ theme }) => ({
   textAlign: 'center',
   backgroundColor: theme.palette.primary.lighter,
   [theme.breakpoints.up('md')]: {
-    height: '100%',
+    height: '80%',
     display: 'flex',
     textAlign: 'left',
     alignItems: 'center',

@@ -22,7 +22,7 @@ const RootStyle = styled(Page)(({ theme }) => ({
 
 export default function BreadcrumbComponent() {
   return (
-    <RootStyle title="Components: Breadcrumbs | Minimal-UI">
+    <RootStyle title="Components: Breadcrumbs | dataSracper">
       <Box
         sx={{
           pt: 6,

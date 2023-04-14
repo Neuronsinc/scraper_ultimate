@@ -59,7 +59,7 @@ mock.onPost('/api/account/login').reply(async (config) => {
     }
 
     if (user.password !== password) {
-      return [400, { message: 'Wrong password' }];
+      return [400, { message: 'Credenciales inválidas, por favor verificar.' }];
     }
 
     const accessToken = sign({ userId: user.id }, JWT_SECRET, {

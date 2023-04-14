@@ -11,6 +11,7 @@ const {
   crear,
 } = require("../controllers/gatway.controller");
 const { sumacategorias } = require("../controllers/consultas");
+//const { filtrotabla } = require("../controllers/filtrotabla");
 
 //Daga entrega
 
@@ -24,6 +25,7 @@ router.get("/", renderGatewas);
 router.get("/crear", crear);
 
 router.post("/tasks/add", createGatewa);
+//router.post("/tasks/add", createGatewa);
 
 router.get("/tasks/:id/toggleDone", GatewaToggleDone);
 

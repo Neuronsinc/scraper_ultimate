@@ -29,7 +29,7 @@ const RootStyle = styled(Page)(({ theme }) => ({
 
 export default function TransferListComponent() {
   return (
-    <RootStyle title="Components: Transfer List | Minimal-UI">
+    <RootStyle title="Components: Transfer List | dataSracper">
       <Box
         sx={{
           pt: 6,

@@ -38,7 +38,7 @@ export default function AccordionComponent() {
   };
 
   return (
-    <RootStyle title="Components: Accordion | Minimal-UI">
+    <RootStyle title="Components: Accordion | dataSracper">
       <Box
         sx={{
           pt: 6,

@@ -1,6 +1,9 @@
 // material
 import { DataGrid } from '@material-ui/data-grid';
-import { useState, useEffect } from 'react';
+import { useSnackbar } from 'notistack5';
+import { useState, useEffect, useCallback } from 'react';
+import closeFill from '@iconify/icons-eva/close-fill';
+import { Icon } from '@iconify/react';
 import {
   Box,
   Grid,
@@ -15,6 +18,7 @@ import {
 } from '@material-ui/core';
 import axios from 'axios';
 import { Block } from '../components-overview/Block';
+import { MIconButton } from '../../components/@material-extend';
 import './estilos.css';
 // hooks
 // components
@@ -91,6 +95,7 @@ export default function GeneralAnalytics() {
 
     fetchData();
   }, []);
+
   // --------- BUSQUDA DE LOCALIZACION
   const localizaciones = [];
 
@@ -119,7 +124,7 @@ export default function GeneralAnalytics() {
   console.log(`Que buena data [${habitaciones}]`);
   const formattedhabitaciones = habitaciones.map((categorys) => ({
     title: `${categorys} habitaciones`,
-    year: categorys // o el valor que quieras asignarle
+    Number: categorys // o el valor que quieras asignarle
   }));
   const listhabitaciones = formattedhabitaciones;
   // -----------------------------------
@@ -157,77 +162,84 @@ export default function GeneralAnalytics() {
   }));
   // ENVIAR POST PARA FILTRAR
   const [respuesta, setRespuesta] = useState(null);
-  const [selectedValue, setSelectedValue] = useState('');
+  const [localizacionValue, setlocalizacionValue] = useState('');
 
-  const handleAutocompleteChange = (event, value) => {
-    setSelectedValue(value ? value.title : '');
+  const localizacionAutocompleteChange = (event, value) => {
+    setlocalizacionValue(value ? value.title : '');
   };
 
-  function enviarSolicitud() {
+  const [habitacionesValue, sethabitacionesValue] = useState('');
+
+  const habitacionesAutocompleteChange = (event, value) => {
+    sethabitacionesValue(value ? value.Number : '');
+  };
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  function myFunction(data) {
+    enqueueSnackbar(data.notifi, {
+      variant: 'success',
+      action: (key) => (
+        <MIconButton size="small" onClick={() => closeSnackbar(key)}>
+          <Icon icon={closeFill} />
+        </MIconButton>
+      )
+    });
+  }
+  const enviarSolicitud = useCallback(() => {
     fetch('http://localhost:8080/filtracion', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ dator: selectedValue })
+      body: JSON.stringify({ localizacion: localizacionValue, habitaciones: habitacionesValue })
     })
       .then((response) => response.json())
-      .then((data) => setRespuesta(data))
+      .then((data) => {
+        setRespuesta(data);
+        // Llamar a la función que deseas ejecutar cada vez que se reciba una respuesta
+        myFunction(data);
+      })
       .catch((error) => console.error(error));
-  }
-  console.log(respuesta && respuesta.message);
+  }, [localizacionValue, habitacionesValue]);
 
+  useEffect(() => {
+    enviarSolicitud();
+  }, [enviarSolicitud]);
   return (
-    <Page title="General: Analytics | Minimal-UI">
+    <Page title="General: Analytics | dataSracper">
       <Container maxWidth="100%">
         <Grid container spacing={3}>
-          <Grid item xs={6} md={6}>
+          <Grid item xs={5} md={4}>
             <Card sx={{ display: 'flex', alignItems: 'center', p: 3 }}>
               <table>
                 <thead>
                   <tr>
                     <th className="title-item">
-                      <h1>Venta</h1>
+                      <h1>Q</h1>
                     </th>
-                    <th>Unidades que aparecen documentados en Quetzales</th>
-                    <th>Unidades que aparecen documentados en US Dólares</th>
-                    <th>Total de unidades ofertados</th>
+                    <th>
+                      <div className="titlebox">Unidades que aparecen documentados en Quetzales</div>
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
                     <td className="item-s">Cantidad de unidades</td>
                     <td>
-                      <h3 style={{ textAlign: 'center' }}>{respuesta && respuesta.data ? respuesta.data : '0'}</h3>
-                    </td>
-                    <td>
-                      <h3 style={{ textAlign: 'center' }}>1,095</h3>
-                    </td>
-                    <td>
-                      <h3 style={{ textAlign: 'center' }}>1,838</h3>
+                      <h3 style={{ textAlign: 'center' }}>
+                        {respuesta && respuesta.cantidadQuetzales ? respuesta.cantidadQuetzales : '0'}
+                      </h3>
                     </td>
                   </tr>
                   <tr>
                     <td className="item-s">Precio promedio</td>
                     <td>
                       <div style={{ float: 'left', width: '50%', padding: '5px' }}>
-                        <p className="quetzal">Q 1,273,000</p>
+                        <p className="quetzal">{respuesta && respuesta.quetzalesQ ? respuesta.quetzalesQ : '0'}</p>
                       </div>
                       <div style={{ float: 'right', width: '50%', padding: '5px' }}>
-                        <p className="dolar"> $ 163,205 </p>
+                        <p className="dolar">{respuesta && respuesta.quetzalesD ? respuesta.quetzalesD : '0'}</p>
                       </div>
                     </td>
-                    <td>
-                      <div style={{ float: 'left', width: '50%', padding: '5px' }}>
-                        <p className="quetzal">Q 1,273,000</p>
-                      </div>
-                      <div style={{ float: 'right', width: '50%', padding: '5px' }}>
-                        <p className="dolar"> $ 163,205 </p>
-                      </div>
-                    </td>
-                    <div style={{ width: '100%', padding: '5px' }}>
-                      <p className="dolar-total"> $ 163,205 </p>
-                    </div>
                   </tr>
                   <tr>
                     <td className="item-s">Precio por M2</td>
@@ -239,6 +251,52 @@ export default function GeneralAnalytics() {
                         <p className="dolar"> $ 163,205 </p>
                       </div>
                     </td>
+                  </tr>
+                  <tr>
+                    <td className="item-s">Área promedio</td>
+                    <td style={{ textAlign: 'center' }}>
+                      {respuesta && respuesta.areadioQuetzales ? respuesta.areadioQuetzales : '0'}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </Card>
+          </Grid>
+          <Grid item xs={5} md={4}>
+            <Card sx={{ display: 'flex', alignItems: 'center', p: 3 }}>
+              <table>
+                <thead>
+                  <tr>
+                    <th className="title-item">
+                      <h1>$</h1>
+                    </th>
+                    <th>
+                      <div className="titlebox">Unidades que aparecen documentados en Dólares</div>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td className="item-s">Cantidad de unidades</td>
+                    <td>
+                      <h3 style={{ textAlign: 'center' }}>
+                        {respuesta && respuesta.cantidadDolares ? respuesta.cantidadDolares : '0'}
+                      </h3>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="item-s">Precio promedio</td>
+                    <td>
+                      <div style={{ float: 'left', width: '50%', padding: '5px' }}>
+                        <p className="dolar">{respuesta && respuesta.dolarD ? respuesta.dolarQ : '0'}</p>
+                      </div>
+                      <div style={{ float: 'right', width: '50%', padding: '5px' }}>
+                        <p className="dolar">{respuesta && respuesta.dolarD ? respuesta.dolarD : '0'}</p>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="item-s">Precio por M2</td>
                     <td>
                       <div style={{ float: 'left', width: '50%', padding: '5px' }}>
                         <p className="quetzal">Q 1,273,000</p>
@@ -247,93 +305,66 @@ export default function GeneralAnalytics() {
                         <p className="dolar"> $ 163,205 </p>
                       </div>
                     </td>
-                    <div style={{ width: '100%', padding: '5px' }}>
-                      <p className="dolar-total"> $ 163,205 </p>
-                    </div>
                   </tr>
                   <tr>
                     <td className="item-s">Área promedio</td>
-                    <td style={{ textAlign: 'center' }}>81.42 M2</td>
-                    <td style={{ textAlign: 'center' }}>156.83 M2</td>
-                    <td style={{ textAlign: 'center' }}>119.13 M2</td>
+                    <td style={{ textAlign: 'center' }}>
+                      {respuesta && respuesta.areaDolares ? respuesta.areaDolares : '0'}
+                    </td>
                   </tr>
                 </tbody>
               </table>
             </Card>
           </Grid>
-          <Grid item xs={6} md={6}>
+          <Grid item xs={4} md={4}>
             <Card sx={{ display: 'flex', alignItems: 'center', p: 3 }}>
               <table>
-                <tr>
-                  <th className="title-item">
-                    <h1>Renta</h1>
-                  </th>
-                  <th>Unidades que aparecen documentados en Quetzales</th>
-                  <th>Unidades que aparecen documentados en US Dólares</th>
-                  <th>Total de unidades ofertados</th>
-                </tr>
-                <tr>
-                  <td className="item-s">Cantidad de unidades</td>
-                  <td>
-                    <h3 style={{ textAlign: 'center' }}>743</h3>
-                  </td>
-                  <td>
-                    <h3 style={{ textAlign: 'center' }}>1,095</h3>
-                  </td>
-                  <td>
-                    <h3 style={{ textAlign: 'center' }}>1,838</h3>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="item-s">Precio promedio</td>
-                  <td>
-                    <div style={{ float: 'left', width: '50%', padding: '5px' }}>
-                      <p className="quetzal">Q 1,273,000</p>
-                    </div>
-                    <div style={{ float: 'right', width: '50%', padding: '5px' }}>
-                      <p className="dolar"> $ 163,205 </p>
-                    </div>
-                  </td>
-                  <td>
-                    <div style={{ float: 'left', width: '50%', padding: '5px' }}>
-                      <p className="quetzal">Q 1,273,000</p>
-                    </div>
-                    <div style={{ float: 'right', width: '50%', padding: '5px' }}>
-                      <p className="dolar"> $ 163,205 </p>
-                    </div>
-                  </td>
-                  <div style={{ width: '100%', padding: '5px' }}>
-                    <p className="dolar-total"> $ 163,205 </p>
-                  </div>
-                </tr>
-                <tr>
-                  <td className="item-s">Precio por M2</td>
-                  <td>
-                    <div style={{ float: 'left', width: '50%', padding: '5px' }}>
-                      <p className="quetzal">Q 1,273,000</p>
-                    </div>
-                    <div style={{ float: 'right', width: '50%', padding: '5px' }}>
-                      <p className="dolar"> $ 163,205 </p>
-                    </div>
-                  </td>
-                  <td>
-                    <div style={{ float: 'left', width: '50%', padding: '5px' }}>
-                      <p className="quetzal">Q 1,273,000</p>
-                    </div>
-                    <div style={{ float: 'right', width: '50%', padding: '5px' }}>
-                      <p className="dolar"> $ 163,205 </p>
-                    </div>
-                  </td>
-                  <div style={{ width: '100%', padding: '5px' }}>
-                    <p className="dolar-total"> $ 163,205 </p>
-                  </div>
-                </tr>
-                <tr>
-                  <td className="item-s">Área promedio</td>
-                  <td style={{ textAlign: 'center' }}>81.42 M2</td>
-                  <td style={{ textAlign: 'center' }}>156.83 M2</td>
-                  <td style={{ textAlign: 'center' }}>119.13 M2</td>
-                </tr>
+                <thead>
+                  <tr>
+                    <th>Total de unidades ofertados</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <div className="totalResul">
+                        <h1 style={{ textAlign: 'center' }}>
+                          {respuesta && respuesta.totalcantidades ? respuesta.totalcantidades : '0'}
+                        </h1>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="total-des">
+                      <div style={{ float: 'left', width: '50%', padding: '5px' }}>
+                        <p className="item-s">Precio promedio</p>
+                      </div>
+                      <div style={{ float: 'right', width: '50%', padding: '5px' }}>
+                        <p className="dolar-total">{respuesta && respuesta.total ? respuesta.total : '0'} </p>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div style={{ float: 'left', width: '50%', padding: '5px' }}>
+                        <p className="item-s">Precio por M2</p>
+                      </div>
+                      <div style={{ float: 'right', width: '50%', padding: '5px' }}>
+                        <p className="dolar-total">$233453443</p>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div style={{ float: 'left', width: '50%', padding: '5px' }}>
+                        <p className="item-s">Total Área</p>
+                      </div>
+                      <div style={{ float: 'right', width: '50%', padding: '5px' }}>
+                        <p className="dolar-total">{respuesta && respuesta.totalarea ? respuesta.totalarea : '0'}</p>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
               </table>
             </Card>
           </Grid>
@@ -344,7 +375,7 @@ export default function GeneralAnalytics() {
               <Autocomplete
                 fullWidth
                 options={top100Films}
-                onChange={handleAutocompleteChange}
+                onChange={localizacionAutocompleteChange}
                 getOptionLabel={(option) => option.title}
                 renderInput={(params) => <TextField {...params} label="Localización" margin="none" />}
               />
@@ -355,6 +386,7 @@ export default function GeneralAnalytics() {
               <Autocomplete
                 fullWidth
                 options={listhabitaciones}
+                onChange={habitacionesAutocompleteChange}
                 getOptionLabel={(option) => option.title}
                 renderInput={(params) => <TextField {...params} label="Habitaciones" margin="none" />}
               />
@@ -362,9 +394,6 @@ export default function GeneralAnalytics() {
           </Grid>
           <Grid sx={{ padding: '17px' }} item xs={12} sm={6} md={4}>
             <Stack sx={{ width: '100%', padding: '17px' }} spacing={3} direction="row">
-              <Button onClick={enviarSolicitud} className="btns" variant="contained">
-                Buscar
-              </Button>
               <Button className="btns" variant="outlined">
                 Exportar XLS
               </Button>
@@ -376,7 +405,7 @@ export default function GeneralAnalytics() {
                 <Box sx={{ width: '100%' }}>
                   <Slider
                     scale={(x) => x * 10}
-                    step={10}
+                    step={1}
                     marks={pricesQ}
                     value={priceQ}
                     onChange={handleChangePriceQ}
@@ -407,7 +436,7 @@ export default function GeneralAnalytics() {
                 <Box sx={{ width: '100%' }}>
                   <Slider
                     scale={(x) => x * 10}
-                    step={10}
+                    step={1}
                     marks={pricesD}
                     value={priceD}
                     onChange={handleChangePriceD}
@@ -435,7 +464,7 @@ export default function GeneralAnalytics() {
         </Grid>
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6} md={12}>
-            <Box sx={{ height: '80vh', width: '100%' }}>
+            <Box sx={{ height: '120vh', padding: '13px', paddingTop: '20px', width: '100%' }}>
               <DataGrid
                 rows={rows}
                 columns={columns}

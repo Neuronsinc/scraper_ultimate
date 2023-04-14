@@ -27,7 +27,7 @@ export default function Editor() {
   const [draftSimple, setDraftSimple] = useState(EditorState.createEmpty());
 
   return (
-    <RootStyle title="Components: Editor | Minimal-UI">
+    <RootStyle title="Components: Editor | dataSracper">
       <Box
         sx={{
           pt: 6,

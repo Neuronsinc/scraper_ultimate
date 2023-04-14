@@ -44,7 +44,7 @@ export default function MultiLanguage() {
   };
 
   return (
-    <RootStyle title="Components: Multi Language | Minimal-UI">
+    <RootStyle title="Components: Multi Language | dataSracper">
       <Box
         sx={{
           pt: 6,
