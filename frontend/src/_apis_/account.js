@@ -83,7 +83,7 @@ mock.onPost('/api/account/register').reply(async (config) => {
     let user = users.find((_user) => _user.email === email);
 
     if (user) {
-      return [400, { message: 'There already exists an account with the given email address.' }];
+      return [400, { message: 'Ya existe una cuenta con la dirección de correo electrónico proporcionada.' }];
     }
 
     user = {

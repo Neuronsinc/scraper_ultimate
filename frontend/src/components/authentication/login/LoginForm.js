@@ -8,16 +8,7 @@ import eyeFill from '@iconify/icons-eva/eye-fill';
 import closeFill from '@iconify/icons-eva/close-fill';
 import eyeOffFill from '@iconify/icons-eva/eye-off-fill';
 // material
-import {
-  Link,
-  Stack,
-  Alert,
-  Checkbox,
-  TextField,
-  IconButton,
-  InputAdornment,
-  FormControlLabel
-} from '@material-ui/core';
+import { Link, Stack, Checkbox, TextField, IconButton, InputAdornment, FormControlLabel } from '@material-ui/core';
 import { LoadingButton } from '@material-ui/lab';
 // routes
 import { PATH_AUTH } from '../../../routes/paths';
@@ -36,8 +27,8 @@ export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
 
   const LoginSchema = Yup.object().shape({
-    email: Yup.string().email('Email must be a valid email address').required('Email is required'),
-    password: Yup.string().required('Password is required')
+    email: Yup.string().email('Correo inválido').required('Correo obligatorio'),
+    password: Yup.string().required('Contraeña obligatoria')
   });
 
   const formik = useFormik({
@@ -67,6 +58,15 @@ export default function LoginForm() {
         if (isMountedRef.current) {
           setSubmitting(false);
           setErrors({ afterSubmit: error.message });
+          enqueueSnackbar(error.message, {
+            variant: 'error',
+            anchorOrigin: { vertical: 'top', horizontal: 'right' },
+            action: (key) => (
+              <MIconButton size="small" onClick={() => closeSnackbar(key)}>
+                <Icon icon={closeFill} />
+              </MIconButton>
+            )
+          });
         }
       }
     }
@@ -82,7 +82,7 @@ export default function LoginForm() {
     <FormikProvider value={formik}>
       <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
         <Stack spacing={3}>
-          {errors.afterSubmit && <Alert severity="error">{errors.afterSubmit}</Alert>}
+          {/* errors.afterSubmit && <Alert severity="error">{errors.afterSubmit}</Alert> */}
 
           <TextField
             fullWidth

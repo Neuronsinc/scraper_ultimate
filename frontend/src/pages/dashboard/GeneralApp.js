@@ -7,7 +7,6 @@ import useSettings from '../../hooks/useSettings';
 import Page from '../../components/Page';
 import {
   AppWelcome,
-  AppFeatured,
   AppTotalDownloads,
   AppTotalInstalled,
   AppCurrentDownload,
