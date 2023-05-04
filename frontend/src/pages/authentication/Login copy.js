@@ -60,6 +60,7 @@ export default function Login() {
           <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
             <img className="logo-login" src="/static/logos/logo_datascrap.png" alt="login" />
           </Typography>
+          <img src="/static/illustrations/illustration_login.png" alt="login" />
         </SectionStyle>
       </MHidden>
 

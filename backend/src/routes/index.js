@@ -11,11 +11,13 @@ const {
   crear,
 } = require("../controllers/gatway.controller");
 const { sumacategorias } = require("../controllers/consultas");
+const { datostabla } = require("../controllers/filtrotabla");
 //const { filtrotabla } = require("../controllers/filtrotabla");
 
 //Daga entrega
 
 router.get("/suma-categorias", sumacategorias);
+router.post("/filtracion", datostabla);
 
 //------
 

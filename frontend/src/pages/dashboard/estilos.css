@@ -10,6 +10,16 @@
 .total-des {
     padding-top: 12px;
 }
+.lg-slider {
+    margin: auto;
+}
+.logo-login {
+    width: 61%;
+    margin: auto;
+}
+.logo-slide {
+    height: 60px;
+}
 .totalResul {
     background-image: linear-gradient(45deg, #259e3f4f, #3b69b11f);
     width: 48%;
@@ -33,6 +43,10 @@
     border-radius: 11px;
     font-size: 10pt;
     text-align: center;
+}
+.div-filtro {
+    padding-top: 32px;
+    margin-top: 27px! important;
 }
 .dolar {
     background: #1483ff2e;

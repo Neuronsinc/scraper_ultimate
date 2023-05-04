@@ -10,11 +10,11 @@ import useCollapseDrawer from '../../hooks/useCollapseDrawer';
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
 // components
-import Logo from '../../components/Logo';
 import MyAvatar from '../../components/MyAvatar';
 import Scrollbar from '../../components/Scrollbar';
 import NavSection from '../../components/NavSection';
 import { MHidden } from '../../components/@material-extend';
+import '../../pages/dashboard/estilos.css';
 //
 import sidebarConfig from './SidebarConfig';
 
@@ -127,8 +127,8 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
         }}
       >
         <Stack direction="row" alignItems="center" justifyContent="space-between">
-          <Box component={RouterLink} to="/" sx={{ display: 'inline-flex' }}>
-            <Logo />
+          <Box className="lg-slider" component={RouterLink} to="/" sx={{ display: 'inline-flex' }}>
+            <img className="logo-slide" src="/static/logos/icon.svg" alt="slide" />
           </Box>
 
           <MHidden width="lgDown">
