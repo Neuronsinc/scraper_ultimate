@@ -99,7 +99,7 @@ app.get("/datos-mongo", (req, res) => {
       const datos_mongos = await gatewa.find({ _id: { $exists: true } })
         .sort({ fecha: -1 }) // Ordena por fecha de forma descendente (-1)
         .limit(5000); // Limita a 100 resultados
-    
+
       res.send(JSON.stringify(datos_mongos));
       console.log("ESTOS SON!: ", datos_mongos);
     }

@@ -26,6 +26,7 @@ import './estilos.css';
 import Page from '../../components/Page';
 import TablaDatos from './TablaDatos';
 import TablaDatosTotal from './TablaDatosTotal';
+import ConsultaDataFiltro from './ConsultaDataFiltro';
 import SliderDan from './sliders';
 // ----------------------------------------------------------------------
 
@@ -48,12 +49,13 @@ const pricesD = [
 
 export default function GeneralAnalytics() {
   // Swich para activar filto
-  const [isChecked, setIsChecked] = useState(false);
+  const [actifiltro, setIsChecked] = useState(false);
 
   const handleSwitchChange = (event) => {
     setIsChecked(event.target.checked);
-    console.log(`Switch value is now ${event.target.checked}`);
   };
+
+  console.log(`DESEA ACTIVAR EL FILTRO?: ${actifiltro}`);
 
   // -----RANGO DE FECHA
   const [valueF, setValueF] = useState([null, null]);
@@ -106,8 +108,6 @@ export default function GeneralAnalytics() {
     }
   });
 
-  console.log(`CATEGORÍIIIIa [${categories}]`);
-
   const formatcategories = categories
     .map((categori) => {
       try {
@@ -134,7 +134,6 @@ export default function GeneralAnalytics() {
     }
   });
 
-  console.log(`Que buena data [${localizaciones}]`);
   const formattedlocalizaciones = localizaciones.map((categorys) => ({
     title: categorys,
     year: null // o el valor que quieras asignarle
@@ -368,32 +367,38 @@ export default function GeneralAnalytics() {
               value="start"
               label="Filtro de búsqueda"
               labelPlacement="start"
-              control={<Switch checked={isChecked} onChange={handleSwitchChange} />}
+              control={<Switch checked={actifiltro} onChange={handleSwitchChange} />}
             />
           </Grid>
         </Grid>
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6} md={12}>
-            <Box sx={{ height: '120vh', padding: '13px', paddingTop: '20px', width: '100%' }}>
-              {loading && <LinearProgress color="success" />}
-              {!loading && rowes.length === 0 && <p>No se encontraron datos</p>}
-              {!loading && rowes.length > 0 && (
-                <DataGrid
-                  rows={rowes}
-                  columns={columns}
-                  initialState={{
-                    pagination: {
-                      paginationModel: {
-                        pageSize: 5
+            {actifiltro ? (
+              <Box id="si-filtro" sx={{ height: '120vh', padding: '13px', paddingTop: '20px', width: '100%' }}>
+                <ConsultaDataFiltro />
+              </Box>
+            ) : (
+              <Box id="no-filtro" sx={{ height: '120vh', padding: '13px', paddingTop: '20px', width: '100%' }}>
+                {loading && <LinearProgress color="success" />}
+                {!loading && rowes.length === 0 && <p>No se encontraron datos</p>}
+                {!loading && rowes.length > 0 && (
+                  <DataGrid
+                    rows={rowes}
+                    columns={columns}
+                    initialState={{
+                      pagination: {
+                        paginationModel: {
+                          pageSize: 5
+                        }
                       }
-                    }
-                  }}
-                  pageSizeOptions={[5]}
-                  checkboxSelection
-                  disableRowSelectionOnClick
-                />
-              )}
-            </Box>
+                    }}
+                    pageSizeOptions={[5]}
+                    checkboxSelection
+                    disableRowSelectionOnClick
+                  />
+                )}
+              </Box>
+            )}
           </Grid>
         </Grid>
       </Container>
