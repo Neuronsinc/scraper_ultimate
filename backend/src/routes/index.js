@@ -12,12 +12,14 @@ const {
 } = require("../controllers/gatway.controller");
 const { sumacategorias } = require("../controllers/consultas");
 const { datostabla } = require("../controllers/filtrotabla");
+const { dashbordconsult } = require("../controllers/dashbordConsulta");
 //const { filtrotabla } = require("../controllers/filtrotabla");
 
 //Daga entrega
 
 router.get("/suma-categorias", sumacategorias);
 router.post("/filtracion", datostabla);
+router.get("/consulta-dashbord", dashbordconsult);
 
 //------
 
@@ -25,6 +27,7 @@ router.post("/filtracion", datostabla);
 // Render all tasks
 router.get("/", renderGatewas);
 router.get("/crear", crear);
+
 
 router.post("/tasks/add", createGatewa);
 //router.post("/tasks/add", createGatewa);

@@ -12,15 +12,25 @@ const CHART_DATA = [
   {
     year: 2019,
     data: [
-      { name: 'Total Income', data: [10, 41, 35, 151, 49, 62, 69, 91, 48] },
-      { name: 'Total Expenses', data: [10, 34, 13, 56, 77, 88, 99, 77, 45] }
+      { name: 'Casa', data: [10, 41, 35, 151, 49, 62, 69, 91, 48] },
+      { name: 'Apartamento', data: [10, 34, 13, 56, 77, 88, 99, 77, 45] },
+      { name: 'Apartamento', data: [13, 24, 13, 46, 75, 58, 99, 34, 45] },
+      { name: 'Apartamento', data: [14, 24, 13, 56, 77, 34, 99, 34, 45] },
+      { name: 'Apartamento', data: [15, 54, 17, 55, 77, 88, 39, 77, 45] },
+      { name: 'Apartamento', data: [12, 66, 53, 56, 77, 88, 99, 77, 45] },
+      { name: 'Apartamento', data: [45, 65, 17, 66, 77, 88, 99, 77, 45] }
     ]
   },
   {
     year: 2020,
     data: [
-      { name: 'Total Income', data: [148, 91, 69, 62, 49, 51, 35, 41, 10] },
-      { name: 'Total Expenses', data: [45, 77, 99, 88, 77, 56, 13, 34, 10] }
+      { name: 'Casa', data: [198, 41, 35, 151, 49, 62, 69, 91, 48] },
+      { name: 'Apartamento', data: [10, 34, 13, 56, 77, 88, 99, 77, 45] },
+      { name: 'lotes y terrnos', data: [98, 24, 98, 46, 75, 58, 99, 34, 45] },
+      { name: 'propiedades en la playa', data: [14, 24, 13, 56, 77, 34, 99, 34, 45] },
+      { name: 'Apartamento', data: [15, 54, 17, 98, 77, 98, 39, 77, 45] },
+      { name: 'Apartamento', data: [12, 66, 53, 56, 77, 88, 9, 77, 45] },
+      { name: 'Apartamento', data: [45, 65, 98, 66, 78, 88, 9, 8, 45] }
     ]
   }
 ];
@@ -42,7 +52,7 @@ export default function EcommerceYearlySales() {
   return (
     <Card>
       <CardHeader
-        title="Yearly Sales"
+        title="Total Categorías"
         subheader="(+43%) than last year"
         action={
           <TextField

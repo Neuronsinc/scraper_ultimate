@@ -305,7 +305,7 @@ export default function GeneralAnalytics() {
           <Grid sx={{ padding: '17px' }} item xs={12} sm={6} md={4}>
             <Stack sx={{ width: '100%', padding: '17px' }} spacing={3} direction="row">
               <Button className="btns" variant="outlined">
-                Exportar XLS
+                Exportar
               </Button>
             </Stack>
           </Grid>
