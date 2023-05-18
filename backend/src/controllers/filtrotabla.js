@@ -19,7 +19,7 @@ const datostabla = async (req, res, next) => {
       busqueda["Precio:"] = { $exists: true };
     }
 
-    console.log(busqueda);
+    // console.log(busqueda);
 
     let precios;
     let promedioDolares;
@@ -31,7 +31,7 @@ const datostabla = async (req, res, next) => {
         const resultadosZona21 = resultados.filter((p) => p["Precio:"]);
 
         // Imprimir resultados filtrados
-        console.log("DATA DATA: " + resultadosZona21);
+        //   console.log("DATA DATA: " + resultadosZona21);
         const respunse1 = JSON.stringify(resultadosZona21);
         const respuestageneral = JSON.parse(respunse1);
         // AREA PROMEDIO
@@ -111,7 +111,7 @@ const datostabla = async (req, res, next) => {
           totalarea: `${totalarea.toFixed(2)} MT2`,
           notifi: "Solicitud exitosa",
         };
-        console.log(response);
+        // console.log(response);
         res.json(response); // Responder con los datos procesados en formato JSON
       })
       .catch((error) => {
@@ -123,6 +123,37 @@ const datostabla = async (req, res, next) => {
     return res.render("error en consulta: ", { errorMessage: error.message });
   }
 };
+
+// CONSULTA TABLA FILTRO
+const tablefiltro = async (req, res, next) => {
+  try {
+    const categorias = req.body.categorias;
+
+    let pipeline = [];
+
+    // Si se especificaron categorías, agregamos una etapa $match al pipeline
+    if (categorias && categorias.length > 0) {
+      pipeline.push({ $match: { "Categoria:": { $in: categorias } } });
+    }
+
+    // Si no se especificaron categorías, agregamos un $match vacío para consultar todo
+    if (!categorias || categorias.length === 0) {
+      pipeline.push({ $match: {} });
+    }
+
+    // Ejecutamos la consulta utilizando aggregate
+    const datosfiltros = await gatewa.aggregate(pipeline);
+    const send = {
+      date: datosfiltros,
+    };
+    res.send(send);
+    return;
+  } catch (error) {
+    return res.status(500).json({ errorMessage: error.message });
+  }
+};
+
 module.exports = {
   datostabla,
+  tablefiltro,
 };

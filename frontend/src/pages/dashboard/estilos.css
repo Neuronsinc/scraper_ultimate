@@ -7,8 +7,24 @@
     border-radius: 17px;
     padding: 2px 15px 2px 15px;
 }
+.alertas {
+    width: 362px;
+}
 .total-des {
     padding-top: 12px;
+}
+.alertaprecio {
+    padding: 10px;
+    background: #2aff8d0a;
+    width: 62%;
+    margin: auto;
+    text-align: center;
+    border-radius: 10px;
+    border: solid 1px #259e3f;
+    display: flex;
+}
+.labelfp {
+    padding-left: 10px;
 }
 .lg-slider {
     margin: auto;

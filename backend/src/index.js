@@ -67,10 +67,10 @@ app.get("/ruta", (req, res) => {
 
       const m2Valores = datos.map((objeto) => objeto["m²:"]);
 
-      console.log(m2Valores); // ["56", "300", "745", "745"]
+      //console.log(m2Valores); // ["56", "300", "745", "745"]
       datos.forEach((resultado) => {
         if (resultado["Precio:"] === "$58,000.00\n") {
-          console.log(resultado["m²:"]);
+         //console.log(resultado["m²:"]);
           res.send(resultado["m²:"]);
         }
       });
@@ -101,7 +101,7 @@ app.get("/datos-mongo", (req, res) => {
         .limit(5000); // Limita a 100 resultados
 
       res.send(JSON.stringify(datos_mongos));
-      console.log("ESTOS SON!: ", datos_mongos);
+      //("ESTOS SON!: ", datos_mongos);
     }
     
     database();

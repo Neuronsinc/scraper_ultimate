@@ -8,6 +8,7 @@ import { Box, Backdrop, Paper, Tooltip, Divider, Typography, Stack } from '@mate
 import Scrollbar from '../Scrollbar';
 import { MIconButton } from '../@material-extend';
 import SettingMode from './SettingMode';
+import SettingColor from './SettingColor';
 import SettingStretch from './SettingStretch';
 import SettingDirection from './SettingDirection';
 import SettingFullscreen from './SettingFullscreen';
@@ -108,6 +109,11 @@ export default function Settings() {
               <Stack spacing={1.5}>
                 <Typography variant="subtitle2">Direction</Typography>
                 <SettingDirection />
+              </Stack>
+
+              <Stack spacing={1.5}>
+                <Typography variant="subtitle2">Color</Typography>
+                <SettingColor />
               </Stack>
 
               <Stack spacing={1.5}>

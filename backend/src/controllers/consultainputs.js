@@ -1,22 +1,21 @@
 const gatewa = require("../models/gatway.js");
 
-const sumacategorias = async (req, res, next) => {
+const categorias = async (req, res, next) => {
   try {
     const ddatau = await gatewa.find({ "Categoria:": { $exists: true } });
 
-    const count = {};
-
+    const uniqueCategories = [];
+    
     ddatau.forEach((element) => {
       const categoria = element["Categoria:"];
-      if (count[categoria]) {
-        count[categoria] += 1;
-      } else {
-        count[categoria] = 1;
+      if (!uniqueCategories.includes(categoria)) {
+        uniqueCategories.push(categoria);
       }
     });
-    //DATA CATEGORÍAS
-   // console.log(count);
-    res.send(count);
+    
+    // Listado de categorías únicas
+    console.log(uniqueCategories);
+    res.send(uniqueCategories);
 
     return;
   } catch (error) {
@@ -25,5 +24,5 @@ const sumacategorias = async (req, res, next) => {
 };
 
 module.exports = {
-	sumacategorias,
+	categorias,
   }

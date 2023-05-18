@@ -11,8 +11,11 @@ const {
   crear,
 } = require("../controllers/gatway.controller");
 const { sumacategorias } = require("../controllers/consultas");
-const { datostabla } = require("../controllers/filtrotabla");
+const { datostabla, tablefiltro } = require("../controllers/filtrotabla");
 const { dashbordconsult } = require("../controllers/dashbordConsulta");
+const { categorias } = require("../controllers/consultainputs");
+const { preciosfiltro } = require("../controllers/filtroprecio");
+const { rangoprecio } = require("../controllers/rangoprecios");
 //const { filtrotabla } = require("../controllers/filtrotabla");
 
 //Daga entrega
@@ -20,6 +23,10 @@ const { dashbordconsult } = require("../controllers/dashbordConsulta");
 router.get("/suma-categorias", sumacategorias);
 router.post("/filtracion", datostabla);
 router.get("/consulta-dashbord", dashbordconsult);
+router.post("/table-filtro", tablefiltro);
+router.get("/categorias", categorias);
+router.get("/precios-filtro", preciosfiltro);
+router.post("/rango-precios", rangoprecio);
 
 //------
 

@@ -1,9 +1,12 @@
 // material
 import { DataGrid } from '@material-ui/data-grid';
+import { es } from 'date-fns/locale';
 import { useSnackbar } from 'notistack5';
 import { useState, useEffect, useCallback } from 'react';
 import closeFill from '@iconify/icons-eva/close-fill';
 import { Icon } from '@iconify/react';
+import AdapterDateFns from '@material-ui/lab/AdapterDateFns';
+import LocalizationProvider from '@material-ui/lab/LocalizationProvider';
 import { DateRangePicker } from '@material-ui/lab';
 //
 import {
@@ -30,13 +33,6 @@ import ConsultaDataFiltro from './ConsultaDataFiltro';
 import SliderDan from './sliders';
 // ----------------------------------------------------------------------
 
-const pricesQ = [
-  { value: 0, label: 'Q0' },
-  { value: 25, label: '25' },
-  { value: 50, label: '500' },
-  { value: 75, label: '750' },
-  { value: 100, label: '1000' }
-];
 const pricesD = [
   { value: 0, label: '$0' },
   { value: 25, label: '25' },
@@ -46,48 +42,53 @@ const pricesD = [
 ];
 
 // ----------------------------------------------------------------------
-
 export default function GeneralAnalytics() {
-  // Swich para activar filto
-  const [actifiltro, setIsChecked] = useState(false);
+  const varlink = `${process.env.REACT_APP_APIBACKEND}/precios-filtro`;
+  console.log('el link es: ', varlink);
+  // Obtener los precios
+  const [precios, setPrecios] = useState([]);
 
-  const handleSwitchChange = (event) => {
-    setIsChecked(event.target.checked);
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      axios
+        .get(`${process.env.REACT_APP_APIBACKEND}/precios-filtro`)
+        .then((response) => {
+          // actualizar el estado con los datos de respuesta
+          setPrecios(response.data);
+        })
+        .catch((error) => {
+          // manejar el error∫
+          console.error(error);
+        });
+    };
 
-  console.log(`DESEA ACTIVAR EL FILTRO?: ${actifiltro}`);
+    fetchData();
+  }, []);
+  console.log(precios.quetzales);
 
-  // -----RANGO DE FECHA
-  const [valueF, setValueF] = useState([null, null]);
+  // VALORES EN QUETZLES
+  const pricesQ = precios.quetzales;
+  const ultimoValorQ =
+    precios.quetzales && precios.quetzales.length > 0 ? precios.quetzales[precios.quetzales.length - 1].value : 0;
+  const valor2Q = precios.quetzales && precios.quetzales.length > 1 ? precios.quetzales[1].value : 0;
+  const valor4Q = precios.quetzales && precios.quetzales.length > 3 ? precios.quetzales[3].value : 0;
 
-  const fechaInicialFormateada = valueF[0]
-    ? valueF[0].toLocaleDateString('es-ES', {
-        day: 'numeric',
-        month: 'numeric',
-        year: 'numeric'
-      })
-    : '';
+  console.log(valor2Q);
 
-  const fechaFinalFormateada = valueF[1]
-    ? valueF[1].toLocaleDateString('es-ES', {
-        day: 'numeric',
-        month: 'numeric',
-        year: 'numeric'
-      })
-    : '';
-
-  console.log(`${fechaInicialFormateada} - ${fechaFinalFormateada}`);
-
-  // ----------------
+  // VALORES EN DOLARES
+  const pricesD = precios.dolares;
+  const ultimoValorD =
+    precios.dolares && precios.dolares.length > 0 ? precios.dolares[precios.dolares.length - 1].value : 0;
+  const valor2D = precios.dolares && precios.dolares.length > 1 ? precios.dolares[1].value : 0;
+  const valor4D = precios.dolares && precios.dolares.length > 3 ? precios.dolares[3].value : 0;
   const [data, setData] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       axios
-        .get('http://localhost:8080/datos-mongo')
+        .get(`${process.env.REACT_APP_APIBACKEND}/datos-mongo`)
         .then((response) => {
           // actualizar el estado con los datos de respuesta
-          console.log('esto es la data:', response.data);
           setData(response.data);
         })
         .catch((error) => {
@@ -98,32 +99,78 @@ export default function GeneralAnalytics() {
 
     fetchData();
   }, []);
+  // Swich para activar filto
+  const [actifiltro, setIsChecked] = useState(false);
+
+  const handleSwitchChange = (event) => {
+    setIsChecked(event.target.checked);
+  };
+  const activos = actifiltro;
+  console.log(`DESEA ACTIVAR EL FILTRO?: ${actifiltro}`);
+
+  // -----RANGO DE FECHA
+  const [valueF, setValueF] = useState([null, null]);
+
+  const fechaInicialFormateada = valueF[0]
+    ? valueF[0]
+        .toLocaleDateString('es-ES', {
+          day: 'numeric',
+          month: 'numeric',
+          year: 'numeric'
+        })
+        .split('/')
+        .map((part) => part.padStart(2, '0'))
+        .join('/')
+    : '';
+
+  const fechaFinalFormateada = valueF[1]
+    ? valueF[1]
+        .toLocaleDateString('es-ES', {
+          day: 'numeric',
+          month: 'numeric',
+          year: 'numeric'
+        })
+        .split('/')
+        .map((part) => part.padStart(2, '0'))
+        .join('/')
+    : '';
+
+  console.log(`${fechaInicialFormateada} - ${fechaFinalFormateada}`);
+  // Multiples categorias
 
   // --------- BUSQUDA DE CATEGORIAS
-  const categories = [];
+  const [multiplesValues, setMultiplesValues] = useState([]);
+  const [categoriass, setCategoriass] = useState([]);
 
-  data.forEach((items) => {
-    if (items['Categoria:'] && !categories.includes(items['Categoria:'])) {
-      categories.push(items['Categoria:']);
-    }
-  });
+  const valuescategorias = (event, values) => {
+    setMultiplesValues(values.map((value) => value.title));
+  };
 
-  const formatcategories = categories
-    .map((categori) => {
-      try {
-        return {
-          title: categori,
-          year: null
-        };
-      } catch (error) {
-        console.log(`Error al formatear la categoría ${categori}: ${error}`);
-        return null;
+  useEffect(() => {
+    const categories = [];
+
+    data.forEach((items) => {
+      if (items['Categoria:'] && !categories.includes(items['Categoria:'])) {
+        categories.push(items['Categoria:']);
       }
-    })
-    .filter((item) => item !== null);
+    });
 
-  const categoriass = formatcategories;
-  // -----------------------------------
+    const formatcategories = categories
+      .map((categori) => {
+        try {
+          return {
+            title: categori,
+            year: null
+          };
+        } catch (error) {
+          console.log(`Error al formatear la categoría ${categori}: ${error}`);
+          return null;
+        }
+      })
+      .filter((item) => !multiplesValues.includes(item.title)); // Filter out selected categories
+
+    setCategoriass(formatcategories);
+  }, [data, multiplesValues]);
 
   // --------- BUSQUDA DE LOCALIZACION
   const localizaciones = [];
@@ -227,7 +274,7 @@ export default function GeneralAnalytics() {
     });
   }
   const enviarSolicitud = useCallback(() => {
-    fetch('http://localhost:8080/filtracion', {
+    fetch(`${process.env.REACT_APP_APIBACKEND}/filtracion`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -246,6 +293,20 @@ export default function GeneralAnalytics() {
   useEffect(() => {
     enviarSolicitud();
   }, [enviarSolicitud]);
+
+  const [reset, setReset] = useState(false);
+
+  useEffect(() => {
+    if (reset) {
+      setValueF([null, null]);
+      setReset(false);
+    }
+  }, [reset]);
+
+  const handleReset = () => {
+    setReset(true);
+  };
+
   return (
     <Page title="General: Analytics | dataSracper">
       <Container maxWidth="100%">
@@ -302,101 +363,95 @@ export default function GeneralAnalytics() {
               />
             </Box>
           </Grid>
-          <Grid sx={{ padding: '17px' }} item xs={12} sm={6} md={4}>
+          <Grid sx={{ padding: '17px' }} item xs={4}>
             <Stack sx={{ width: '100%', padding: '17px' }} spacing={3} direction="row">
               <Button className="btns" variant="outlined">
                 Exportar
               </Button>
             </Stack>
           </Grid>
-          <Grid item xs={12} sm={6} md={6}>
+          <Grid item xs={6}>
             <SliderDan
               moneda="Rango de precios -"
               steep="1"
               pricesD={pricesD}
+              ultimo={ultimoValorD}
+              valor2={valor2D}
+              valor4={valor4D}
               simbol="$"
               funcion="handleChangePriceD"
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={6}>
+          <Grid item xs={6}>
             <SliderDan
               moneda="Rango de precios -"
               steep="1"
               pricesD={pricesQ}
+              ultimo={ultimoValorQ}
+              valor2={valor2Q}
+              valor4={valor4Q}
               simbol="Q"
-              funcion="handleChangePriceD"
+              funcion="handleChangePriceQ"
             />
           </Grid>
         </Grid>
         <Grid container spacing={3}>
-          <Grid className="div-filtro" item xs={12} sm={12} md={4}>
-            <DateRangePicker
-              startText="Fecha de inicio"
-              endText="Fecha fin"
-              value={valueF}
-              format="DD/MM/YYYY"
-              onChange={(newValue) => {
-                setValueF(newValue);
-              }}
-              renderInput={(startProps, endProps) => (
-                <>
-                  <TextField {...startProps} format="DD/MM/YYYY" />
-                  <Box sx={{ mx: 2 }}>a</Box>
-                  <TextField {...endProps} format="DD/MM/YYYY" />
-                </>
+          <Grid className="div-filtro" item xs={4}>
+            <LocalizationProvider dateAdapter={AdapterDateFns} locale={es}>
+              <DateRangePicker
+                startText="Fecha de inicio"
+                endText="Fecha fin"
+                value={valueF}
+                inputFormat="dd/MM/yyyy"
+                onChange={(newValue) => {
+                  setValueF(newValue);
+                }}
+                renderInput={(startProps, endProps) => (
+                  <>
+                    <TextField {...startProps} format="dd/MM/yyyy" />
+                    <Box sx={{ mx: 2 }}>a</Box>
+                    <TextField {...endProps} format="dd/MM/yyyy" />
+                  </>
+                )}
+              />
+            </LocalizationProvider>
+          </Grid>
+          <Grid className="div-filtro" item xs={4}>
+            <Autocomplete
+              multiple
+              fullWidth
+              options={categoriass}
+              getOptionLabel={(option) => (option && option.title ? option.title : '')}
+              onChange={valuescategorias}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField {...params} label="Seleccione una categoría" placeholder="Apartamentos, casas..." />
               )}
             />
           </Grid>
-          <Grid className="div-filtro" item xs={6} sm={6} md={6}>
-            {categoriass.length > 0 && (
-              <Autocomplete
-                multiple
-                fullWidth
-                options={categoriass}
-                getOptionLabel={(option) => (option && option.title ? option.title : '')}
-                defaultValue={[categoriass[1]]}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField {...params} label="filterSelectedOptions" placeholder="Favorites" />
-                )}
-              />
-            )}
-          </Grid>
-          <Grid className="div-filtro" item xs={6} sm={6} md={2}>
+          <Grid className="div-filtro" sx={{ textAlign: 'center' }} xs={4}>
             <FormControlLabel
               value="start"
               label="Filtro de búsqueda"
               labelPlacement="start"
               control={<Switch checked={actifiltro} onChange={handleSwitchChange} />}
             />
+            <Button id="btnreset" variant="contained" sx={{ marginLeft: '50px' }} onClick={handleReset}>
+              Resetear
+            </Button>
           </Grid>
         </Grid>
         <Grid container spacing={3}>
-          <Grid item xs={12} sm={6} md={12}>
-            {actifiltro ? (
-              <Box id="si-filtro" sx={{ height: '120vh', padding: '13px', paddingTop: '20px', width: '100%' }}>
-                <ConsultaDataFiltro />
-              </Box>
-            ) : (
-              <Box id="no-filtro" sx={{ height: '120vh', padding: '13px', paddingTop: '20px', width: '100%' }}>
-                {loading && <LinearProgress color="success" />}
-                {!loading && rowes.length === 0 && <p>No se encontraron datos</p>}
-                {!loading && rowes.length > 0 && (
-                  <DataGrid
-                    rows={rowes}
-                    columns={columns}
-                    initialState={{
-                      pagination: {
-                        paginationModel: {
-                          pageSize: 5
-                        }
-                      }
-                    }}
-                    pageSizeOptions={[5]}
-                    checkboxSelection
-                    disableRowSelectionOnClick
-                  />
-                )}
+          <Grid item xs={12}>
+            {data && (
+              <Box id="si-filtro" sx={{ height: '120vh', padding: '0px', paddingTop: '20px', width: '100%' }}>
+                <ConsultaDataFiltro
+                  tablaresult={data}
+                  activo={activos}
+                  fechainicio={fechaInicialFormateada}
+                  fechafin={fechaFinalFormateada}
+                  categories={multiplesValues}
+                />
               </Box>
             )}
           </Grid>
