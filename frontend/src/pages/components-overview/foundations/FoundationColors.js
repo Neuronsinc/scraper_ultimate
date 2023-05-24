@@ -105,7 +105,7 @@ export default function FoundationColors() {
   };
 
   return (
-    <RootStyle title="Foundations: Color | Minimal-UI">
+    <RootStyle title="Foundations: Color | dataSracper">
       <Box
         sx={{
           pt: 6,

@@ -44,7 +44,7 @@ export default function ButtonsComponent() {
   };
 
   return (
-    <RootStyle title="Components: Buttons | Minimal-UI">
+    <RootStyle title="Components: Buttons | dataSracper">
       <Box
         sx={{
           pt: 6,

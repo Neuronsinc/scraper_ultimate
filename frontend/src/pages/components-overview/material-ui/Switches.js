@@ -28,7 +28,7 @@ const RootStyle = styled(Page)(({ theme }) => ({
 
 export default function Switches() {
   return (
-    <RootStyle title="Components: Switches | Minimal-UI">
+    <RootStyle title="Components: Switches | dataSracper">
       <Box
         sx={{
           pt: 6,

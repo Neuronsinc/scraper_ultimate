@@ -77,7 +77,7 @@ const SkeletonLoad = (
 
 export default function Map() {
   return (
-    <RootStyle title="Components: Map | Minimal-UI">
+    <RootStyle title="Components: Map | dataSracper">
       <Box
         sx={{
           pt: 6,

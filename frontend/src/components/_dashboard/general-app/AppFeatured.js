@@ -14,12 +14,13 @@ import { CarouselControlsPaging1, CarouselControlsArrowsBasic1 } from '../../car
 
 // ----------------------------------------------------------------------
 
-const TITLES = ['Harry Potter and the Deathly Hallows - Part 2', 'Disney Zombies 2', 'Lightroom mobile - Koloro'];
+const TITLES = ['DataMining de Oficinas y Hospitales Ciudad de Guatemala', 'DataMining oficinas zona 10'];
+const description = ['Servicios digitales', 'Servicios digitales'];
 
 const MOCK_APPS = [...Array(3)].map((_, index) => ({
   id: mockData.id(index),
   title: TITLES[index],
-  description: mockData.text.title(index),
+  description: description[index],
   image: mockData.image.feed(index)
 }));
 
@@ -74,7 +75,7 @@ function CarouselItem({ item, isActive }) {
                   display: 'block'
                 }}
               >
-                Featured App
+                Nuestros servicios
               </Typography>
             </motion.div>
             <motion.div variants={varFadeInRight}>

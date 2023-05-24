@@ -1,5 +1,6 @@
 import { merge } from 'lodash';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 import ReactApexChart from 'react-apexcharts';
 // material
 import { Card, CardHeader, Box, TextField } from '@material-ui/core';
@@ -8,25 +9,32 @@ import { BaseOptionChart } from '../../charts';
 
 // ----------------------------------------------------------------------
 
-const CHART_DATA = [
-  {
-    year: 2019,
-    data: [
-      { name: 'Total Income', data: [10, 41, 35, 151, 49, 62, 69, 91, 48] },
-      { name: 'Total Expenses', data: [10, 34, 13, 56, 77, 88, 99, 77, 45] }
-    ]
-  },
-  {
-    year: 2020,
-    data: [
-      { name: 'Total Income', data: [148, 91, 69, 62, 49, 51, 35, 41, 10] },
-      { name: 'Total Expenses', data: [45, 77, 99, 88, 77, 56, 13, 34, 10] }
-    ]
-  }
-];
-
 export default function EcommerceYearlySales() {
-  const [seriesData, setSeriesData] = useState(2019);
+  console.log(`LA VARIABLE ES: ${process.env.REACT_APP_APIBACKEND}`);
+  const [consultadash, setData] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      axios
+        .get(`${process.env.REACT_APP_APIBACKEND}/consulta-dashbord`)
+        .then((response) => {
+          // actualizar el estado con los datos de respuesta
+          console.log('esto es la data:', response.data);
+          setData(response.data);
+        })
+        .catch((error) => {
+          // manejar el error∫
+          console.error(error);
+        });
+    };
+
+    fetchData();
+  }, []);
+
+  console.log(consultadash);
+  const CHART_DATA = consultadash;
+
+  const [seriesData, setSeriesData] = useState(2023);
 
   const handleChangeSeriesData = (event) => {
     setSeriesData(Number(event.target.value));
@@ -35,14 +43,27 @@ export default function EcommerceYearlySales() {
   const chartOptions = merge(BaseOptionChart(), {
     legend: { position: 'top', horizontalAlign: 'right' },
     xaxis: {
-      categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep']
+      categories: [
+        'Enero',
+        'Febrero',
+        'Marzo',
+        'Abril',
+        'Mayo',
+        'Junio',
+        'Julio',
+        'Agosto',
+        'Septiembre',
+        'Octubre',
+        'Noviembre',
+        'Diciembre'
+      ]
     }
   });
 
   return (
     <Card>
       <CardHeader
-        title="Yearly Sales"
+        title="Total Categorías"
         subheader="(+43%) than last year"
         action={
           <TextField

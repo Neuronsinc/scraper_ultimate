@@ -36,7 +36,7 @@ const style = {
 
 export default function TooltipsComponent() {
   return (
-    <RootStyle title="Components: Tooltip | Minimal-UI">
+    <RootStyle title="Components: Tooltip | dataSracper">
       <Box
         sx={{
           pt: 6,

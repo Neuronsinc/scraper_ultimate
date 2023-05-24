@@ -18,7 +18,7 @@ const RootStyle = styled(Page)(({ theme }) => ({
 
 export default function Contact() {
   return (
-    <RootStyle title="Contact us | Minimal-UI">
+    <RootStyle title="Contact us | dataSracper">
       <ContactHero />
 
       <Container sx={{ my: 10 }}>

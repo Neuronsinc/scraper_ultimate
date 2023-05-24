@@ -19,7 +19,7 @@ const RootStyle = styled(Page)(({ theme }) => ({
 
 export default function ChipsComponent() {
   return (
-    <RootStyle title="Components: Chip | Minimal-UI">
+    <RootStyle title="Components: Chip | dataSracper">
       <Box
         sx={{
           pt: 6,

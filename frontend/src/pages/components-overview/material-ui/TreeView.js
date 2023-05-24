@@ -69,7 +69,7 @@ const StyledTreeItem = withStyles((theme) =>
 
 export default function TreesViewComponent() {
   return (
-    <RootStyle title="Components: Tree View | Minimal-UI">
+    <RootStyle title="Components: Tree View | dataSracper">
       <Box
         sx={{
           pt: 6,
