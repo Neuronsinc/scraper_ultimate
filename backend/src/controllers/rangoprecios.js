@@ -1,7 +1,6 @@
 const rangoprecio = async (req, res, next) => {
   try {
      const dato = req.body
-     console.log(dato)
     res.send(dato);
 
     return;

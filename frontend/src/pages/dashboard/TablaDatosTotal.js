@@ -2,11 +2,11 @@ import { Card } from '@material-ui/core';
 
 export default function TablaDatosTotal(propss) {
   return (
-    <Card sx={{ display: 'flex', alignItems: 'center', p: 3 }}>
+    <Card id="totaldato" sx={{ display: 'flex', alignItems: 'center', p: 3 }}>
       <table>
         <thead>
           <tr>
-            <th>Total de unidades ofertados</th>
+            <th className="titles">Total de unidades ofertados</th>
           </tr>
         </thead>
         <tbody>
@@ -33,7 +33,7 @@ export default function TablaDatosTotal(propss) {
                 <p className="item-s">Precio por M2</p>
               </div>
               <div style={{ float: 'right', width: '50%', padding: '5px' }}>
-                <p className="dolar-total">$233453443</p>
+                <p className="dolar-total">{propss.preciopromediom2}</p>
               </div>
             </td>
           </tr>

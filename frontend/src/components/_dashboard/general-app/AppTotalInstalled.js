@@ -24,7 +24,7 @@ const IconWrapperStyle = styled('div')(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 const PERCENT = 0.15;
-const TOTAL_INSTALLED = 4876;
+const TOTAL_INSTALLED = 568;
 const CHART_DATA = [{ data: [5, 18, 12, 51, 68, 11, 39, 37, 27, 20] }];
 
 export default function AppTotalInstalled() {
@@ -50,7 +50,7 @@ export default function AppTotalInstalled() {
   return (
     <Card sx={{ display: 'flex', alignItems: 'center', p: 3 }}>
       <Box sx={{ flexGrow: 1 }}>
-        <Typography variant="subtitle2">Total Installed</Typography>
+        <Typography variant="subtitle2">Casas</Typography>
 
         <Stack direction="row" alignItems="center" spacing={1} sx={{ mt: 2, mb: 1 }}>
           <IconWrapperStyle

@@ -1,4 +1,6 @@
 import { merge } from 'lodash';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import ReactApexChart from 'react-apexcharts';
 // material
 import { useTheme, styled } from '@material-ui/core/styles';
@@ -31,10 +33,22 @@ const ChartWrapperStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-const CHART_DATA = [12244, 53345, 44313, 78343];
-
 export default function AppCurrentDownload() {
+  const [resultados, setResultados] = useState([]);
+  const [cargando, setCargando] = useState(true);
   const theme = useTheme();
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_APIBACKEND}/suma-categorias`)
+      .then((response) => {
+        setResultados(response.data);
+        setCargando(false);
+      })
+      .catch((error) => {
+        console.error('Error al obtener los resultados:', error);
+        setCargando(false);
+      });
+  }, []);
 
   const chartOptions = merge(BaseOptionChart(), {
     colors: [
@@ -43,7 +57,7 @@ export default function AppCurrentDownload() {
       theme.palette.primary.main,
       theme.palette.primary.dark
     ],
-    labels: ['Mac', 'Window', 'iOS', 'Android'],
+    labels: Object.keys(resultados).slice(3),
     stroke: { colors: [theme.palette.background.paper] },
     legend: { floating: true, horizontalAlign: 'center' },
     tooltip: {
@@ -74,10 +88,11 @@ export default function AppCurrentDownload() {
       }
     }
   });
-
+  console.log(resultados);
+  const CHART_DATA = Object.values(resultados).slice(3);
   return (
     <Card>
-      <CardHeader title="Current Download" />
+      <CardHeader title="Otras categorías" />
       <ChartWrapperStyle dir="ltr">
         <ReactApexChart type="donut" series={CHART_DATA} options={chartOptions} height={280} />
       </ChartWrapperStyle>
