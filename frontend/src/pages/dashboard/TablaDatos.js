@@ -11,8 +11,9 @@ TablaDatos.propTypes = {
 };
 
 export default function TablaDatos(props) {
+  const iddato = `tabla-${props.moneda}`;
   return (
-    <Card sx={{ display: 'flex', alignItems: 'center', p: 3 }}>
+    <Card id={iddato} sx={{ display: 'flex', alignItems: 'center', p: 3 }}>
       <table>
         <thead>
           <tr>
@@ -46,10 +47,10 @@ export default function TablaDatos(props) {
             <td className="item-s">Precio por M2</td>
             <td>
               <div style={{ float: 'left', width: '50%', padding: '5px' }}>
-                <p className="quetzal">Q 1,273,000</p>
+                <p className="quetzal">{props.preciopromedioQm2}</p>
               </div>
               <div style={{ float: 'right', width: '50%', padding: '5px' }}>
-                <p className="dolar"> $ 163,205 </p>
+                <p className="dolar">{props.preciopromedioDm2}</p>
               </div>
             </td>
           </tr>

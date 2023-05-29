@@ -1,5 +1,7 @@
 import { Icon } from '@iconify/react';
 import ReactApexChart from 'react-apexcharts';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import trendingUpFill from '@iconify/icons-eva/trending-up-fill';
 import trendingDownFill from '@iconify/icons-eva/trending-down-fill';
 // material
@@ -23,13 +25,20 @@ const IconWrapperStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-const PERCENT = 2.6;
-const TOTAL_USER = 18765;
 const CHART_DATA = [{ data: [20, 41, 63, 33, 28, 35, 50, 46, 11, 26] }];
 
-export default function AppTotalActiveUsers() {
+export default function AppTotalActiveUsers(props) {
   const theme = useTheme();
+  const [percent, setPercent] = useState(0);
+  const [totalDownload, setTotalDownload] = useState(0);
 
+  useEffect(() => {
+    // Aquí puedes realizar acciones adicionales cuando las props cambien
+    setPercent(props.porcent);
+    setTotalDownload(props.count);
+  }, [props.porcent, props.count]);
+  const PERCENT = percent;
+  const TOTAL_USER = totalDownload;
   const chartOptions = {
     colors: [theme.palette.primary.main],
     chart: { sparkline: { enabled: true } },
@@ -50,7 +59,7 @@ export default function AppTotalActiveUsers() {
   return (
     <Card sx={{ display: 'flex', alignItems: 'center', p: 3 }}>
       <Box sx={{ flexGrow: 1 }}>
-        <Typography variant="subtitle2">Total Active Users</Typography>
+        <Typography variant="subtitle2">Apartamentos</Typography>
         <Stack direction="row" alignItems="center" spacing={1} sx={{ mt: 2, mb: 1 }}>
           <IconWrapperStyle
             sx={{

@@ -1,4 +1,5 @@
 import { Icon } from '@iconify/react';
+import React, { useState, useEffect } from 'react';
 import ReactApexChart from 'react-apexcharts';
 import trendingUpFill from '@iconify/icons-eva/trending-up-fill';
 import trendingDownFill from '@iconify/icons-eva/trending-down-fill';
@@ -23,11 +24,9 @@ const IconWrapperStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-const PERCENT = -0.06;
-const TOTAL_DOWNLOAD = 678;
 const CHART_DATA = [{ data: [8, 9, 31, 8, 16, 37, 8, 33, 46, 31] }];
 
-export default function AppTotalDownloads() {
+export default function AppTotalDownloads(props) {
   const theme = useTheme();
 
   const chartOptions = {
@@ -46,11 +45,19 @@ export default function AppTotalDownloads() {
       marker: { show: false }
     }
   };
+  const [PERCENT, setPercent] = useState(0);
+  const [TOTAL_DOWNLOAD, setTotalDownload] = useState(0);
+
+  useEffect(() => {
+    // Aquí puedes realizar acciones adicionales cuando las props cambien
+    setPercent(props.porcent);
+    setTotalDownload(props.count);
+  }, [props.porcent, props.count]);
 
   return (
     <Card sx={{ display: 'flex', alignItems: 'center', p: 3 }}>
       <Box sx={{ flexGrow: 1 }}>
-        <Typography variant="subtitle2">Total Downloads</Typography>
+        <Typography variant="subtitle2">Lotes y terrenos</Typography>
 
         <Stack direction="row" alignItems="center" spacing={1} sx={{ mt: 2, mb: 1 }}>
           <IconWrapperStyle

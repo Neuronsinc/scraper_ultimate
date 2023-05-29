@@ -22,11 +22,14 @@ const datostabla = async (req, res, next) => {
     // console.log(busqueda);
 
     let precios;
+    let preciom2;
     let promedioDolares;
     let promedioQuetzales;
+    let promedioDolaresm2;
+    let promedioQuetzalesm2;
     gatewa
       .find(busqueda)
-      .select("Precio: m²:")
+      .select({ "Precio:": 1, "m²:": 1, "Precio/M² de terreno:": 1 })
       .then((resultados) => {
         const resultadosZona21 = resultados.filter((p) => p["Precio:"]);
 
@@ -67,6 +70,21 @@ const datostabla = async (req, res, next) => {
         precios = resultados.map((r) => r["Precio:"]);
         const preciosDolares = precios.filter((p) => p.includes("$"));
         const preciosQuetzales = precios.filter((p) => p.includes("Q"));
+        preciom2 = resultados.map((r) => r["Precio/M² de terreno:"]);
+
+        const preciosDolaresm2 = preciom2.filter(
+          (p) => p && p.includes && p.includes("$")
+        );
+        const preciosQuetzalesm2 = preciom2.filter(
+          (p) => p && p.includes && p.includes("Q")
+        );
+
+        const cleanedPricesDolaresm2 = preciosDolaresm2.map((p) =>
+          p.replace(/[^\d.,]/g, "")
+        );
+        const cleanedPricesQuetzalesm2 = preciosQuetzalesm2.map((p) =>
+          p.replace(/[^\d.,]/g, "")
+        );
 
         promedioDolares =
           preciosDolares.reduce(
@@ -79,12 +97,30 @@ const datostabla = async (req, res, next) => {
             0
           ) / preciosQuetzales.length;
 
+        promedioDolaresm2 =
+          cleanedPricesDolaresm2.reduce(
+            (acc, p) => acc + parseFloat(p.replace(/\$|,/g, "")),
+            0
+          ) / preciosDolares.length;
+        promedioQuetzalesm2 =
+          cleanedPricesQuetzalesm2.reduce(
+            (acc, p) => acc + parseFloat(p.replace(/Q|,/g, "")),
+            0
+          ) / preciosQuetzales.length;
+
         const totalDolares = precios.filter((p) => p.includes("$"));
         const totalQuetzales = precios.filter((p) => p.includes("Q"));
 
         const cantidadDolares = totalDolares.length;
         const cantidadQuetzales = totalQuetzales.length;
         const totalcantidades = cantidadQuetzales + cantidadDolares;
+        // METRO 2 CANTIDADES
+        const totalDolaresm2 = precios.filter((p) => p.includes("$"));
+        const totalQuetzalesm2 = precios.filter((p) => p.includes("Q"));
+
+        const cantidadDolaresm2 = totalDolaresm2.length;
+        const cantidadQuetzalesm2 = totalQuetzalesm2.length;
+        const totalcantidadesm2 = cantidadQuetzalesm2 + cantidadDolaresm2;
         // conversión de quetzales a dólares
         const quetzalesQ1 = promedioQuetzales;
         const quetzalesQ = isNaN(quetzalesQ1) ? 0 : quetzalesQ1;
@@ -95,6 +131,16 @@ const datostabla = async (req, res, next) => {
         const dolarQ = isNaN(dolarQ1) ? 0 : dolarQ1;
         const dolarD = dolarQ * 7.77;
         const total = quetzalesD + dolarD;
+        // conversión de quetzales a dólares MT2
+        const quetzalesQ1m2 = promedioQuetzalesm2;
+        const quetzalesQm2 = isNaN(quetzalesQ1m2) ? 0 : quetzalesQ1m2;
+        const quetzalesDm2 = quetzalesQm2 / 7.77;
+
+        // conversión de dólares a quetzales
+        const dolarQ1m2 = promedioDolaresm2;
+        const dolarQm2 = isNaN(dolarQ1m2) ? 0 : dolarQ1m2;
+        const dolarDm2 = dolarQm2 * 7.77;
+        const totalm2 = quetzalesDm2 + dolarDm2;
 
         const response = {
           message: "Petición POST exitosa",
@@ -103,9 +149,17 @@ const datostabla = async (req, res, next) => {
           dolarQ: `${formatearMoneda(dolarQ, "GTQ", "es-GT")}`,
           dolarD: `${formatearMoneda(dolarD, "USD", "en-US")} `,
           total: `${formatearMoneda(total, "USD", "en-US")} `,
+          quetzalesQm2: `${formatearMoneda(quetzalesQm2, "GTQ", "es-GT")}`,
+          quetzalesDm2: `${formatearMoneda(quetzalesDm2, "USD", "en-US")}`,
+          dolarQm2: `${formatearMoneda(dolarQm2, "GTQ", "es-GT")}`,
+          dolarDm2: `${formatearMoneda(dolarDm2, "USD", "en-US")} `,
+          totalm2: `${formatearMoneda(totalm2, "USD", "en-US")} `,
           cantidadDolares: cantidadDolares,
           cantidadQuetzales: cantidadQuetzales,
           totalcantidades: totalcantidades,
+          cantidadDolaresm2: cantidadDolaresm2,
+          cantidadQuetzalesm2: cantidadQuetzalesm2,
+          totalcantidadesm2: totalcantidadesm2,
           areaDolares: `${areaDolares.toFixed(2)} MT2`,
           areadioQuetzales: `${areaQuetzales.toFixed(2)} MT2`,
           totalarea: `${totalarea.toFixed(2)} MT2`,
@@ -113,6 +167,8 @@ const datostabla = async (req, res, next) => {
         };
         // console.log(response);
         res.json(response); // Responder con los datos procesados en formato JSON
+        console.log("Respuesta precio m2: " + resultados);
+        console.log(response);
       })
       .catch((error) => {
         console.error(error);
@@ -120,7 +176,7 @@ const datostabla = async (req, res, next) => {
 
     return;
   } catch (error) {
-    return res.render("error en consulta: ", { errorMessage: error.message });
+    return console.log(error);
   }
 };
 
@@ -149,7 +205,8 @@ const tablefiltro = async (req, res, next) => {
     res.send(send);
     return;
   } catch (error) {
-    return res.status(500).json({ errorMessage: error.message });
+    res.send(`Error ${error.message}`);
+    return;
   }
 };
 

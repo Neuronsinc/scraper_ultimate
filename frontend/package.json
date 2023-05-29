@@ -84,6 +84,7 @@
     "framer-motion": "^4.1.17",
     "highlight.js": "^11.2.0",
     "history": "^5.0.1",
+    "html2pdf.js": "^0.10.1",
     "i18next": "^20.4.0",
     "i18next-browser-languagedetector": "^6.1.2",
     "immutable": "^4.0.0-rc.14",

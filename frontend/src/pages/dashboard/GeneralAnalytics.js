@@ -8,6 +8,7 @@ import { Icon } from '@iconify/react';
 import AdapterDateFns from '@material-ui/lab/AdapterDateFns';
 import LocalizationProvider from '@material-ui/lab/LocalizationProvider';
 import { DateRangePicker } from '@material-ui/lab';
+import html2pdf from 'html2pdf.js';
 //
 import {
   Box,
@@ -306,7 +307,165 @@ export default function GeneralAnalytics() {
   const handleReset = () => {
     setReset(true);
   };
+  // GENERAR PDF
+  const handleGeneratePDF = () => {
+    const elementToPrintq = document.getElementById('tabla-Q');
 
+    // Crear un clon del elemento para aplicar los estilos del tema claro
+    const clonedElementq = elementToPrintq.cloneNode(true);
+
+    // Aplicar los estilos para el tema claro en el clon
+    clonedElementq.style.backgroundColor = '#ffffff';
+    clonedElementq.style.color = '#000000';
+
+    // Crear un contenedor temporal y agregar el clon al mismo
+    const datoQ = document.createElement('div');
+    datoQ.appendChild(clonedElementq);
+    const elementToPrintd = document.getElementById('tabla-$');
+
+    // Crear un clon del elemento para aplicar los estilos del tema claro
+    const clonedElementd = elementToPrintd.cloneNode(true);
+
+    // Aplicar los estilos para el tema claro en el clon
+    clonedElementd.style.backgroundColor = '#ffffff';
+    clonedElementd.style.color = '#000000';
+
+    // Crear un contenedor temporal y agregar el clon al mismo
+    const datoD = document.createElement('div');
+    datoD.appendChild(clonedElementd);
+    const elementToPrinttotal = document.getElementById('totaldato');
+
+    // Crear un clon del elemento para aplicar los estilos del tema claro
+    const clonedElementtotal = elementToPrinttotal.cloneNode(true);
+
+    // Aplicar los estilos para el tema claro en el clon
+    clonedElementtotal.style.backgroundColor = '#ffffff';
+    clonedElementtotal.style.color = '#000000';
+
+    // Crear un contenedor temporal y agregar el clon al mismo
+    const datototal = document.createElement('div');
+    datototal.appendChild(clonedElementtotal);
+    const html = `<html lang="es">
+    <head>
+      <meta charset="UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Document</title>
+    </head>
+    <body>
+      <div style="padding: 40px;" class="head">
+        <table>
+          <tr>
+            <th class="logo">
+              <img
+                class="imglogo"
+                src="/static/logos/logo_datascrap.png"
+                alt=""
+              />
+            </th>
+            <th></th>
+            <th class="reportes">
+              <h1 class="Report">
+                <p></p>
+                <h1 class="dat">
+                  <p style="color: #000; padding-bottom: 10px;">Reporte de:</p>
+                  <p class="nam">${localizacionValue === '' ? 'Datos generales' : localizacionValue}</p>
+                </h1>
+              </h1>
+            </th>
+          </tr>
+        </table>
+      </div>
+      <div style="padding: 20px;" class="datos">
+        <div class="datoq">${datototal.innerHTML}</div>
+        <div class="datoq">${datoD.innerHTML}</div>
+        <div class="datoq">${datoQ.innerHTML}</div>
+      </div>
+    </body>
+    <style>
+      img.imglogo {
+        width: 100%;
+      }
+      th.logo {
+        width: 329px;
+      }
+      .Report p {
+        font-size: 17pt;
+        font-family: sans-serif;
+      }
+      .datoq {
+        padding: 22px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        background: #f1f1f1;
+      }
+      .datos {
+        margin: auto;
+        width: 92%;
+        padding: 0px;
+      }
+      .nam {
+        color: #11b041;
+        padding: 10px;
+        border-radius: 10px;
+        margin: auto;
+        background: #efefef;
+        font-weight: 700;
+      }
+      .Report {
+        display: flex;
+      }
+      body {
+        padding: 11px;
+      }
+      .Report p {
+        text-align: center;
+        width: 100%;
+      }
+      h1.dat {
+        font-size: 17pt;
+        font-family: sans-serif;
+      }
+      table {
+        width: 100%;
+      }
+      .Report {
+        width: 100%;
+        display: flex;
+        text-align: end !important;
+      }
+      .head {
+        display: flex;
+      }
+      th.reportes {
+        width: 286px;
+      }
+      img.imglogo {
+        padding: 11px;
+      }
+    </style>
+  </html>
+  `;
+
+    // Generar el PDF a partir del contenedor temporal
+    const options = {
+      filename: 'REPORTE-SCRAPER.pdf',
+      margin: 0,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: {
+        scale: 6, // A mayor escala, mejores gráficos, pero más peso
+        letterRendering: true,
+        useCORS: false
+      },
+      jsPDF: {
+        unit: 'in',
+        format: 'a3',
+        orientation: 'portrait' // landscape o portrait
+      }
+    };
+
+    html2pdf().set(options).from(html).save();
+  };
   return (
     <Page title="General: Analytics | dataSracper">
       <Container maxWidth="100%">
@@ -318,6 +477,8 @@ export default function GeneralAnalytics() {
               cantunidades={respuesta && respuesta.cantidadQuetzales ? respuesta.cantidadQuetzales : '0'}
               preciopromedioQ={respuesta && respuesta.quetzalesQ ? respuesta.quetzalesQ : '0'}
               preciopromedioD={respuesta && respuesta.quetzalesD ? respuesta.quetzalesD : '0'}
+              preciopromedioQm2={respuesta && respuesta.quetzalesQm2 ? respuesta.quetzalesQm2 : '0'}
+              preciopromedioDm2={respuesta && respuesta.quetzalesDm2 ? respuesta.quetzalesDm2 : '0'}
               areapromedio={respuesta && respuesta.areadioQuetzales ? respuesta.areadioQuetzales : '0'}
             />
           </Grid>
@@ -326,8 +487,10 @@ export default function GeneralAnalytics() {
               moneda="$"
               textmoneda="Dólares"
               cantunidades={respuesta && respuesta.cantidadDolares ? respuesta.cantidadDolares : '0'}
-              preciopromedioQ={respuesta && respuesta.dolarD ? respuesta.dolarQ : '0'}
+              preciopromedioQ={respuesta && respuesta.dolarQ ? respuesta.dolarQ : '0'}
               preciopromedioD={respuesta && respuesta.dolarD ? respuesta.dolarD : '0'}
+              preciopromedioQm2={respuesta && respuesta.dolarQm2 ? respuesta.dolarQm2 : '0'}
+              preciopromedioDm2={respuesta && respuesta.dolarDm2 ? respuesta.dolarDm2 : '0'}
               areapromedio={respuesta && respuesta.areaDolares ? respuesta.areaDolares : '0'}
             />
           </Grid>
@@ -335,6 +498,7 @@ export default function GeneralAnalytics() {
             <TablaDatosTotal
               totalcantidades={respuesta && respuesta.totalcantidades ? respuesta.totalcantidades : '0'}
               preciopromedio={respuesta && respuesta.total ? respuesta.total : '0'}
+              preciopromediom2={respuesta && respuesta.totalm2 ? respuesta.totalm2 : '0'}
               totaarea={respuesta && respuesta.totalarea ? respuesta.totalarea : '0'}
             />
           </Grid>
@@ -365,7 +529,7 @@ export default function GeneralAnalytics() {
           </Grid>
           <Grid sx={{ padding: '17px' }} item xs={4}>
             <Stack sx={{ width: '100%', padding: '17px' }} spacing={3} direction="row">
-              <Button className="btns" variant="outlined">
+              <Button onClick={handleGeneratePDF} className="btns" variant="outlined">
                 Exportar
               </Button>
             </Stack>

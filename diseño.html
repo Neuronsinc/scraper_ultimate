@@ -1,0 +1,101 @@
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="head">
+      <table>
+        <tr>
+          <th class="logo">
+            <img
+              class="imglogo"
+              src="/static/logos/logo_datascrap.png"
+              alt=""
+            />
+          </th>
+          <th></th>
+          <th class="reportes">
+            <h1 class="Report">
+              <p></p>
+              <h1 class="dat">
+                <p style="color: #000;">Reporte de:</p>
+                <p class="nam">Jalapa</p>
+              </h1>
+            </h1>
+          </th>
+        </tr>
+      </table>
+    </div>
+    <div class="datos">
+      <div class="datoq">${datoQ.innerHTML}</div>
+      <div class="datoq">${datoD.innerHTML}</div>
+      <div class="datoq">${datoQ.innerHTML}</div>
+    </div>
+  </body>
+  <style>
+    img.imglogo {
+      width: 100%;
+    }
+    th.logo {
+      width: 329px;
+    }
+    .Report p {
+      font-size: 17pt;
+      font-family: sans-serif;
+    }
+    .datoq {
+      padding: 22px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      background: #f1f1f1;
+    }
+    .datos {
+      margin: auto;
+      width: 92%;
+      padding: 0px;
+    }
+    .nam {
+      color: #11b041;
+      padding: 10px;
+      border-radius: 10px;
+      margin: 10px;
+      background: #efefef;
+      font-weight: 700;
+    }
+    .Report {
+      display: flex;
+    }
+    body {
+      padding: 11px;
+    }
+    .Report p {
+      text-align: center;
+      width: 100%;
+    }
+    h1.dat {
+      display: flex;
+      font-size: 17pt;
+      font-family: sans-serif;
+    }
+    table {
+      width: 100%;
+    }
+    .Report {
+      width: 100%;
+      display: flex;
+      text-align: end !important;
+    }
+    .head {
+      display: flex;
+    }
+    th.reportes {
+      width: 286px;
+    }
+    img.imglogo {
+      padding: 11px;
+    }
+  </style>
+</html>
