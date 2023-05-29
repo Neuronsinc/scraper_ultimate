@@ -4,7 +4,7 @@ import axios from 'axios';
 import ReactApexChart from 'react-apexcharts';
 // material
 import { useTheme, styled } from '@material-ui/core/styles';
-import { Card, CardHeader } from '@material-ui/core';
+import { Card, CardHeader, CircularProgress } from '@material-ui/core';
 // utils
 import { fNumber } from '../../../utils/formatNumber';
 //
@@ -33,22 +33,17 @@ const ChartWrapperStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-export default function AppCurrentDownload() {
-  const [resultados, setResultados] = useState([]);
-  const [cargando, setCargando] = useState(true);
-  const theme = useTheme();
+export default function AppCurrentDownload(props) {
+  const [datos, setPercent] = useState(0);
+  const [cargando, setTotalDownload] = useState(0);
+
   useEffect(() => {
-    axios
-      .get(`${process.env.REACT_APP_APIBACKEND}/suma-categorias`)
-      .then((response) => {
-        setResultados(response.data);
-        setCargando(false);
-      })
-      .catch((error) => {
-        console.error('Error al obtener los resultados:', error);
-        setCargando(false);
-      });
-  }, []);
+    // Aquí puedes realizar acciones adicionales cuando las props cambien
+    setPercent(props.datos);
+    setTotalDownload(props.cargando);
+  }, [props.datos, props.cargando]);
+
+  const theme = useTheme();
 
   const chartOptions = merge(BaseOptionChart(), {
     colors: [
@@ -57,7 +52,7 @@ export default function AppCurrentDownload() {
       theme.palette.primary.main,
       theme.palette.primary.dark
     ],
-    labels: Object.keys(resultados).slice(3),
+    labels: Object.keys(datos).slice(3),
     stroke: { colors: [theme.palette.background.paper] },
     legend: { floating: true, horizontalAlign: 'center' },
     tooltip: {
@@ -88,13 +83,16 @@ export default function AppCurrentDownload() {
       }
     }
   });
-  console.log(resultados);
-  const CHART_DATA = Object.values(resultados).slice(3);
+  const CHART_DATA = Object.values(datos).slice(3);
   return (
     <Card>
       <CardHeader title="Otras categorías" />
-      <ChartWrapperStyle dir="ltr">
-        <ReactApexChart type="donut" series={CHART_DATA} options={chartOptions} height={280} />
+      <ChartWrapperStyle className="basecontent" dir="ltr">
+        {cargando ? (
+          <CircularProgress className="lodings" color="success" />
+        ) : (
+          <ReactApexChart type="donut" series={CHART_DATA} options={chartOptions} height={280} />
+        )}
       </ChartWrapperStyle>
     </Card>
   );

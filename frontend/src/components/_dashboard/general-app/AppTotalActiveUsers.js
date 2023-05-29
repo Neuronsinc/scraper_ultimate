@@ -27,24 +27,18 @@ const IconWrapperStyle = styled('div')(({ theme }) => ({
 
 const CHART_DATA = [{ data: [20, 41, 63, 33, 28, 35, 50, 46, 11, 26] }];
 
-export default function AppTotalActiveUsers() {
+export default function AppTotalActiveUsers(props) {
   const theme = useTheme();
-  const [resultados, setResultados] = useState([]);
-  const [cargando, setCargando] = useState(true);
+  const [percent, setPercent] = useState(0);
+  const [totalDownload, setTotalDownload] = useState(0);
+
   useEffect(() => {
-    axios
-      .get(`${process.env.REACT_APP_APIBACKEND}/suma-categorias`)
-      .then((response) => {
-        setResultados(response.data);
-        setCargando(false);
-      })
-      .catch((error) => {
-        console.error('Error al obtener los resultados:', error);
-        setCargando(false);
-      });
-  }, []);
-  const PERCENT = 2.6;
-  const TOTAL_USER = 1299;
+    // Aquí puedes realizar acciones adicionales cuando las props cambien
+    setPercent(props.porcent);
+    setTotalDownload(props.count);
+  }, [props.porcent, props.count]);
+  const PERCENT = percent;
+  const TOTAL_USER = totalDownload;
   const chartOptions = {
     colors: [theme.palette.primary.main],
     chart: { sparkline: { enabled: true } },

@@ -7,6 +7,14 @@
   border-radius: 17px;
   padding: 2px 15px 2px 15px;
 }
+.basecontent {
+  margin: auto;
+  text-align: center;
+  justify-content: center;
+}
+.lodings {
+  margin-bottom: -140px;
+}
 .alertas {
   width: 362px;
 }

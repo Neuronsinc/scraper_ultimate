@@ -353,7 +353,7 @@ export default function GeneralAnalytics() {
       <title>Document</title>
     </head>
     <body>
-      <div class="head">
+      <div style="padding: 40px;" class="head">
         <table>
           <tr>
             <th class="logo">
@@ -376,7 +376,7 @@ export default function GeneralAnalytics() {
           </tr>
         </table>
       </div>
-      <div class="datos">
+      <div style="padding: 20px;" class="datos">
         <div class="datoq">${datototal.innerHTML}</div>
         <div class="datoq">${datoD.innerHTML}</div>
         <div class="datoq">${datoQ.innerHTML}</div>
@@ -450,7 +450,7 @@ export default function GeneralAnalytics() {
     // Generar el PDF a partir del contenedor temporal
     const options = {
       filename: 'REPORTE-SCRAPER.pdf',
-      margin: 0.5,
+      margin: 0,
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: {
         scale: 6, // A mayor escala, mejores gráficos, pero más peso
