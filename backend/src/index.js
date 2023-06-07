@@ -24,7 +24,7 @@ mime.contentType("text/css");
 app.use(express.urlencoded({ extended: true }));
 
 mongoose
-  .connect("mongodb://54.85.218.28:27017/troiatec", {
+  .connect("mongodb://admin:DANIELxp1.*d@54.85.218.28:27017/troiatec", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
