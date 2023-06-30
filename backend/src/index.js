@@ -13,6 +13,7 @@ const moment = require('moment');
 const indexRoutes = require("./routes/index");
 const mongoose = require("mongoose");
 const gatewa = require("../src/models/gatway");
+const scraper = require("../src/models/scraper")
 
 app.use(express.json());
 app.use(cors());
@@ -110,6 +111,29 @@ app.get("/datos-mongo", (req, res) => {
 
 
 
+app.get("/datos-mongo-new", (req, res) => {
+   
+  //  const idt = '6412010ce037e07c4baba7de';
+  //const Gatewar =  await gatewa.findOne({_id: idt});
+  // console.log('RENDER: ' +  JSON.stringify(Gatewar['Categoria:']))
+
+  //const Gateware =  await gatewa.find({_id:{ $exists: true }});
+  //console.log('RENDER: ' +  JSON.stringify(Gateware))
+  // const Gateware3 =  await gatewa.find({'_id':{ $exists: true }}).lean();
+  // console.log('RENDER SOLO CATEGORÍA: ' +  JSON.stringify(Gateware3['Categoria:']))
+
+  async function database() {
+    const datos_mongos = await scraper.find({ _id: { $exists: true } })
+      .sort({ fecha: -1 }) // Ordena por fecha de forma descendente (-1)
+      .limit(5000); // Limita a 100 resultados
+
+    res.send(JSON.stringify(datos_mongos));
+    //("ESTOS SON!: ", datos_mongos);
+  }
+  
+  database();
+
+});
 
 // settings
 app.set("port", process.env.PORT || 3000);

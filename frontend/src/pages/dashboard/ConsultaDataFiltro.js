@@ -96,7 +96,7 @@ export default function ConsultaDataFiltro(props) {
   }, []);
 
   const { tablaresult, activo } = props;
-  let data = tablaresult;
+  const data = tablaresult;
   const [rangoprecio, setRangoprecio] = useState([]);
 
   useEffect(() => {
@@ -121,49 +121,25 @@ export default function ConsultaDataFiltro(props) {
   }, [minimoQ, maximoQ, minimoD, maximoD]);
   console.log('RESPUESTA API PRECIOS:  ---', rangoprecio.preciomaxD);
   const formatteMinimoQ = rangoprecio.preciominQ
-    ? `Q${rangoprecio.preciominQ.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}\n`
+    ? `Q${rangoprecio.preciominQ.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`
     : '';
   const formattemaximoQ = rangoprecio.preciomaxQ
-    ? `Q${rangoprecio.preciomaxQ.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}\n`
+    ? `Q${rangoprecio.preciomaxQ.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`
     : '';
   const formatteMminimoD = rangoprecio.preciominD
     ? `$${Number(rangoprecio.preciominD)
         .toFixed(2)
-        .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}\n`
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`
     : '';
   const formatteMximoD = rangoprecio.preciomaxD
     ? `$${Number(rangoprecio.preciomaxD)
         .toFixed(2)
-        .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}\n`
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`
     : '';
 
   console.log(formatteMinimoQ, '', formattemaximoQ); // Q10,000,000
   console.log(formatteMminimoD, '', formatteMximoD); // Q10,000,000
 
-  if (activo) {
-    const precioInicioQ = formatteMinimoQ;
-    const precioFinQ = formattemaximoQ;
-    const precioInicioD = formatteMminimoD;
-    const precioFinD = formatteMximoD;
-
-    data = data.filter((item) => {
-      const precio = item['Precio:'];
-      if (precio) {
-        const precioNum = precio;
-        if (precio.startsWith('Q')) {
-          const precioInicioQNum = precioInicioQ;
-          const precioFinQNum = precioFinQ;
-          return precioNum >= precioInicioQNum && precioNum <= precioFinQNum;
-        }
-        if (precio.startsWith('$')) {
-          const precioInicioDNum = precioInicioD;
-          const precioFinDNum = precioFinD;
-          return precioNum >= precioInicioDNum && precioNum <= precioFinDNum;
-        }
-      }
-      return false;
-    });
-  }
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   console.log('data es: ', data);
   const timeout = 20000;
@@ -210,7 +186,7 @@ export default function ConsultaDataFiltro(props) {
   let latestDate = null;
 
   for (let i = 0; i < data.length; i += 1) {
-    const dateStr = data[i]['Publicado:'];
+    const dateStr = data[i].fecha_publicacion;
     const convertedDateStr = convertDate(dateStr);
     const date = Date.parse(convertedDateStr);
 
@@ -229,7 +205,7 @@ export default function ConsultaDataFiltro(props) {
   const filteredData =
     startDate && endDate
       ? data.filter((item) => {
-          const dateStr = item['Publicado:'];
+          const dateStr = item.fecha_publicacion;
           if (!dateStr) return false; // Si el campo está vacío, no se filtra
           const date = new Date(dateStr.split('/').reverse().join('-'));
           return date >= startDate && date <= endDate;
@@ -302,35 +278,41 @@ export default function ConsultaDataFiltro(props) {
   }, [hasDatesInColumn, startDate, endDate, latestDate, enqueueSnackbar, closeSnackbar, handleClick, snackbarOpen]);
   const filteredDataByCategory =
     props.categories.length > 0
-      ? filteredData.filter((item) => props.categories.includes(item['Categoria:']))
+      ? filteredData.filter((item) => props.categories.includes(item.categoria))
       : filteredData;
   const columns = [
     { field: 'id', headerName: 'ID', width: 70 },
     { field: 'cat', headerName: 'Categoría', width: 230 },
-    { field: 'local', headerName: 'Localización', width: 220 },
     { field: 'publi', headerName: 'Publicado', width: 230 },
-    { field: 'price', headerName: 'precio', width: 230 },
-    { field: 'prmt', headerName: 'Precio/M² de terreno:', width: 260 },
-    { field: 'tmlot', headerName: 'Tamaño del Lote m²:', width: 260 },
-    { field: 'habt', headerName: 'Habitaciones:', width: 260 },
-    { field: 'alt', headerName: 'Altura:', width: 260 },
+    { field: 'local', headerName: 'Localización', width: 220 },
+    { field: 'price', headerName: 'precio', width: 130 },
+    { field: 'rebaja', headerName: 'rebaja', width: 130 },
+    { field: 'prmt', headerName: 'Precio/M² de construccion:', width: 260 },
+    { field: 'habt', headerName: 'Habitaciones:', width: 120 },
+    { field: 'dire', headerName: 'Dirección:', width: 260 },
     { field: 'm2', headerName: 'Metros 2:', width: 260 },
-    { field: 'Niveles', headerName: 'Niveles:', width: 260 }
+    { field: 'piso', headerName: 'Piso:', width: 260 },
+    { field: 'conta', headerName: 'Contacto:', width: 260 },
+    { field: 'lat', headerName: 'Latitud:', width: 260 },
+    { field: 'lng', headerName: 'Longitud', width: 260 }
   ];
 
   // Mapear los elementos de la tabla filtrados a una nueva variable "rows"
   const rowes = filteredDataByCategory.map((item) => ({
     id: item.id,
-    cat: item['Categoria:'],
-    local: item['Localización:'],
-    price: item['Precio:'],
-    publi: item['Publicado:'],
-    prmt: item['Precio/M² de terreno:'],
-    tmlot: item['Tamaño del Lote m²:'],
-    habt: item['Habitaciones:'],
-    alt: item['Altura:'],
-    m2: item['m²:'],
-    Niveles: item['Niveles:']
+    cat: item.categoria,
+    publi: item.fecha_publicacion,
+    local: item.localizacion,
+    price: item.precio,
+    rebaja: item.rebaja,
+    prmt: item.precio_m2_construccion,
+    habt: item.habitaciones,
+    dire: item.direccion,
+    m2: item.m2_construccion,
+    piso: item.piso,
+    conta: item.contacto,
+    lat: item.lat,
+    lng: item.lng
   }));
 
   const [loading, setLoading] = useState(true);

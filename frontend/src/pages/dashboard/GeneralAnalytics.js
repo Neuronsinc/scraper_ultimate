@@ -87,7 +87,7 @@ export default function GeneralAnalytics() {
   useEffect(() => {
     const fetchData = async () => {
       axios
-        .get(`${process.env.REACT_APP_APIBACKEND}/datos-mongo`)
+        .get(`${process.env.REACT_APP_APIBACKEND}/datos-mongo-new`)
         .then((response) => {
           // actualizar el estado con los datos de respuesta
           setData(response.data);
@@ -151,8 +151,8 @@ export default function GeneralAnalytics() {
     const categories = [];
 
     data.forEach((items) => {
-      if (items['Categoria:'] && !categories.includes(items['Categoria:'])) {
-        categories.push(items['Categoria:']);
+      if (items.categoria && !categories.includes(items.categoria)) {
+        categories.push(items.categoria);
       }
     });
 
@@ -218,23 +218,22 @@ export default function GeneralAnalytics() {
     { field: 'prmt', headerName: 'Precio/M² de terreno:', width: 260 },
     { field: 'tmlot', headerName: 'Tamaño del Lote m²:', width: 260 },
     { field: 'habt', headerName: 'Habitaciones:', width: 260 },
-    { field: 'alt', headerName: 'Altura:', width: 260 },
+    { field: 'dire', headerName: 'Dirección:', width: 260 },
     { field: 'm2', headerName: 'Metros 2:', width: 260 },
-    { field: 'Niveles', headerName: 'Niveles:', width: 260 }
+    { field: 'piso', headerName: 'Niveles:', width: 260 }
   ];
 
   const rowes = data.map((item) => ({
     id: item.id,
-    cat: item['Categoria:'],
-    publi: item['Publicado:'],
-    local: item['Localización:'],
-    price: item['Precio:'],
-    prmt: item['Precio/M² de terreno:'],
-    tmlot: item['Tamaño del Lote m²:'],
-    habt: item['Habitaciones:'],
-    alt: item['Altura:'],
-    m2: item['m²:'],
-    Niveles: item['Niveles:']
+    cat: item.categoria,
+    publi: item.fecha_publicacion,
+    local: item.localizacion,
+    price: item.precio,
+    prmt: item.precio_m2_construccion,
+    habt: item.habitaciones,
+    dire: item.direccion,
+    m2: item.precio_m2_construccion,
+    piso: item.piso
   }));
 
   const [loading, setLoading] = useState(true);

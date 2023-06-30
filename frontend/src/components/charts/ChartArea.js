@@ -8,7 +8,6 @@ import BaseOptionChart from './BaseOptionChart';
 const CHART_DATA = [
   { name: 'series1', data: [31, 40, 28, 51, 42, 109, 100] },
   { name: 'series2', data: [11, 32, 45, 32, 34, 52, 41] }
-  
 ];
 
 export default function ChartArea() {
@@ -16,7 +15,7 @@ export default function ChartArea() {
     xaxis: {
       type: 'datetime',
       categories: [
-        'ss',
+        '2018-09-19T00:00:00.000Z',
         '2018-09-19T01:30:00.000Z',
         '2018-09-19T02:30:00.000Z',
         '2018-09-19T03:30:00.000Z',
