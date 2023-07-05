@@ -187,7 +187,7 @@ export default function ConsultaDataFiltro(props) {
 
   for (let i = 0; i < data.length; i += 1) {
     const dateStr = data[i].fecha_publicacion;
-    const convertedDateStr = convertDate(dateStr);
+    const convertedDateStr = dateStr;
     const date = Date.parse(convertedDateStr);
 
     if (!Number.isNaN(date) && (latestDate === null || date > latestDate)) {
@@ -294,7 +294,8 @@ export default function ConsultaDataFiltro(props) {
     { field: 'piso', headerName: 'Piso:', width: 260 },
     { field: 'conta', headerName: 'Contacto:', width: 260 },
     { field: 'lat', headerName: 'Latitud:', width: 260 },
-    { field: 'lng', headerName: 'Longitud', width: 260 }
+    { field: 'lng', headerName: 'Longitud', width: 260 },
+    { field: 'semana', headerName: 'Semana', width: 260 }
   ];
 
   // Mapear los elementos de la tabla filtrados a una nueva variable "rows"
@@ -312,7 +313,8 @@ export default function ConsultaDataFiltro(props) {
     piso: item.piso,
     conta: item.contacto,
     lat: item.lat,
-    lng: item.lng
+    lng: item.lng,
+    semana: item.semana
   }));
 
   const [loading, setLoading] = useState(true);
