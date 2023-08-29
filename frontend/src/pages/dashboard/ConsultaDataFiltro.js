@@ -110,7 +110,6 @@ export default function ConsultaDataFiltro(props) {
       axios
         .post(`${process.env.REACT_APP_APIBACKEND}/rango-precios`, filtrodata)
         .then((response) => {
-          console.log('DATA FILTRO:', response.datosfiltros);
           setRangoprecio(response.data);
         })
         .catch((error) => {
@@ -119,7 +118,6 @@ export default function ConsultaDataFiltro(props) {
     };
     filtrodata();
   }, [minimoQ, maximoQ, minimoD, maximoD]);
-  console.log('RESPUESTA API PRECIOS:  ---', rangoprecio.preciomaxD);
   const formatteMinimoQ = rangoprecio.preciominQ
     ? `Q${rangoprecio.preciominQ.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`
     : '';
@@ -137,11 +135,7 @@ export default function ConsultaDataFiltro(props) {
         .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`
     : '';
 
-  console.log(formatteMinimoQ, '', formattemaximoQ); // Q10,000,000
-  console.log(formatteMminimoD, '', formatteMximoD); // Q10,000,000
-
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-  console.log('data es: ', data);
   const timeout = 20000;
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -227,7 +221,6 @@ export default function ConsultaDataFiltro(props) {
     setSnackbarOpen(false);
   };
 
-  console.log(startDate, endDate);
   useEffect(() => {
     if (!hasDatesInColumn && startDate !== null && endDate !== null && startDate !== '' && endDate !== '') {
       const color = 'warning';
@@ -280,6 +273,14 @@ export default function ConsultaDataFiltro(props) {
     props.categories.length > 0
       ? filteredData.filter((item) => props.categories.includes(item.categoria))
       : filteredData;
+
+  const filteredDataByLocation = props.ubicacion
+    ? filteredDataByCategory.filter((item) => item.localizacion === props.ubicacion)
+    : filteredDataByCategory;
+
+  const filteredDataBysemana = props.semanar
+    ? filteredDataByLocation.filter((item) => item.semana === props.semanar)
+    : filteredDataByLocation;
   const columns = [
     { field: 'id', headerName: 'ID', width: 70 },
     { field: 'cat', headerName: 'Categoría', width: 230 },
@@ -299,7 +300,7 @@ export default function ConsultaDataFiltro(props) {
   ];
 
   // Mapear los elementos de la tabla filtrados a una nueva variable "rows"
-  const rowes = filteredDataByCategory.map((item) => ({
+  const rowes = filteredDataBysemana.map((item) => ({
     id: item.id,
     cat: item.categoria,
     publi: item.fecha_publicacion,

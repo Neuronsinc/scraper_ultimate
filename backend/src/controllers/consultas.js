@@ -1,13 +1,17 @@
-const gatewa = require("../models/gatway.js");
+// const gatewa = require("../models/gatway.js");
+const gatewa = require("../models/scraper.js");
 
 const sumacategorias = async (req, res, next) => {
   try {
-    const ddatau = await gatewa.find({ "Categoria:": { $exists: true } });
+    const ddatau = await gatewa.find({
+      categoria: { $exists: true },
+      precio: { $ne: "-" },
+    });
 
     const count = {};
 
     ddatau.forEach((element) => {
-      const categoria = element["Categoria:"];
+      const categoria = element.categoria;
       if (count[categoria]) {
         count[categoria] += 1;
       } else {
@@ -15,7 +19,7 @@ const sumacategorias = async (req, res, next) => {
       }
     });
     //DATA CATEGORÍAS
-   // console.log(count);
+    // console.log(count);
     res.send(count);
 
     return;
@@ -25,5 +29,5 @@ const sumacategorias = async (req, res, next) => {
 };
 
 module.exports = {
-	sumacategorias,
-  }
+  sumacategorias,
+};

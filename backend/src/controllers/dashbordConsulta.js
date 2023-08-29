@@ -1,21 +1,40 @@
-const gatewa = require("../models/gatway.js");
+// const gatewa = require("../models/gatway.js");
+const gatewa = require("../models/scraper.js");
 
 const dashbordconsult = async (req, res, next) => {
   try {
     // Agrupar y sumar los registros por año y categoría
     const groupedData = await gatewa.aggregate([
       {
+        $match: {
+          fecha_publicacion: { $regex: /^\d{2}\/\d{2}\/\d{4}$/ }, // Filtrar documentos con formato de fecha válido "dd/mm/YYYY"
+        },
+      },
+      {
         $group: {
           _id: {
-            year: { $year: { $dateFromString: { dateString: "$Publicado:", format: "%d/%m/%Y" } } },
-            category: "$Categoria:",
-            month: { $month: { $dateFromString: { dateString: "$Publicado:", format: "%d/%m/%Y" } } },
+            year: {
+              $year: {
+                $dateFromString: {
+                  dateString: "$fecha_publicacion",
+                  format: "%d/%m/%Y",
+                },
+              },
+            },
+            category: "$categoria",
+            month: {
+              $month: {
+                $dateFromString: {
+                  dateString: "$fecha_publicacion",
+                  format: "%d/%m/%Y",
+                },
+              },
+            },
           },
           count: { $sum: 1 },
         },
       },
       {
-        // Agrupar los resultados por año y categoría
         $group: {
           _id: {
             year: "$_id.year",
@@ -30,7 +49,6 @@ const dashbordconsult = async (req, res, next) => {
         },
       },
       {
-        // Reformatear el resultado para que coincida con el formato deseado
         $project: {
           _id: 0,
           year: "$_id.year",
@@ -39,10 +57,10 @@ const dashbordconsult = async (req, res, next) => {
         },
       },
       {
-        // Ordenar los resultados por año y categoría
         $sort: { year: 1, name: 1 },
       },
     ]);
+
     // Crear un objeto para almacenar el resultado transformado
     const transformedData = {};
 

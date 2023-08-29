@@ -1,4 +1,5 @@
-const gatewa = require("../models/gatway.js");
+/// const gatewa = require("../models/gatway.js");
+const gatewa = require("../models/scraper.js");
 const formatearMoneda = require("../controllers/FormatMondea");
 
 const datostabla = async (req, res, next) => {
@@ -8,17 +9,22 @@ const datostabla = async (req, res, next) => {
     let busqueda = {};
 
     if (localizacion) {
-      busqueda["Localización:"] = localizacion;
+      busqueda.localizacion = localizacion;
     }
 
     if (habitaciones) {
-      busqueda["Categoria:"] = habitaciones;
+      busqueda.categoria = habitaciones;
     }
 
-    if (!localizacion && !habitaciones) {
-      busqueda["Precio:"] = { $exists: true };
+    if (
+      !localizacion &&
+      (!habitaciones ||
+        (Array.isArray(habitaciones) && habitaciones.length === 0))
+    ) {
+      busqueda.precio = { $exists: true };
     }
 
+    console.log(habitaciones);
     // console.log(busqueda);
 
     let precios;
@@ -29,9 +35,9 @@ const datostabla = async (req, res, next) => {
     let promedioQuetzalesm2;
     gatewa
       .find(busqueda)
-      .select({ "Precio:": 1, "m²:": 1, "Precio/M² de terreno:": 1 })
+      .select({ precio: 1, m2: 1, m2_construccion: 1, precio_m2_terreno: 1 })
       .then((resultados) => {
-        const resultadosZona21 = resultados.filter((p) => p["Precio:"]);
+        const resultadosZona21 = resultados.filter((p) => p["precio"]);
 
         // Imprimir resultados filtrados
         //   console.log("DATA DATA: " + resultadosZona21);
@@ -42,15 +48,85 @@ const datostabla = async (req, res, next) => {
         function cleanNumber(str) {
           return str?.replace(/[^\d.-]/g, "");
         }
+        // Filtrar los datos que tienen precios en dólares
+        const construccionDolares_1 = respuestageneral.filter((data) =>
+          data.precio.includes("$")
+        );
+        // Filtrar los datos que tienen precios en quetzales
+        const construccionQuetzales_1 = respuestageneral.filter((data) =>
+          data.precio.includes("Q")
+        );
+
+        // Reemplazar los guiones en los datos de dólares
+        const construccionDolaresCleaned_1 = construccionDolares_1.map(
+          (data) => {
+            if (data.m2_construccion === "-") {
+              return { ...data, m2_construccion: "0" };
+            }
+            return data;
+          }
+        );
+
+        // Reemplazar los guiones en los datos de quetzales y agregar dos decimales
+        const construccionQuetzalesCleaned_1 = construccionQuetzales_1.map(
+          (data) => {
+            if (data.m2_construccion === "-") {
+              return { ...data, m2_construccion: "0" };
+            }
+            return {
+              ...data,
+              m2_construccion: parseFloat(data.m2_construccion).toFixed(2),
+            };
+          }
+        );
+        const construccionQuetzalesCleaned_1_1 = JSON.stringify(
+          construccionQuetzalesCleaned_1
+        );
+
+        // Calcular el promedio de "m2_construccion" en dólares
+        const sumDolares_1 = construccionDolaresCleaned_1.reduce(
+          (acc, data) => acc + parseFloat(data.m2_construccion),
+          0
+        );
+        const countDolares_1 = construccionDolaresCleaned_1.length;
+        const promedioDolares_1 = sumDolares_1 / countDolares_1;
+
+        // Calcular el promedio de "m2_construccion" en quetzales
+        const construccionQuetzalesArray = JSON.parse(
+          construccionQuetzalesCleaned_1_1
+        );
+
+        const sumQuetzales_1 = construccionQuetzalesArray.reduce(
+          (acc, data) => {
+            const value = parseFloat(data.m2_construccion || 0);
+            return isNaN(value) ? acc : acc + value;
+          },
+          0
+        );
+        const countQuetzales_1 = construccionQuetzalesCleaned_1.length;
+        const promedioQuetzales_1 = sumQuetzales_1 / countQuetzales_1;
+
+        const suma_total_area = promedioDolares_1 + promedioQuetzales_1;
+
+        console.log("Suma en dólares: " + sumDolares_1);
+        console.log("Promedio en dólares: " + promedioDolares_1);
+        console.log("Suma en quetzales: " + sumQuetzales_1);
+        console.log("Promedio en quetzales: " + promedioQuetzales_1);
+
+        const areaDolares_1 = isNaN(promedioDolares_1) ? 0 : promedioDolares_1;
+        const areaQuetzales_1 = isNaN(promedioQuetzales_1)
+          ? 0
+          : promedioQuetzales_1;
+        const totalarea_1 = areaQuetzales_1 + areaDolares_1;
 
         const construccionDolares = respuestageneral
-          .filter((p) => p["Precio:"].includes("$"))
-          .filter((p) => p.hasOwnProperty("m²:")) // <--- verifica que la propiedad exista
-          .map((p) => parseInt(cleanNumber(p["m²:"])));
+          .filter((p) => p["precio"].includes("$"))
+          .filter((p) => p.hasOwnProperty("m2")) // <--- verifica que la propiedad exista
+          .map((p) => parseInt(cleanNumber(p["m2"])));
         const construccionQuetzales = respuestageneral
-          .filter((p) => p["Precio:"].includes("Q"))
-          .filter((p) => p.hasOwnProperty("m²:")) // <--- verifica que la propiedad exista
-          .map((p) => parseInt(cleanNumber(p["m²:"])));
+          .filter((p) => p["precio"].includes("Q"))
+          .filter((p) => p.hasOwnProperty("m2")) // <--- verifica que la propiedad exista
+          .map((p) => parseInt(cleanNumber(p["m2"])));
 
         // calcular el promedio de "M² de construcción" para precios en dólares
         const areaDolares1 =
@@ -67,10 +143,10 @@ const datostabla = async (req, res, next) => {
         const totalarea = areaQuetzales + areaDolares;
 
         // crear un nuevo array con solo el campo Precio
-        precios = resultados.map((r) => r["Precio:"]);
+        precios = resultados.map((r) => r["precio"]);
         const preciosDolares = precios.filter((p) => p.includes("$"));
         const preciosQuetzales = precios.filter((p) => p.includes("Q"));
-        preciom2 = resultados.map((r) => r["Precio/M² de terreno:"]);
+        preciom2 = resultados.map((r) => r["precio"]);
 
         const preciosDolaresm2 = preciom2.filter(
           (p) => p && p.includes && p.includes("$")
@@ -122,24 +198,29 @@ const datostabla = async (req, res, next) => {
         const cantidadQuetzalesm2 = totalQuetzalesm2.length;
         const totalcantidadesm2 = cantidadQuetzalesm2 + cantidadDolaresm2;
         // conversión de quetzales a dólares
-        const quetzalesQ1 = promedioQuetzales;
+        const tipoCambio = 0.13; // Tipo de cambio actualizado
+
+        const quetzalesQ1 = promedioQuetzales.toFixed(2);
         const quetzalesQ = isNaN(quetzalesQ1) ? 0 : quetzalesQ1;
-        const quetzalesD = quetzalesQ / 7.77;
+        const quetzalesD = quetzalesQ * tipoCambio;
+        
+        console.log("TOTAL DÓLARES:" + quetzalesD.toFixed(2));
+        console.log("TOTAL QUETZALES:" + quetzalesQ1)
 
         // conversión de dólares a quetzales
-        const dolarQ1 = promedioDolares;
-        const dolarQ = isNaN(dolarQ1) ? 0 : dolarQ1;
-        const dolarD = dolarQ * 7.77;
-        const total = quetzalesD + dolarD;
+        const dolarD1 = promedioDolares;
+        const dolarD = isNaN(dolarD1) ? 0 : dolarD1;
+        const dolarQ = dolarD * 7.84;
+        const total = quetzalesD + dolarD / 2;
         // conversión de quetzales a dólares MT2
-        const quetzalesQ1m2 = promedioQuetzalesm2;
+        const quetzalesQ1m2 = quetzalesQ / areaQuetzales_1;
         const quetzalesQm2 = isNaN(quetzalesQ1m2) ? 0 : quetzalesQ1m2;
-        const quetzalesDm2 = quetzalesQm2 / 7.77;
+        const quetzalesDm2 = quetzalesQm2 * 0.13;
 
         // conversión de dólares a quetzales
-        const dolarQ1m2 = promedioDolaresm2;
+        const dolarQ1m2 = dolarQ / areaDolares_1;
         const dolarQm2 = isNaN(dolarQ1m2) ? 0 : dolarQ1m2;
-        const dolarDm2 = dolarQm2 * 7.77;
+        const dolarDm2 = dolarQm2 * 0.13;
         const totalm2 = quetzalesDm2 + dolarDm2;
 
         const response = {
@@ -160,15 +241,13 @@ const datostabla = async (req, res, next) => {
           cantidadDolaresm2: cantidadDolaresm2,
           cantidadQuetzalesm2: cantidadQuetzalesm2,
           totalcantidadesm2: totalcantidadesm2,
-          areaDolares: `${areaDolares.toFixed(2)} MT2`,
-          areadioQuetzales: `${areaQuetzales.toFixed(2)} MT2`,
-          totalarea: `${totalarea.toFixed(2)} MT2`,
+          areaDolares: `${areaDolares_1.toFixed(2)} MT2`,
+          areadioQuetzales: `${areaQuetzales_1.toFixed(2)} MT2`,
+          totalarea: `${suma_total_area.toFixed(2)} MT2`,
           notifi: "Solicitud exitosa",
         };
         // console.log(response);
         res.json(response); // Responder con los datos procesados en formato JSON
-        console.log("Respuesta precio m2: " + resultados);
-        console.log(response);
       })
       .catch((error) => {
         console.error(error);

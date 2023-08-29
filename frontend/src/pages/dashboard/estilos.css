@@ -115,3 +115,32 @@ h6#preciomax-Q {
 h6#preciomin-Q {
   display: none;
 }
+
+@media screen and (max-width: 767px) {
+  .component-table {
+    display: flex;
+    flex-direction: column !important;
+  }
+  .component-boxing {
+    max-width: 100%! important;
+}
+}
+
+/* Estilos para iPads */
+
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+  /* Agrega estilos específicos para pantallas entre 768px y 1023px de ancho */
+  .component-table {
+    display: flex;
+    flex-direction: column !important;
+  }
+  .component-boxing {
+    max-width: 100%! important;
+}
+}
+
+/* Estilos para laptops y pantallas más grandes */
+
+@media screen and (min-width: 1024px) {
+  /* Agrega estilos específicos para pantallas más grandes de 1024px de ancho */
+}

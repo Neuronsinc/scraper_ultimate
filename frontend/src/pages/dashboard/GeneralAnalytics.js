@@ -45,7 +45,6 @@ const pricesD = [
 // ----------------------------------------------------------------------
 export default function GeneralAnalytics() {
   const varlink = `${process.env.REACT_APP_APIBACKEND}/precios-filtro`;
-  console.log('el link es: ', varlink);
   // Obtener los precios
   const [precios, setPrecios] = useState([]);
 
@@ -65,7 +64,6 @@ export default function GeneralAnalytics() {
 
     fetchData();
   }, []);
-  console.log(precios.quetzales);
 
   // VALORES EN QUETZLES
   const pricesQ = precios.quetzales;
@@ -73,8 +71,6 @@ export default function GeneralAnalytics() {
     precios.quetzales && precios.quetzales.length > 0 ? precios.quetzales[precios.quetzales.length - 1].value : 0;
   const valor2Q = precios.quetzales && precios.quetzales.length > 1 ? precios.quetzales[1].value : 0;
   const valor4Q = precios.quetzales && precios.quetzales.length > 3 ? precios.quetzales[3].value : 0;
-
-  console.log(valor2Q);
 
   // VALORES EN DOLARES
   const pricesD = precios.dolares;
@@ -107,7 +103,6 @@ export default function GeneralAnalytics() {
     setIsChecked(event.target.checked);
   };
   const activos = actifiltro;
-  console.log(`DESEA ACTIVAR EL FILTRO?: ${actifiltro}`);
 
   // -----RANGO DE FECHA
   const [valueF, setValueF] = useState([null, null]);
@@ -136,7 +131,6 @@ export default function GeneralAnalytics() {
         .join('/')
     : '';
 
-  console.log(`${fechaInicialFormateada} - ${fechaFinalFormateada}`);
   // Multiples categorias
 
   // --------- BUSQUDA DE CATEGORIAS
@@ -144,7 +138,14 @@ export default function GeneralAnalytics() {
   const [categoriass, setCategoriass] = useState([]);
 
   const valuescategorias = (event, values) => {
-    setMultiplesValues(values.map((value) => value.title));
+    const categorias = values.map((value) => value.title);
+    setMultiplesValues(categorias);
+    const categories = categorias;
+    if (categories.length === 0) {
+      sethabitacionesValue(null);
+    } else {
+      sethabitacionesValue(categories);
+    }
   };
 
   useEffect(() => {
@@ -177,27 +178,41 @@ export default function GeneralAnalytics() {
   const localizaciones = [];
 
   data.forEach((items) => {
-    if (items['Localización:'] && !localizaciones.includes(items['Localización:'])) {
-      localizaciones.push(items['Localización:']);
+    if (items.localizacion && !localizaciones.includes(items.localizacion)) {
+      localizaciones.push(items.localizacion);
     }
   });
-
   const formattedlocalizaciones = localizaciones.map((categorys) => ({
     title: categorys,
     year: null // o el valor que quieras asignarle
   }));
   const top100Films = formattedlocalizaciones;
+  const semanas = [];
+
+  data.forEach((item) => {
+    if (item.semana && !semanas.includes(item.semana)) {
+      semanas.push(item.semana);
+    }
+  });
+
+  const formattedSemanas = semanas.map((semana) => ({
+    title: semana,
+    year: null // o el valor que quieras asignarle
+  }));
+
+  const optSemanas = formattedSemanas;
+
   // -----------------------------------
+
   // --------- BUSQUDA DE LOCALIZACION
   const habitaciones = [];
 
   data.forEach((items) => {
-    if (items['Categoria:'] && !habitaciones.includes(items['Categoria:'])) {
-      habitaciones.push(items['Categoria:']);
+    if (items.categoria && !habitaciones.includes(items.categoria)) {
+      habitaciones.push(items.categoria);
     }
   });
 
-  console.log(`Que buena data [${habitaciones}]`);
   const formattedhabitaciones = habitaciones.map((categorys) => ({
     title: `${categorys}`,
     Number: categorys // o el valor que quieras asignarle
@@ -247,14 +262,18 @@ export default function GeneralAnalytics() {
       setLoading(false);
     }, 2500);
   }, []);
-  console.log('rowes acá: ', rows);
 
   // ENVIAR POST PARA FILTRAR
   const [respuesta, setRespuesta] = useState(null);
   const [localizacionValue, setlocalizacionValue] = useState('');
+  const [resultSemana, setsemanaValue] = useState('');
 
   const localizacionAutocompleteChange = (event, value) => {
     setlocalizacionValue(value ? value.title : '');
+  };
+
+  const semanaAutocompleteChange = (event, value) => {
+    setsemanaValue(value ? value.title : '');
   };
 
   const [habitacionesValue, sethabitacionesValue] = useState('');
@@ -262,6 +281,7 @@ export default function GeneralAnalytics() {
   const habitacionesAutocompleteChange = (event, value) => {
     sethabitacionesValue(value ? value.Number : '');
   };
+
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   function myFunction(data) {
     enqueueSnackbar(data.notifi, {
@@ -468,8 +488,8 @@ export default function GeneralAnalytics() {
   return (
     <Page title="General: Analytics | dataSracper">
       <Container maxWidth="100%">
-        <Grid container spacing={3}>
-          <Grid item xs={5} md={4}>
+        <Grid className="component-table" container spacing={3}>
+          <Grid className="component-boxing" item xs={5} md={4}>
             <TablaDatos
               moneda="Q"
               textmoneda="Quetzales"
@@ -481,7 +501,7 @@ export default function GeneralAnalytics() {
               areapromedio={respuesta && respuesta.areadioQuetzales ? respuesta.areadioQuetzales : '0'}
             />
           </Grid>
-          <Grid item xs={5} md={4}>
+          <Grid className="component-boxing" item xs={5} md={4}>
             <TablaDatos
               moneda="$"
               textmoneda="Dólares"
@@ -493,7 +513,7 @@ export default function GeneralAnalytics() {
               areapromedio={respuesta && respuesta.areaDolares ? respuesta.areaDolares : '0'}
             />
           </Grid>
-          <Grid item xs={4} md={4}>
+          <Grid className="component-boxing" item xs={4} md={4}>
             <TablaDatosTotal
               totalcantidades={respuesta && respuesta.totalcantidades ? respuesta.totalcantidades : '0'}
               preciopromedio={respuesta && respuesta.total ? respuesta.total : '0'}
@@ -503,8 +523,8 @@ export default function GeneralAnalytics() {
           </Grid>
         </Grid>
 
-        <Grid container spacing={3}>
-          <Grid item xs={12} sm={6} md={4}>
+        <Grid className="component-table" container spacing={3}>
+          <Grid className="component-boxing" item xs={12} sm={6} md={4}>
             <Box sx={{ padding: '17px', width: '100%' }}>
               <Autocomplete
                 fullWidth
@@ -515,26 +535,31 @@ export default function GeneralAnalytics() {
               />
             </Box>
           </Grid>
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid className="component-boxing" item xs={12} sm={6} md={4}>
             <Box sx={{ padding: '17px', width: '100%' }}>
               <Autocomplete
+                multiple
                 fullWidth
-                options={listhabitaciones}
-                onChange={habitacionesAutocompleteChange}
-                getOptionLabel={(option) => option.title}
-                renderInput={(params) => <TextField {...params} label="Categorías" margin="none" />}
+                options={categoriass}
+                getOptionLabel={(option) => (option && option.title ? option.title : '')}
+                onChange={valuescategorias}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField {...params} label="Seleccione una categoría" placeholder="Apartamentos, casas..." />
+                )}
               />
             </Box>
           </Grid>
-          <Grid sx={{ padding: '17px' }} item xs={4}>
+          <Grid className="component-boxing" sx={{ padding: '17px' }} item xs={4}>
             <Stack sx={{ width: '100%', padding: '17px' }} spacing={3} direction="row">
-              <Button onClick={handleGeneratePDF} className="btns" variant="outlined">
+              <Button onClick={handleGeneratePDF} className="btns component-boxing" variant="outlined">
                 Exportar
               </Button>
             </Stack>
           </Grid>
-          <Grid item xs={6}>
+          <Grid className="component-boxing" item xs={6}>
             <SliderDan
+              className="component-boxing"
               moneda="Rango de precios -"
               steep="1"
               pricesD={pricesD}
@@ -545,7 +570,7 @@ export default function GeneralAnalytics() {
               funcion="handleChangePriceD"
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid className="component-boxing" item xs={6}>
             <SliderDan
               moneda="Rango de precios -"
               steep="1"
@@ -558,8 +583,8 @@ export default function GeneralAnalytics() {
             />
           </Grid>
         </Grid>
-        <Grid container spacing={3}>
-          <Grid className="div-filtro" item xs={4}>
+        <Grid className="component-table" container spacing={3}>
+          <Grid className="div-filtro component-boxing" item xs={4}>
             <LocalizationProvider dateAdapter={AdapterDateFns} locale={es}>
               <DateRangePicker
                 startText="Fecha de inicio"
@@ -579,20 +604,16 @@ export default function GeneralAnalytics() {
               />
             </LocalizationProvider>
           </Grid>
-          <Grid className="div-filtro" item xs={4}>
+          <Grid className="div-filtro component-boxing" item xs={4}>
             <Autocomplete
-              multiple
               fullWidth
-              options={categoriass}
-              getOptionLabel={(option) => (option && option.title ? option.title : '')}
-              onChange={valuescategorias}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField {...params} label="Seleccione una categoría" placeholder="Apartamentos, casas..." />
-              )}
+              options={optSemanas}
+              onChange={semanaAutocompleteChange}
+              getOptionLabel={(option) => option.title}
+              renderInput={(params) => <TextField {...params} label="Semana" margin="none" />}
             />
           </Grid>
-          <Grid className="div-filtro" sx={{ textAlign: 'center' }} xs={4}>
+          <Grid className="div-filtro component-boxing" sx={{ textAlign: 'center' }} xs={4}>
             <FormControlLabel
               value="start"
               label="Filtro de búsqueda"
@@ -614,6 +635,8 @@ export default function GeneralAnalytics() {
                   fechainicio={fechaInicialFormateada}
                   fechafin={fechaFinalFormateada}
                   categories={multiplesValues}
+                  ubicacion={localizacionValue}
+                  semanar={resultSemana}
                 />
               </Box>
             )}

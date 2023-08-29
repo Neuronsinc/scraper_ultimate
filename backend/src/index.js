@@ -25,7 +25,7 @@ mime.contentType("text/css");
 app.use(express.urlencoded({ extended: true }));
 
 mongoose
-  .connect("mongodb://admin:DANIELxp1.*d@54.85.218.28:27017/troiatec", {
+  .connect("mongodb://admin:DANIELxp1.*d@34.202.18.5:27017/troiatec", { 
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
@@ -123,9 +123,9 @@ app.get("/datos-mongo-new", (req, res) => {
   // console.log('RENDER SOLO CATEGORÍA: ' +  JSON.stringify(Gateware3['Categoria:']))
 
   async function database() {
-    const datos_mongos = await scraper.find({ _id: { $exists: true } })
+    const datos_mongos = await scraper.find({ _id: { $exists: true }, precio: { $ne: "-" } })
       .sort({ fecha: -1 }) // Ordena por fecha de forma descendente (-1)
-      .limit(5000); // Limita a 100 resultados
+
 
     res.send(JSON.stringify(datos_mongos));
     //("ESTOS SON!: ", datos_mongos);
