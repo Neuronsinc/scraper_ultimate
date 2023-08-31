@@ -8,6 +8,7 @@ import { Icon } from '@iconify/react';
 import AdapterDateFns from '@material-ui/lab/AdapterDateFns';
 import LocalizationProvider from '@material-ui/lab/LocalizationProvider';
 import { DateRangePicker } from '@material-ui/lab';
+import Skeleton from '@mui/material/Skeleton';
 import html2pdf from 'html2pdf.js';
 //
 import {
@@ -493,32 +494,128 @@ export default function GeneralAnalytics() {
             <TablaDatos
               moneda="Q"
               textmoneda="Quetzales"
-              cantunidades={respuesta && respuesta.cantidadQuetzales ? respuesta.cantidadQuetzales : '0'}
-              preciopromedioQ={respuesta && respuesta.quetzalesQ ? respuesta.quetzalesQ : '0'}
-              preciopromedioD={respuesta && respuesta.quetzalesD ? respuesta.quetzalesD : '0'}
-              preciopromedioQm2={respuesta && respuesta.quetzalesQm2 ? respuesta.quetzalesQm2 : '0'}
-              preciopromedioDm2={respuesta && respuesta.quetzalesDm2 ? respuesta.quetzalesDm2 : '0'}
-              areapromedio={respuesta && respuesta.areadioQuetzales ? respuesta.areadioQuetzales : '0'}
+              cantunidades={
+                respuesta && respuesta.cantidadQuetzales ? (
+                  respuesta.cantidadQuetzales
+                ) : (
+                  <Skeleton animation="wave" style={{ margin: 'auto' }} variant="rounded" width={70} height={18} />
+                )
+              }
+              preciopromedioQ={
+                respuesta && respuesta.quetzalesQ ? (
+                  respuesta.quetzalesQ
+                ) : (
+                  <Skeleton animation="wave" style={{ margin: 'auto' }} variant="rounded" width={80} height={23} />
+                )
+              }
+              preciopromedioD={
+                respuesta && respuesta.quetzalesD ? (
+                  respuesta.quetzalesD
+                ) : (
+                  <Skeleton animation="wave" style={{ margin: 'auto' }} variant="rounded" width={80} height={23} />
+                )
+              }
+              preciopromedioQm2={
+                respuesta && respuesta.quetzalesQm2 ? (
+                  respuesta.quetzalesQm2
+                ) : (
+                  <Skeleton animation="wave" style={{ margin: 'auto' }} variant="rounded" width={80} height={23} />
+                )
+              }
+              preciopromedioDm2={
+                respuesta && respuesta.quetzalesDm2 ? (
+                  respuesta.quetzalesDm2
+                ) : (
+                  <Skeleton animation="wave" style={{ margin: 'auto' }} variant="rounded" width={80} height={23} />
+                )
+              }
+              areapromedio={
+                respuesta && respuesta.areadioQuetzales ? (
+                  respuesta.areadioQuetzales
+                ) : (
+                  <Skeleton animation="wave" style={{ margin: 'auto' }} variant="rounded" width={80} height={23} />
+                )
+              }
             />
           </Grid>
           <Grid className="component-boxing" item xs={5} md={4}>
             <TablaDatos
               moneda="$"
               textmoneda="Dólares"
-              cantunidades={respuesta && respuesta.cantidadDolares ? respuesta.cantidadDolares : '0'}
-              preciopromedioQ={respuesta && respuesta.dolarQ ? respuesta.dolarQ : '0'}
-              preciopromedioD={respuesta && respuesta.dolarD ? respuesta.dolarD : '0'}
-              preciopromedioQm2={respuesta && respuesta.dolarQm2 ? respuesta.dolarQm2 : '0'}
-              preciopromedioDm2={respuesta && respuesta.dolarDm2 ? respuesta.dolarDm2 : '0'}
-              areapromedio={respuesta && respuesta.areaDolares ? respuesta.areaDolares : '0'}
+              cantunidades={
+                respuesta && respuesta.cantidadDolares ? (
+                  respuesta.cantidadDolares
+                ) : (
+                  <Skeleton animation="wave" style={{ margin: 'auto' }} variant="rounded" width={70} height={18} />
+                )
+              }
+              preciopromedioQ={
+                respuesta && respuesta.dolarQ ? (
+                  respuesta.dolarQ
+                ) : (
+                  <Skeleton animation="wave" style={{ margin: 'auto' }} variant="rounded" width={80} height={23} />
+                )
+              }
+              preciopromedioD={
+                respuesta && respuesta.dolarD ? (
+                  respuesta.dolarD
+                ) : (
+                  <Skeleton animation="wave" style={{ margin: 'auto' }} variant="rounded" width={80} height={23} />
+                )
+              }
+              preciopromedioQm2={
+                respuesta && respuesta.dolarQm2 ? (
+                  respuesta.dolarQm2
+                ) : (
+                  <Skeleton animation="wave" style={{ margin: 'auto' }} variant="rounded" width={80} height={23} />
+                )
+              }
+              preciopromedioDm2={
+                respuesta && respuesta.dolarDm2 ? (
+                  respuesta.dolarDm2
+                ) : (
+                  <Skeleton animation="wave" style={{ margin: 'auto' }} variant="rounded" width={80} height={23} />
+                )
+              }
+              areapromedio={
+                respuesta && respuesta.areaDolares ? (
+                  respuesta.areaDolares
+                ) : (
+                  <Skeleton animation="wave" style={{ margin: 'auto' }} variant="rounded" width={80} height={23} />
+                )
+              }
             />
           </Grid>
           <Grid className="component-boxing" item xs={4} md={4}>
             <TablaDatosTotal
-              totalcantidades={respuesta && respuesta.totalcantidades ? respuesta.totalcantidades : '0'}
-              preciopromedio={respuesta && respuesta.total ? respuesta.total : '0'}
-              preciopromediom2={respuesta && respuesta.totalm2 ? respuesta.totalm2 : '0'}
-              totaarea={respuesta && respuesta.totalarea ? respuesta.totalarea : '0'}
+              totalcantidades={
+                respuesta && respuesta.totalcantidades ? (
+                  respuesta.totalcantidades
+                ) : (
+                  <Skeleton style={{ margin: 'auto' }} variant="rounded" width={125} height={35} />
+                )
+              }
+              preciopromedio={
+                respuesta && respuesta.total ? (
+                  respuesta.total
+                ) : (
+                  <Skeleton style={{ margin: 'auto' }} variant="rounded" width={80} height={16} />
+                )
+              }
+              preciopromediom2={
+                respuesta && respuesta.totalm2 ? (
+                  respuesta.totalm2
+                ) : (
+                  <Skeleton style={{ margin: 'auto' }} variant="rounded" width={80} height={16} />
+                )
+              }
+              totaarea={
+                respuesta && respuesta.totalarea ? (
+                  respuesta.totalarea
+                ) : (
+                  <Skeleton style={{ margin: 'auto' }} variant="rounded" width={80} height={16} />
+                )
+              }
             />
           </Grid>
         </Grid>
@@ -557,34 +654,36 @@ export default function GeneralAnalytics() {
               </Button>
             </Stack>
           </Grid>
-          <Grid className="component-boxing" item xs={6}>
-            <SliderDan
-              className="component-boxing"
-              moneda="Rango de precios -"
-              steep="1"
-              pricesD={pricesD}
-              ultimo={ultimoValorD}
-              valor2={valor2D}
-              valor4={valor4D}
-              simbol="$"
-              funcion="handleChangePriceD"
-            />
-          </Grid>
-          <Grid className="component-boxing" item xs={6}>
-            <SliderDan
-              moneda="Rango de precios -"
-              steep="1"
-              pricesD={pricesQ}
-              ultimo={ultimoValorQ}
-              valor2={valor2Q}
-              valor4={valor4Q}
-              simbol="Q"
-              funcion="handleChangePriceQ"
-            />
-          </Grid>
+          {/* 
+<Grid className="component-boxing" item xs={6}>
+  <SliderDan
+    className="component-boxing"
+    moneda="Rango de precios -"
+    steep="1"
+    pricesD={pricesD}
+    ultimo={ultimoValorD}
+    valor2={valor2D}
+    valor4={valor4D}
+    simbol="$"
+    funcion="handleChangePriceD"
+  />
+</Grid>
+<Grid className="component-boxing" item xs={6}>
+  <SliderDan
+    moneda="Rango de precios -"
+    steep="1"
+    pricesD={pricesQ}
+    ultimo={ultimoValorQ}
+    valor2={valor2Q}
+    valor4={valor4Q}
+    simbol="Q"
+    funcion="handleChangePriceQ"
+  />
+</Grid>
+*/}
         </Grid>
         <Grid className="component-table" container spacing={3}>
-          <Grid className="div-filtro component-boxing" item xs={4}>
+          <Grid className="div-filtro component-boxing" item xs={12}>
             <LocalizationProvider dateAdapter={AdapterDateFns} locale={es}>
               <DateRangePicker
                 startText="Fecha de inicio"
@@ -604,15 +703,20 @@ export default function GeneralAnalytics() {
               />
             </LocalizationProvider>
           </Grid>
+          {/** 
           <Grid className="div-filtro component-boxing" item xs={4}>
+           
             <Autocomplete
               fullWidth
               options={optSemanas}
               onChange={semanaAutocompleteChange}
               getOptionLabel={(option) => option.title}
               renderInput={(params) => <TextField {...params} label="Semana" margin="none" />}
+              
             />
+           
           </Grid>
+          
           <Grid className="div-filtro component-boxing" sx={{ textAlign: 'center' }} xs={4}>
             <FormControlLabel
               value="start"
@@ -623,7 +727,8 @@ export default function GeneralAnalytics() {
             <Button id="btnreset" variant="contained" sx={{ marginLeft: '50px' }} onClick={handleReset}>
               Resetear
             </Button>
-          </Grid>
+          </Grid> 
+          */}
         </Grid>
         <Grid container spacing={3}>
           <Grid item xs={12}>

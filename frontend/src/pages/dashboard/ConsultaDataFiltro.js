@@ -136,7 +136,7 @@ export default function ConsultaDataFiltro(props) {
     : '';
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-  const timeout = 20000;
+  const timeout = 70000;
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (data.length === 0) {
@@ -169,6 +169,40 @@ export default function ConsultaDataFiltro(props) {
       clearTimeout(timeoutId);
     };
   }, [data, enqueueSnackbar, closeSnackbar, timeout]);
+
+  const timeouts = 20000;
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (data.length === 0) {
+        enqueueSnackbar(
+          <div>
+            <Typography variant="subtitle2" sx={{ textTransform: 'capitalize' }}>
+              Cargando datos
+            </Typography>
+            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+              Seguimos obteniendo los datos, por favor espere.
+            </Typography>
+          </div>,
+          {
+            variant: 'info',
+            autoHideDuration: 8000, // cierra automáticamente después de 3 segundos
+            action: (key) => (
+              <IconButton size="small" color="inherit" onClick={() => closeSnackbar(key)}>
+                <Icon icon={closeFill} width={24} height={24} />
+              </IconButton>
+            ),
+            preventDuplicate: true
+          }
+        );
+      } else {
+        console.log('Si hay datos');
+      }
+    }, timeouts);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [data, enqueueSnackbar, closeSnackbar, timeouts]);
 
   function convertDate(dateStr) {
     if (!dateStr) {

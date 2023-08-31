@@ -106,7 +106,7 @@ const datostabla = async (req, res, next) => {
         const countQuetzales_1 = construccionQuetzalesCleaned_1.length;
         const promedioQuetzales_1 = sumQuetzales_1 / countQuetzales_1;
 
-        const suma_total_area = promedioDolares_1 + promedioQuetzales_1;
+        const suma_total_area = (promedioDolares_1 + promedioQuetzales_1) / 2;
 
         console.log("Suma en dólares: " + sumDolares_1);
         console.log("Promedio en dólares: " + promedioDolares_1);
@@ -189,29 +189,29 @@ const datostabla = async (req, res, next) => {
 
         const cantidadDolares = totalDolares.length;
         const cantidadQuetzales = totalQuetzales.length;
-        const totalcantidades = cantidadQuetzales + cantidadDolares;
+        const totalcantidades = (cantidadQuetzales + cantidadDolares);
         // METRO 2 CANTIDADES
         const totalDolaresm2 = precios.filter((p) => p.includes("$"));
         const totalQuetzalesm2 = precios.filter((p) => p.includes("Q"));
 
         const cantidadDolaresm2 = totalDolaresm2.length;
         const cantidadQuetzalesm2 = totalQuetzalesm2.length;
-        const totalcantidadesm2 = cantidadQuetzalesm2 + cantidadDolaresm2;
+        const totalcantidadesm2 = (cantidadQuetzalesm2 + cantidadDolaresm2) / 2;
         // conversión de quetzales a dólares
         const tipoCambio = 0.13; // Tipo de cambio actualizado
 
         const quetzalesQ1 = promedioQuetzales.toFixed(2);
         const quetzalesQ = isNaN(quetzalesQ1) ? 0 : quetzalesQ1;
         const quetzalesD = quetzalesQ * tipoCambio;
-        
+
         console.log("TOTAL DÓLARES:" + quetzalesD.toFixed(2));
-        console.log("TOTAL QUETZALES:" + quetzalesQ1)
+        console.log("TOTAL QUETZALES:" + quetzalesQ1);
 
         // conversión de dólares a quetzales
         const dolarD1 = promedioDolares;
         const dolarD = isNaN(dolarD1) ? 0 : dolarD1;
         const dolarQ = dolarD * 7.84;
-        const total = quetzalesD + dolarD / 2;
+        const total = (quetzalesD + dolarD) / 2;
         // conversión de quetzales a dólares MT2
         const quetzalesQ1m2 = quetzalesQ / areaQuetzales_1;
         const quetzalesQm2 = isNaN(quetzalesQ1m2) ? 0 : quetzalesQ1m2;
@@ -229,15 +229,15 @@ const datostabla = async (req, res, next) => {
           quetzalesD: `${formatearMoneda(quetzalesD, "USD", "en-US")}`,
           dolarQ: `${formatearMoneda(dolarQ, "GTQ", "es-GT")}`,
           dolarD: `${formatearMoneda(dolarD, "USD", "en-US")} `,
-          total: `${formatearMoneda(total, "USD", "en-US")} `,
+          total: `${formatearMoneda(total, "USD", "en-US")}`,
           quetzalesQm2: `${formatearMoneda(quetzalesQm2, "GTQ", "es-GT")}`,
           quetzalesDm2: `${formatearMoneda(quetzalesDm2, "USD", "en-US")}`,
-          dolarQm2: `${formatearMoneda(dolarQm2, "GTQ", "es-GT")}`,
-          dolarDm2: `${formatearMoneda(dolarDm2, "USD", "en-US")} `,
+          dolarQm2: `${formatearMoneda(dolarQm2, "GTQ", "es-GT")} `, // EN LA SECCIÓN DEL DOLAR, ESTO ES EL PRECIO POR M2 EN Q
+          dolarDm2: `${formatearMoneda(dolarDm2, "USD", "en-US")} `, // EN LA SECCIÓN DEL DOLAR, ESTO ES EL PRECIO POR M2 EN $
           totalm2: `${formatearMoneda(totalm2, "USD", "en-US")} `,
           cantidadDolares: cantidadDolares,
           cantidadQuetzales: cantidadQuetzales,
-          totalcantidades: totalcantidades,
+          totalcantidades: totalcantidades, // TOTAL DE UNIDADES OFERTADAS EN PROMEDIO
           cantidadDolaresm2: cantidadDolaresm2,
           cantidadQuetzalesm2: cantidadQuetzalesm2,
           totalcantidadesm2: totalcantidadesm2,

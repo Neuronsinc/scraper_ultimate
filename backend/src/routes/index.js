@@ -28,7 +28,8 @@ router.get("/categorias", categorias);
 router.get("/precios-filtro", preciosfiltro);
 router.post("/rango-precios", rangoprecio);
 
-//------
+// Usuarios
+//router.get("/usarios", preciosfiltro);
 
 
 // Render all tasks
