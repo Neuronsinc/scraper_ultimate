@@ -683,7 +683,7 @@ export default function GeneralAnalytics() {
 */}
         </Grid>
         <Grid className="component-table" container spacing={3}>
-          <Grid className="div-filtro component-boxing" item xs={12}>
+          <Grid className="div-filtro component-boxing" item xs={6}>
             <LocalizationProvider dateAdapter={AdapterDateFns} locale={es}>
               <DateRangePicker
                 startText="Fecha de inicio"
@@ -724,11 +724,14 @@ export default function GeneralAnalytics() {
               labelPlacement="start"
               control={<Switch checked={actifiltro} onChange={handleSwitchChange} />}
             />
+           
+          </Grid> 
+          */}
+          <Grid item xs={4}>
             <Button id="btnreset" variant="contained" sx={{ marginLeft: '50px' }} onClick={handleReset}>
               Resetear
             </Button>
-          </Grid> 
-          */}
+          </Grid>
         </Grid>
         <Grid container spacing={3}>
           <Grid item xs={12}>
