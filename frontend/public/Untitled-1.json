@@ -1,0 +1,17 @@
+[
+  {
+    "year": 2019,
+    "data": [
+      {
+        "name": "Alquiler de Oficinas",
+        "data": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+      },
+      { "name": "Apartamentos", "data": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] },
+      { "name": "Casas", "data": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] },
+      {
+        "name": "Lotes y Terrenos",
+        "data": [0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0]
+      }
+    ]
+  }
+]

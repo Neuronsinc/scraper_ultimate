@@ -101,6 +101,8 @@ const dashbordconsult = async (req, res, next) => {
 
     // Enviar la respuesta como JSON
     res.json(chartData);
+    const datos_dash = JSON.stringify(chartData);
+    console.log(datos_dash);
   } catch (error) {
     // Manejar los errores
     console.error(error);

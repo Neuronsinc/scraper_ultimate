@@ -1,9 +1,9 @@
 {
-  "name": "React Material Minimal UI",
+  "name": "DataScraper",
   "short_name": "dataSracper",
-  "display": "standalone",
+  "display": "DataScraper",
   "start_url": "/",
-  "theme_color": "#000000",
+  "theme_color": "#C8FACD",
   "background_color": "#ffffff",
   "icons": [
     {

@@ -19,7 +19,7 @@ export default function EcommerceYearlySales() {
         .get(`${process.env.REACT_APP_APIBACKEND}/consulta-dashbord`)
         .then((response) => {
           // actualizar el estado con los datos de respuesta
-          console.log('esto es la data:', response.data);
+
           setData(response.data);
         })
         .catch((error) => {
