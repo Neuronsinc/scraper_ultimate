@@ -42,6 +42,7 @@ export default function GeneralApp() {
   const porcentCasas = (countCasas / 100).toFixed(2);
   const countLotes = resultados['Lotes y Terrenos'];
   const porcentLotes = (countLotes / 100).toFixed(2);
+  console.log(user.id);
   return (
     <Page title="General: App | dataSracper">
       <Container maxWidth={themeStretch ? false : 'xl'}>

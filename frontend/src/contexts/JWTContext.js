@@ -92,7 +92,7 @@ function AuthProvider({ children }) {
           });
         }
       } catch (err) {
-        console.error(err);
+        console.log(err);
         dispatch({
           type: 'INITIALIZE',
           payload: {

@@ -16,6 +16,7 @@ const { dashbordconsult } = require("../controllers/dashbordConsulta");
 const { categorias } = require("../controllers/consultainputs");
 const { preciosfiltro } = require("../controllers/filtroprecio");
 const { rangoprecio } = require("../controllers/rangoprecios");
+const { UsersData } = require("../controllers/usuario");
 //const { filtrotabla } = require("../controllers/filtrotabla");
 
 //Daga entrega
@@ -29,7 +30,7 @@ router.get("/precios-filtro", preciosfiltro);
 router.post("/rango-precios", rangoprecio);
 
 // Usuarios
-//router.get("/usarios", preciosfiltro);
+ router.get("/usarios", UsersData);
 
 
 // Render all tasks

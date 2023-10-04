@@ -38,6 +38,7 @@ export default function AccountGeneral() {
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
+      id: user.id,
       displayName: user.displayName || '',
       email: user.email,
       photoURL: user.photoURL,
@@ -59,6 +60,7 @@ export default function AccountGeneral() {
         if (isMountedRef.current) {
           setSubmitting(false);
         }
+        console.log(values);
       } catch (error) {
         if (isMountedRef.current) {
           setErrors({ afterSubmit: error.code });

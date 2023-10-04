@@ -1,5 +1,6 @@
 import * as Yup from 'yup';
 import PropTypes from 'prop-types';
+import axios from 'axios';
 import { useCallback } from 'react';
 import { useSnackbar } from 'notistack5';
 import { useNavigate } from 'react-router-dom';
@@ -71,15 +72,29 @@ export default function UserNewForm({ isEdit, currentUser }) {
     validationSchema: NewUserSchema,
     onSubmit: async (values, { setSubmitting, resetForm, setErrors }) => {
       try {
+        const file = values.avatarUrl;
+
+        if (!file) {
+          throw new Error('Avatar file is missing');
+        }
+
+        // Crea un objeto FormData para enviar el archivo
+        const formData = new FormData();
+        formData.append('avatar', file);
+
+        // Realiza la solicitud POST al servidor
+        await axios.post(`${process.env.REACT_APP_APIBACKEND}/api/upload-avatar`, formData);
         await fakeRequest(500);
-        resetForm();
+        //  resetForm();
         setSubmitting(false);
         enqueueSnackbar(!isEdit ? 'Create success' : 'Update success', { variant: 'success' });
-        navigate(PATH_DASHBOARD.user.list);
+        console.log(values);
       } catch (error) {
         console.error(error);
         setSubmitting(false);
         setErrors(error);
+
+        // Srcipt para que guare el la imagen en la carpeta public/images
       }
     }
   });
