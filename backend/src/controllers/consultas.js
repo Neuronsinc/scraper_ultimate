@@ -2,10 +2,63 @@
 const gatewa = require("../models/scraper.js");
 
 const sumacategorias = async (req, res, next) => {
+
+  
+  function formatDate(date) {
+    var d = new Date(date),
+      month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate(),
+      year = d.getFullYear();
+
+    if (month.length < 2)
+      month = '0' + month;
+    if (day.length < 2)
+      day = '0' + day;
+
+    return [year, month, day].join('-');
+  }
+
   try {
+
+    const Finicial = formatDate(req.query.inicio);
+    const Ffinal = formatDate(req.query.fin);
+
     const ddatau = await gatewa.find({
       categoria: { $exists: true },
-      precio: { $ne: "-" },
+      precio: { $ne: "-" }, $and: [
+        {
+          $expr: {
+            $gte: [
+              { $dateFromString: { dateString: {
+                $concat: [
+                  { $substrCP: ["$fecha_publicacion", 6, 4] },  // Año
+                  "-",
+                  { $substrCP: ["$fecha_publicacion", 3, 2] },  // Mes
+                  "-",
+                  { $substrCP: ["$fecha_publicacion", 0, 2] }   // Día
+                ]
+              }, format: "%Y-%m-%d" }},
+              new Date(Finicial)
+            ]
+          }
+        },
+        {
+          $expr: {
+            $lte: [
+              { $dateFromString: { dateString: {
+                $concat: [
+                  { $substrCP: ["$fecha_publicacion", 6, 4] },  // Año
+                  "-",
+                  { $substrCP: ["$fecha_publicacion", 3, 2] },  // Mes
+                  "-",
+                  { $substrCP: ["$fecha_publicacion", 0, 2] }   // Día
+                ]
+              }, format: "%Y-%m-%d" }},
+              new Date(Ffinal)
+            ]
+          }
+        }
+      ]
     });
 
     const count = {};

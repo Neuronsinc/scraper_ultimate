@@ -147,13 +147,68 @@ app.get("/datos-mongo-new", (req, res) => {
   // const Gateware3 =  await gatewa.find({'_id':{ $exists: true }}).lean();
   // console.log('RENDER SOLO CATEGORÍA: ' +  JSON.stringify(Gateware3['Categoria:']))
 
-  async function database() {
-    const datos_mongos = await scraper
-      .find({ _id: { $exists: true }, precio: { $ne: "-" } })
-      .sort({ fecha: -1 }); // Ordena por fecha de forma descendente (-1)
+  function formatDate(date) {
+    var d = new Date(date),
+      month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate(),
+      year = d.getFullYear();
 
-    res.send(JSON.stringify(datos_mongos));
-    //("ESTOS SON!: ", datos_mongos);
+    if (month.length < 2)
+      month = '0' + month;
+    if (day.length < 2)
+      day = '0' + day;
+
+    return [year, month, day].join('-');
+  }
+
+  async function database() {
+    try {
+      const Finicial = formatDate(req.query.inicio);
+      const Ffinal = formatDate(req.query.fin);
+
+      //console.log("Mis fechas =>", new Date(Finicial), new Date(Ffinal));
+      const datos_mongos = await scraper
+        .find({ _id: { $exists: true }, precio: { $ne: "-" }, $and: [
+          {
+            $expr: {
+              $gte: [
+                { $dateFromString: { dateString: {
+                  $concat: [
+                    { $substrCP: ["$fecha_publicacion", 6, 4] },  // Año
+                    "-",
+                    { $substrCP: ["$fecha_publicacion", 3, 2] },  // Mes
+                    "-",
+                    { $substrCP: ["$fecha_publicacion", 0, 2] }   // Día
+                  ]
+                }, format: "%Y-%m-%d" }},
+                new Date(Finicial)
+              ]
+            }
+          },
+          {
+            $expr: {
+              $lte: [
+                { $dateFromString: { dateString: {
+                  $concat: [
+                    { $substrCP: ["$fecha_publicacion", 6, 4] },  // Año
+                    "-",
+                    { $substrCP: ["$fecha_publicacion", 3, 2] },  // Mes
+                    "-",
+                    { $substrCP: ["$fecha_publicacion", 0, 2] }   // Día
+                  ]
+                }, format: "%Y-%m-%d" }},
+                new Date(Ffinal)
+              ]
+            }
+          }
+        ] })
+        .sort({ fecha: -1 }); // Ordena por fecha de forma descendente (-1)
+
+      res.send(JSON.stringify(datos_mongos));
+      //("ESTOS SON!: ", datos_mongos);
+    } catch (error) {
+      res.send(`Error ${error.message}`);
+    }
   }
 
   database();

@@ -1,8 +1,11 @@
 // material
-import { Container, Grid } from '@material-ui/core';
+import { Container, Grid, TextField, Box, Button } from '@material-ui/core';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 // hooks
+import { DateRangePicker } from '@material-ui/lab';
+import { useDispatch, useSelector } from 'react-redux';
+import { changeDates } from '../../redux/slices/Dates';
 import useAuth from '../../hooks/useAuth';
 import useSettings from '../../hooks/useSettings';
 
@@ -16,25 +19,50 @@ import {
   AppTotalActiveUsers
 } from '../../components/_dashboard/general-app';
 import { EcommerceYearlySales } from '../../components/_dashboard/general-ecommerce';
+import DatePicker from '../components/DatePicker';
 
 // ----------------------------------------------------------------------
 
 export default function GeneralApp() {
+  const dispatch = useDispatch();
+  const fechas = useSelector(state => state.date.D)
   const { themeStretch } = useSettings();
   const { user } = useAuth();
   const [resultados, setResultados] = useState([]);
   const [cargando, setCargando] = useState(true);
+  const [val, setVal] = useState([]);
+
+  const GetCategorias = (val=null) => {
+    const Fechas = val || fechas
+    if (Fechas[0].toString() !== "Invalid Date" && Fechas[1].toString() !== "Invalid Date") {
+      if (val) {
+        dispatch(changeDates(val));
+      }
+
+      if (resultados !== null) {
+        setCargando(true);
+        setResultados([]);
+      }
+      axios
+        .get(`${process.env.REACT_APP_APIBACKEND}/suma-categorias`, {
+          params: {
+            inicio:  Fechas[0],
+            fin: Fechas[1]
+          }
+        })
+        .then((response) => {
+          setResultados(response.data);
+          setCargando(false);
+        })
+        .catch((error) => {
+          console.error('Error al obtener los resultados:', error);
+          setCargando(false);
+        });
+    }
+  }
+
   useEffect(() => {
-    axios
-      .get(`${process.env.REACT_APP_APIBACKEND}/suma-categorias`)
-      .then((response) => {
-        setResultados(response.data);
-        setCargando(false);
-      })
-      .catch((error) => {
-        console.error('Error al obtener los resultados:', error);
-        setCargando(false);
-      });
+    GetCategorias();
   }, []);
   const countApartamento = resultados.Apartamentos;
   const porcentApartamento = (countApartamento / 100).toFixed(2);
@@ -50,6 +78,7 @@ export default function GeneralApp() {
           <Grid item xs={12} md={12}>
             <AppWelcome displayName={user.displayName} />
           </Grid>
+          <DatePicker val={val} setVal={setVal} functions={[GetCategorias]} fechas={fechas} sxV={{ mb: 2, ml: 3 }} />
           <Grid item xs={12} md={4}>
             <AppTotalActiveUsers porcent={porcentApartamento} count={countApartamento} />
           </Grid>
