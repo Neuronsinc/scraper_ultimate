@@ -91,7 +91,32 @@ const sumacategorias = async (req, res, next) => {
 
 const fechaPublicacionMax = async (req, res, next) => {
   try {
-    const data = await gatewa.find({}, { _id: 0, fecha_publicacion: 1 }).sort({ timestamp: -1 }).limit(1)
+    const data = await gatewa.aggregate([
+      {
+        $match: {
+          fecha_publicacion: { $regex: /^\d{2}\/\d{2}\/\d{4}$/  } // Exclude documents with "-"
+        }
+      },
+      {
+        $project: {
+          fecha_publicacion: {
+            $dateFromString: { dateString: "$fecha_publicacion", format: "%d/%m/%Y" }
+          }
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          fecha_publicacion: { $max: "$fecha_publicacion" }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          fecha_publicacion: 1
+        }
+      }
+    ])
 
     res.send(data);
 

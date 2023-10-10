@@ -11,15 +11,11 @@ import { BaseOptionChart } from '../../charts';
 // ----------------------------------------------------------------------
 
 export default function EcommerceYearlySales({ consultadash, seriesData, setSeriesData }) {
-  console.log(`LA VARIABLE ES: ${process.env.REACT_APP_APIBACKEND}`);
   const fechas = useSelector(state => state.date.D);
 
-   
-  console.log(consultadash);
   const CHART_DATA = consultadash;
 
   const handleChangeSeriesData = (event) => {
-    console.log(event.target.value)
     setSeriesData(Number(event.target.value));
   };
 
@@ -73,7 +69,6 @@ export default function EcommerceYearlySales({ consultadash, seriesData, setSeri
 
       {CHART_DATA.map((item) => (
         <Box key={item.year} sx={{ mt: 3, mx: 3 }} dir="ltr">
-          {console.log(item.year, seriesData)}
           {item.year === seriesData && (
             <ReactApexChart type="area" series={item.data} options={chartOptions} height={364} />
           )}
