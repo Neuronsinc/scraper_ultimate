@@ -3,7 +3,7 @@ const gatewa = require("../models/scraper.js");
 
 const sumacategorias = async (req, res, next) => {
 
-  
+
   function formatDate(date) {
     var d = new Date(date),
       month = '' + (d.getMonth() + 1),
@@ -29,15 +29,19 @@ const sumacategorias = async (req, res, next) => {
         {
           $expr: {
             $gte: [
-              { $dateFromString: { dateString: {
-                $concat: [
-                  { $substrCP: ["$fecha_publicacion", 6, 4] },  // Año
-                  "-",
-                  { $substrCP: ["$fecha_publicacion", 3, 2] },  // Mes
-                  "-",
-                  { $substrCP: ["$fecha_publicacion", 0, 2] }   // Día
-                ]
-              }, format: "%Y-%m-%d" }},
+              {
+                $dateFromString: {
+                  dateString: {
+                    $concat: [
+                      { $substrCP: ["$fecha_publicacion", 6, 4] },  // Año
+                      "-",
+                      { $substrCP: ["$fecha_publicacion", 3, 2] },  // Mes
+                      "-",
+                      { $substrCP: ["$fecha_publicacion", 0, 2] }   // Día
+                    ]
+                  }, format: "%Y-%m-%d"
+                }
+              },
               new Date(Finicial)
             ]
           }
@@ -45,15 +49,19 @@ const sumacategorias = async (req, res, next) => {
         {
           $expr: {
             $lte: [
-              { $dateFromString: { dateString: {
-                $concat: [
-                  { $substrCP: ["$fecha_publicacion", 6, 4] },  // Año
-                  "-",
-                  { $substrCP: ["$fecha_publicacion", 3, 2] },  // Mes
-                  "-",
-                  { $substrCP: ["$fecha_publicacion", 0, 2] }   // Día
-                ]
-              }, format: "%Y-%m-%d" }},
+              {
+                $dateFromString: {
+                  dateString: {
+                    $concat: [
+                      { $substrCP: ["$fecha_publicacion", 6, 4] },  // Año
+                      "-",
+                      { $substrCP: ["$fecha_publicacion", 3, 2] },  // Mes
+                      "-",
+                      { $substrCP: ["$fecha_publicacion", 0, 2] }   // Día
+                    ]
+                  }, format: "%Y-%m-%d"
+                }
+              },
               new Date(Ffinal)
             ]
           }
@@ -81,6 +89,18 @@ const sumacategorias = async (req, res, next) => {
   }
 };
 
+const fechaPublicacionMax = async (req, res, next) => {
+  try {
+    const data = await gatewa.find({}, { _id: 0, fecha_publicacion: 1 }).sort({ timestamp: -1 }).limit(1)
+
+    res.send(data);
+
+  } catch (error) {
+    return res.send(`Error ${error.message}`);
+  }
+}
+
 module.exports = {
   sumacategorias,
+  fechaPublicacionMax
 };

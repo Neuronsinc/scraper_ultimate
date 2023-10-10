@@ -31,39 +31,63 @@ export default function GeneralApp() {
   const [resultados, setResultados] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [val, setVal] = useState([]);
+  const [consultadash, setData] = useState([]);
+  const [seriesData, setSeriesData] = useState(2023);
 
-  const GetCategorias = (val=null) => {
-    const Fechas = val || fechas
-    if (Fechas[0].toString() !== "Invalid Date" && Fechas[1].toString() !== "Invalid Date") {
-      if (val) {
-        dispatch(changeDates(val));
-      }
+  console.log("ACA EL VAL =>>>>>", val)
 
-      if (resultados !== null) {
-        setCargando(true);
-        setResultados([]);
-      }
-      axios
-        .get(`${process.env.REACT_APP_APIBACKEND}/suma-categorias`, {
-          params: {
-            inicio:  Fechas[0],
-            fin: Fechas[1]
-          }
-        })
-        .then((response) => {
-          setResultados(response.data);
-          setCargando(false);
-        })
-        .catch((error) => {
-          console.error('Error al obtener los resultados:', error);
-          setCargando(false);
-        });
+  const fetchData = async () => {
+    if (consultadash.length !== 0) {
+      setData([])
     }
+    axios
+      .get(`${process.env.REACT_APP_APIBACKEND}/consulta-dashbord`, {
+        params: {
+          inicio: fechas[0],
+          fin: fechas[1]
+        }
+      })
+      .then((response) => {
+        // actualizar el estado con los datos de respuesta
+
+        setData(response.data);
+        setSeriesData(Math.max.apply(null, response.data.map((o) => o.year)))
+      })
+      .catch((error) => {
+        // manejar el error∫
+        console.error(error);
+      });
+  };
+
+
+  const GetCategorias = () => {
+    if (resultados !== null) {
+      setCargando(true);
+      setResultados([]);
+    }
+    axios
+      .get(`${process.env.REACT_APP_APIBACKEND}/suma-categorias`, {
+        params: {
+          inicio: fechas[0],
+          fin: fechas[1]
+        }
+      })
+      .then((response) => {
+        setResultados(response.data);
+        setCargando(false);
+      })
+      .catch((error) => {
+        console.error('Error al obtener los resultados:', error);
+        setCargando(false);
+      });
   }
 
   useEffect(() => {
-    GetCategorias();
-  }, []);
+    if (fechas[0].toString() !== "Invalid Date" && fechas[1].toString() !== "Invalid Date") {
+      GetCategorias();
+      fetchData();
+    }
+  }, [fechas]);
   const countApartamento = resultados.Apartamentos;
   const porcentApartamento = (countApartamento / 100).toFixed(2);
   const countCasas = resultados.Casas;
@@ -78,7 +102,7 @@ export default function GeneralApp() {
           <Grid item xs={12} md={12}>
             <AppWelcome displayName={user.displayName} />
           </Grid>
-          <DatePicker val={val} setVal={setVal} functions={[GetCategorias]} fechas={fechas} sxV={{ mb: 2, ml: 3 }} />
+          <DatePicker val={val} setVal={setVal} fechas={fechas} sxV={{ mb: 2, ml: 3 }} />
           <Grid item xs={12} md={4}>
             <AppTotalActiveUsers porcent={porcentApartamento} count={countApartamento} />
           </Grid>
@@ -96,7 +120,7 @@ export default function GeneralApp() {
           </Grid>
 
           <Grid item xs={12} md={6} lg={8}>
-            <EcommerceYearlySales />
+            <EcommerceYearlySales consultadash={consultadash} seriesData={seriesData} setSeriesData={setSeriesData} />
           </Grid>
         </Grid>
       </Container>

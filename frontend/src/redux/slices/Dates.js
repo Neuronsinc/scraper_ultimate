@@ -5,7 +5,7 @@ import axios from '../../utils/axios';
 // ----------------------------------------------------------------------
 
 const initialState = {
-  D: [new Date(new Date().getFullYear(), 0, 1), new Date(new Date().getFullYear(), 11, 31)]
+  D: ["Invalid Date", "Invalid Date"]
 };
 
 const slice = createSlice({
@@ -19,7 +19,12 @@ const slice = createSlice({
     changeDates(state, action) {
       state.isLoading = false;
       state.D = action.payload;
-    }
+    },
+    // HAS ERROR
+    hasError(state, action) {
+      state.isLoading = false;
+      state.error = action.payload;
+    },
     
   }
 });
@@ -29,20 +34,4 @@ export default slice.reducer;
 
 // Actions
 export const { changeDates } = slice.actions;
-
-// ----------------------------------------------------------------------
-
-// export function getAllPosts() {
-//   return async (dispatch) => {
-//     dispatch(slice.actions.startLoading());
-//     try {
-//       const response = await axios.get('/api/blog/posts/all');
-//       dispatch(slice.actions.getPostsSuccess(response.data.posts));
-//     } catch (error) {
-//       dispatch(slice.actions.hasError(error));
-//     }
-//   };
-// }
-
-// ----------------------------------------------------------------------
 

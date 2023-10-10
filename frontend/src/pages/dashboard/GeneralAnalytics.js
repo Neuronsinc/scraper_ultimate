@@ -99,20 +99,15 @@ export default function GeneralAnalytics() {
   // -----RANGO DE FECHA
   const [valueF, setValueF] = useState([null, null]);
 
-  const fetchData = async (val = null) => {
-    const Fechas = val || fechas
-    if (Fechas[0].toString() !== "Invalid Date" && Fechas[1].toString() !== "Invalid Date") {
-      if (val) {
-        dispatch(changeDates(val));
-      }
+  const fetchData = async () => {
       if (data.length !== 0) {
         setData([]);
       }
       axios
         .get(`${process.env.REACT_APP_APIBACKEND}/datos-mongo-new`, {
           params: {
-            inicio: Fechas[0],
-            fin: Fechas[1]
+            inicio: fechas[0],
+            fin: fechas[1]
           }
         })
         .then((response) => {
@@ -123,12 +118,14 @@ export default function GeneralAnalytics() {
           // manejar el error∫
           console.error(error);
         });
-    }
   };
 
   useEffect(() => {
+    if (fechas[0].toString() !== "Invalid Date" && fechas[1].toString() !== "Invalid Date") {
     fetchData();
-  }, []);
+    enviarS();
+    }
+  }, [fechas]);
 
   const fechaInicialFormateada = valueF[0]
     ? valueF[0]
@@ -316,8 +313,11 @@ export default function GeneralAnalytics() {
       )
     });
   }
-  const enviarSolicitud = useCallback(() => {
-    if (fechas[0].toString() !== "Invalid Date" && fechas[1].toString() !== "Invalid Date") {
+  
+  const enviarS = () => {
+      if (respuesta !== null) {
+        setRespuesta(null);
+      }
       fetch(`${process.env.REACT_APP_APIBACKEND}/filtracion`, {
         method: 'POST',
         headers: {
@@ -332,38 +332,8 @@ export default function GeneralAnalytics() {
           myFunction(data);
         })
         .catch((error) => console.error(error));
-    }
-  }, [localizacionValue, habitacionesValue]);
-
-  const enviarS = () => {
-    const Fechas = val || fechas
-    if (Fechas[0].toString() !== "Invalid Date" && Fechas[1].toString() !== "Invalid Date") {
-      if (val) {
-        dispatch(changeDates(val));
-      }
-      if (respuesta !== null) {
-        setRespuesta(null);
-      }
-      fetch(`${process.env.REACT_APP_APIBACKEND}/filtracion`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ localizacion: localizacionValue, habitaciones: habitacionesValue, inicio: Fechas[0], fin: Fechas[1] })
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          setRespuesta(data);
-          // Llamar a la función que deseas ejecutar cada vez que se reciba una respuesta
-          myFunction(data);
-        })
-        .catch((error) => console.error(error));
-    }
   }
 
-  useEffect(() => {
-    enviarSolicitud();
-  }, [enviarSolicitud]);
 
   const [reset, setReset] = useState(false);
 
@@ -539,7 +509,7 @@ export default function GeneralAnalytics() {
   return (
     <Page title="General: Analytics | dataSracper">
       <Container maxWidth="100%">
-        <DatePicker val={val} setVal={setVal} fechas={fechas} sxV={{ mb: 2 }} functions={[fetchData, enviarS]}/>
+        <DatePicker val={val} setVal={setVal} fechas={fechas} sxV={{ mb: 2 }} />
         <Grid className="component-table" container spacing={3}>
           <Grid className="component-boxing" item xs={5} md={4}>
             <TablaDatos
