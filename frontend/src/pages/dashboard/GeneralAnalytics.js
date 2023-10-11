@@ -704,7 +704,7 @@ export default function GeneralAnalytics() {
 */}
         </Grid>
         <Grid className="component-table" container spacing={3}>
-          <Grid className="div-filtro component-boxing" item xs={6}>
+          {/* <Grid className="div-filtro component-boxing" item xs={6}>
             <LocalizationProvider dateAdapter={AdapterDateFns} locale={es}>
               <DateRangePicker
                 startText="Fecha de inicio"
@@ -723,7 +723,7 @@ export default function GeneralAnalytics() {
                 )}
               />
             </LocalizationProvider>
-          </Grid>
+          </Grid> */}
           {/** 
           <Grid className="div-filtro component-boxing" item xs={4}>
            

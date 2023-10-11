@@ -24,6 +24,8 @@ const dashbordconsult = async (req, res, next) => {
     const Iniciales = formatDate(req.query.inicio);
     const finales = formatDate(req.query.fin);
     
+    const semanaMax = await gatewa.findOne({}, {semana: 1, _id: 0}).sort({ '_id': -1 }).limit(1)
+
     // Agrupar y sumar los registros por año y categoría
     const groupedData = await gatewa.aggregate([
       {
@@ -35,7 +37,9 @@ const dashbordconsult = async (req, res, next) => {
               { $lte: [{ $dateFromString: { dateString: "$fecha_publicacion", format: "%d/%m/%Y" }}, { $dateFromString: { dateString: finales, format: "%d/%m/%Y"}} ] }
               
             ]
-          }
+          },
+          semana: { $eq: semanaMax['_doc']['semana'] }
+
         },
       },
       {

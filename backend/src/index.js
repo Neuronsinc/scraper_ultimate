@@ -167,8 +167,11 @@ app.get("/datos-mongo-new", (req, res) => {
       const Ffinal = formatDate(req.query.fin);
 
       //console.log("Mis fechas =>", new Date(Finicial), new Date(Ffinal));
+
+      const semanaMax = await scraper.findOne({}, {semana: 1, _id: 0}).sort({ '_id': -1 }).limit(1)
+
       const datos_mongos = await scraper
-        .find({ _id: { $exists: true }, precio: { $ne: "-" }, $and: [
+        .find({ _id: { $exists: true }, precio: { $ne: "-" }, semana: { $eq: semanaMax['_doc']['semana'] },$and: [
           {
             $expr: {
               $gte: [

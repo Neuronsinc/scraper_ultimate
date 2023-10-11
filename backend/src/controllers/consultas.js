@@ -23,9 +23,11 @@ const sumacategorias = async (req, res, next) => {
     const Finicial = formatDate(req.query.inicio);
     const Ffinal = formatDate(req.query.fin);
 
+    const semanaMax = await gatewa.findOne({}, {semana: 1, _id: 0}).sort({ '_id': -1 }).limit(1)
+
     const ddatau = await gatewa.find({
       categoria: { $exists: true },
-      precio: { $ne: "-" }, $and: [
+      precio: { $ne: "-" }, semana: { $eq: semanaMax['_doc']['semana'] }, $and: [
         {
           $expr: {
             $gte: [

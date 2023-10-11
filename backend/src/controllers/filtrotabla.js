@@ -25,7 +25,9 @@ const datostabla = async (req, res, next) => {
     const Finicial = formatDate(req.body.inicio);
     const Ffinal = formatDate(req.body.fin);
 
-    let busqueda = {fecha_publicacion: { $ne: "-"  }, $and: [
+    const semanaMax = await gatewa.findOne({}, {semana: 1, _id: 0}).sort({ '_id': -1 }).limit(1)
+
+    let busqueda = {fecha_publicacion: { $ne: "-"  }, semana: { $eq: semanaMax['_doc']['semana'] }, $and: [
       {
         $expr: {
           $gte: [
