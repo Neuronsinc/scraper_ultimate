@@ -9,7 +9,7 @@ import moreVerticalFill from '@iconify/icons-eva/more-vertical-fill';
 import checkmarkCircle2Fill from '@iconify/icons-eva/checkmark-circle-2-fill';
 // material
 import { useTheme } from '@material-ui/core/styles';
-import { Stack, Typography, Box, Rating, Pagination, LinearProgress, IconButton } from '@material-ui/core';
+import { Stack, Typography, Box, Rating, Pagination, LinearProgress, IconButton, Button } from '@material-ui/core';
 import {
   DataGrid,
   GridToolbar,
@@ -17,6 +17,7 @@ import {
   getGridNumericColumnOperators
 } from '@material-ui/data-grid';
 // utils
+import { Link } from '@material-ui/icons';
 import createAvatar from '../../utils/createAvatar';
 import { fPercent } from '../../utils/formatNumber';
 import mockData from '../../utils/mock-data';
@@ -126,13 +127,13 @@ export default function ConsultaDataFiltro(props) {
     : '';
   const formatteMminimoD = rangoprecio.preciominD
     ? `$${Number(rangoprecio.preciominD)
-        .toFixed(2)
-        .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`
+      .toFixed(2)
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`
     : '';
   const formatteMximoD = rangoprecio.preciomaxD
     ? `$${Number(rangoprecio.preciomaxD)
-        .toFixed(2)
-        .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`
+      .toFixed(2)
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`
     : '';
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
@@ -233,11 +234,11 @@ export default function ConsultaDataFiltro(props) {
   const filteredData =
     startDate && endDate
       ? data.filter((item) => {
-          const dateStr = item.fecha_publicacion;
-          if (!dateStr) return false; // Si el campo está vacío, no se filtra
-          const date = new Date(dateStr.split('/').reverse().join('-'));
-          return date >= startDate && date <= endDate;
-        })
+        const dateStr = item.fecha_publicacion;
+        if (!dateStr) return false; // Si el campo está vacío, no se filtra
+        const date = new Date(dateStr.split('/').reverse().join('-'));
+        return date >= startDate && date <= endDate;
+      })
       : data;
 
   const hasDatesInColumn = filteredData.length > 0;
@@ -253,6 +254,11 @@ export default function ConsultaDataFiltro(props) {
     }
     handleClick();
     setSnackbarOpen(false);
+  };
+
+  const handleGoToLink = (params) => {
+    const url = (data.find(o => o.id === params.id))?.url || "#"
+    window.open(url);
   };
 
   useEffect(() => {
@@ -274,10 +280,10 @@ export default function ConsultaDataFiltro(props) {
               última fecha hasta{' '}
               {latestDate
                 ? new Date(latestDate).toLocaleDateString('es-ES', {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric'
-                  })
+                  day: '2-digit',
+                  month: '2-digit',
+                  year: 'numeric'
+                })
                 : 'N/A'}
             </Typography>
           </div>,
@@ -317,6 +323,10 @@ export default function ConsultaDataFiltro(props) {
     : filteredDataByLocation;
   const columns = [
     { field: 'id', headerName: 'ID', width: 70 },
+    {
+      field: 'url', headerName: 'Anuncio', valueFormatter: (params) => (data.find(o => o.id === params.id))?.url, width: 150,
+      renderCell: (params) => <Button variant='contained' startIcon={<Link />} onClick={() => handleGoToLink(params)}> Ir</Button>
+    },
     { field: 'cat', headerName: 'Categoría', width: 230 },
     { field: 'publi', headerName: 'Publicado', width: 230 },
     { field: 'local', headerName: 'Localización', width: 220 },

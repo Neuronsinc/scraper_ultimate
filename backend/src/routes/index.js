@@ -10,7 +10,7 @@ const {
   GatewaToggleDone,
   crear,
 } = require("../controllers/gatway.controller");
-const { sumacategorias } = require("../controllers/consultas");
+const { sumacategorias, fechaPublicacionMax } = require("../controllers/consultas");
 const { datostabla, tablefiltro } = require("../controllers/filtrotabla");
 const { dashbordconsult } = require("../controllers/dashbordConsulta");
 const { categorias } = require("../controllers/consultainputs");
@@ -22,6 +22,7 @@ const { UsersData } = require("../controllers/usuario");
 //Daga entrega
 
 router.get("/suma-categorias", sumacategorias);
+router.get("/fecha-max", fechaPublicacionMax);
 router.post("/filtracion", datostabla);
 router.get("/consulta-dashbord", dashbordconsult);
 router.post("/table-filtro", tablefiltro);

@@ -2,12 +2,44 @@
 const gatewa = require("../models/scraper.js");
 
 const dashbordconsult = async (req, res, next) => {
+
+  function formatDate(date) {
+    var d = new Date(date),
+      month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate(),
+      year = d.getFullYear();
+
+    if (month.length < 2)
+      month = '0' + month;
+    if (day.length < 2)
+      day = '0' + day;
+
+    return [day, month, year].join("/");
+  }
+
   try {
+
+    //const anioInicial = formatDate(req.query.inicio)[0];
+    //const anioFinal = formatDate(req.query.fin)[0];
+    const Iniciales = formatDate(req.query.inicio);
+    const finales = formatDate(req.query.fin);
+    
+    const semanaMax = await gatewa.findOne({}, {semana: 1, _id: 0}).sort({ '_id': -1 }).limit(1)
+
     // Agrupar y sumar los registros por año y categoría
     const groupedData = await gatewa.aggregate([
       {
         $match: {
           fecha_publicacion: { $regex: /^\d{2}\/\d{2}\/\d{4}$/ }, // Filtrar documentos con formato de fecha válido "dd/mm/YYYY"
+          $expr: {
+            $and: [
+              { $gte: [{ $dateFromString: { dateString: "$fecha_publicacion", format: "%d/%m/%Y" }}, { $dateFromString: { dateString: Iniciales, format: "%d/%m/%Y"}}]},
+              { $lte: [{ $dateFromString: { dateString: "$fecha_publicacion", format: "%d/%m/%Y" }}, { $dateFromString: { dateString: finales, format: "%d/%m/%Y"}} ] }
+              
+            ]
+          },
+          semana: { $eq: semanaMax['_doc']['semana'] }
+
         },
       },
       {
@@ -60,7 +92,7 @@ const dashbordconsult = async (req, res, next) => {
         $sort: { year: 1, name: 1 },
       },
     ]);
-
+    console.log(groupedData)
     // Crear un objeto para almacenar el resultado transformado
     const transformedData = {};
 
@@ -91,7 +123,7 @@ const dashbordconsult = async (req, res, next) => {
       }
 
       // Agregar los datos de la categoría al objeto del año actual
-      transformedData[year].data.push(categoryData);
+        transformedData[year].data.push(categoryData);
     });
 
     // Convertir el objeto a un array y ordenar por año
@@ -102,7 +134,7 @@ const dashbordconsult = async (req, res, next) => {
     // Enviar la respuesta como JSON
     res.json(chartData);
     const datos_dash = JSON.stringify(chartData);
-    console.log(datos_dash);
+    //console.log(datos_dash);
   } catch (error) {
     // Manejar los errores
     console.error(error);

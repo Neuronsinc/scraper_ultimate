@@ -24,6 +24,8 @@ import {
   Switch
 } from '@material-ui/core';
 import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
+import { changeDates } from '../../redux/slices/Dates';
 import { MIconButton } from '../../components/@material-extend';
 import './estilos.css';
 // hooks
@@ -33,6 +35,7 @@ import TablaDatos from './TablaDatos';
 import TablaDatosTotal from './TablaDatosTotal';
 import ConsultaDataFiltro from './ConsultaDataFiltro';
 import SliderDan from './sliders';
+import DatePicker from '../components/DatePicker';
 // ----------------------------------------------------------------------
 
 const pricesD = [
@@ -45,9 +48,13 @@ const pricesD = [
 
 // ----------------------------------------------------------------------
 export default function GeneralAnalytics() {
+  const dispatch = useDispatch()
   const varlink = `${process.env.REACT_APP_APIBACKEND}/precios-filtro`;
+  const fechas = useSelector(state => state.date.D)
+
   // Obtener los precios
   const [precios, setPrecios] = useState([]);
+  const [val, setVal] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -81,22 +88,6 @@ export default function GeneralAnalytics() {
   const valor4D = precios.dolares && precios.dolares.length > 3 ? precios.dolares[3].value : 0;
   const [data, setData] = useState([]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      axios
-        .get(`${process.env.REACT_APP_APIBACKEND}/datos-mongo-new`)
-        .then((response) => {
-          // actualizar el estado con los datos de respuesta
-          setData(response.data);
-        })
-        .catch((error) => {
-          // manejar el error∫
-          console.error(error);
-        });
-    };
-
-    fetchData();
-  }, []);
   // Swich para activar filto
   const [actifiltro, setIsChecked] = useState(false);
 
@@ -108,28 +99,56 @@ export default function GeneralAnalytics() {
   // -----RANGO DE FECHA
   const [valueF, setValueF] = useState([null, null]);
 
+  const fetchData = async () => {
+      if (data.length !== 0) {
+        setData([]);
+      }
+      axios
+        .get(`${process.env.REACT_APP_APIBACKEND}/datos-mongo-new`, {
+          params: {
+            inicio: fechas[0],
+            fin: fechas[1]
+          }
+        })
+        .then((response) => {
+          // actualizar el estado con los datos de respuesta
+          setData(response.data);
+        })
+        .catch((error) => {
+          // manejar el error∫
+          console.error(error);
+        });
+  };
+
+  useEffect(() => {
+    if (fechas[0].toString() !== "Invalid Date" && fechas[1].toString() !== "Invalid Date") {
+    fetchData();
+    enviarS();
+    }
+  }, [fechas]);
+
   const fechaInicialFormateada = valueF[0]
     ? valueF[0]
-        .toLocaleDateString('es-ES', {
-          day: 'numeric',
-          month: 'numeric',
-          year: 'numeric'
-        })
-        .split('/')
-        .map((part) => part.padStart(2, '0'))
-        .join('/')
+      .toLocaleDateString('es-ES', {
+        day: 'numeric',
+        month: 'numeric',
+        year: 'numeric'
+      })
+      .split('/')
+      .map((part) => part.padStart(2, '0'))
+      .join('/')
     : '';
 
   const fechaFinalFormateada = valueF[1]
     ? valueF[1]
-        .toLocaleDateString('es-ES', {
-          day: 'numeric',
-          month: 'numeric',
-          year: 'numeric'
-        })
-        .split('/')
-        .map((part) => part.padStart(2, '0'))
-        .join('/')
+      .toLocaleDateString('es-ES', {
+        day: 'numeric',
+        month: 'numeric',
+        year: 'numeric'
+      })
+      .split('/')
+      .map((part) => part.padStart(2, '0'))
+      .join('/')
     : '';
 
   // Multiples categorias
@@ -294,26 +313,27 @@ export default function GeneralAnalytics() {
       )
     });
   }
-  const enviarSolicitud = useCallback(() => {
-    fetch(`${process.env.REACT_APP_APIBACKEND}/filtracion`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ localizacion: localizacionValue, habitaciones: habitacionesValue })
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setRespuesta(data);
-        // Llamar a la función que deseas ejecutar cada vez que se reciba una respuesta
-        myFunction(data);
+  
+  const enviarS = () => {
+      if (respuesta !== null) {
+        setRespuesta(null);
+      }
+      fetch(`${process.env.REACT_APP_APIBACKEND}/filtracion`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ localizacion: localizacionValue, habitaciones: habitacionesValue, inicio: fechas[0], fin: fechas[1] })
       })
-      .catch((error) => console.error(error));
-  }, [localizacionValue, habitacionesValue]);
+        .then((response) => response.json())
+        .then((data) => {
+          setRespuesta(data);
+          // Llamar a la función que deseas ejecutar cada vez que se reciba una respuesta
+          myFunction(data);
+        })
+        .catch((error) => console.error(error));
+  }
 
-  useEffect(() => {
-    enviarSolicitud();
-  }, [enviarSolicitud]);
 
   const [reset, setReset] = useState(false);
 
@@ -489,6 +509,7 @@ export default function GeneralAnalytics() {
   return (
     <Page title="General: Analytics | dataSracper">
       <Container maxWidth="100%">
+        <DatePicker val={val} setVal={setVal} fechas={fechas} sxV={{ mb: 2 }} />
         <Grid className="component-table" container spacing={3}>
           <Grid className="component-boxing" item xs={5} md={4}>
             <TablaDatos
@@ -683,7 +704,7 @@ export default function GeneralAnalytics() {
 */}
         </Grid>
         <Grid className="component-table" container spacing={3}>
-          <Grid className="div-filtro component-boxing" item xs={6}>
+          {/* <Grid className="div-filtro component-boxing" item xs={6}>
             <LocalizationProvider dateAdapter={AdapterDateFns} locale={es}>
               <DateRangePicker
                 startText="Fecha de inicio"
@@ -702,7 +723,7 @@ export default function GeneralAnalytics() {
                 )}
               />
             </LocalizationProvider>
-          </Grid>
+          </Grid> */}
           {/** 
           <Grid className="div-filtro component-boxing" item xs={4}>
            

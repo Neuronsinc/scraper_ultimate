@@ -5,36 +5,15 @@ import ReactApexChart from 'react-apexcharts';
 // material
 import { Card, CardHeader, Box, TextField } from '@material-ui/core';
 //
+import { useSelector } from 'react-redux';
 import { BaseOptionChart } from '../../charts';
 
 // ----------------------------------------------------------------------
 
-export default function EcommerceYearlySales() {
-  console.log(`LA VARIABLE ES: ${process.env.REACT_APP_APIBACKEND}`);
-  const [consultadash, setData] = useState([]);
+export default function EcommerceYearlySales({ consultadash, seriesData, setSeriesData }) {
+  const fechas = useSelector(state => state.date.D);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      axios
-        .get(`${process.env.REACT_APP_APIBACKEND}/consulta-dashbord`)
-        .then((response) => {
-          // actualizar el estado con los datos de respuesta
-
-          setData(response.data);
-        })
-        .catch((error) => {
-          // manejar el error∫
-          console.error(error);
-        });
-    };
-
-    fetchData();
-  }, []);
-
-  console.log(consultadash);
   const CHART_DATA = consultadash;
-
-  const [seriesData, setSeriesData] = useState(2023);
 
   const handleChangeSeriesData = (event) => {
     setSeriesData(Number(event.target.value));

@@ -3,10 +3,64 @@ const gatewa = require("../models/scraper.js");
 const formatearMoneda = require("../controllers/FormatMondea");
 
 const datostabla = async (req, res, next) => {
+
+  function formatDate(date) {
+    var d = new Date(date),
+      month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate(),
+      year = d.getFullYear();
+
+    if (month.length < 2)
+      month = '0' + month;
+    if (day.length < 2)
+      day = '0' + day;
+
+    return [year, month, day].join('-');
+  }
+
   try {
     const localizacion = req.body.localizacion;
     const habitaciones = req.body.habitaciones; // Obtener los datos enviados en la petición POST
-    let busqueda = {};
+
+    const Finicial = formatDate(req.body.inicio);
+    const Ffinal = formatDate(req.body.fin);
+
+    const semanaMax = await gatewa.findOne({}, {semana: 1, _id: 0}).sort({ '_id': -1 }).limit(1)
+
+    let busqueda = {fecha_publicacion: { $ne: "-"  }, semana: { $eq: semanaMax['_doc']['semana'] }, $and: [
+      {
+        $expr: {
+          $gte: [
+            { $dateFromString: { dateString: {
+              $concat: [
+                { $substrCP: ["$fecha_publicacion", 6, 4] },  // Año
+                "-",
+                { $substrCP: ["$fecha_publicacion", 3, 2] },  // Mes
+                "-",
+                { $substrCP: ["$fecha_publicacion", 0, 2] }   // Día
+              ]
+            }, format: "%Y-%m-%d" }},
+            new Date(Finicial)
+          ]
+        }
+      },
+      {
+        $expr: {
+          $lte: [
+            { $dateFromString: { dateString: {
+              $concat: [
+                { $substrCP: ["$fecha_publicacion", 6, 4] },  // Año
+                "-",
+                { $substrCP: ["$fecha_publicacion", 3, 2] },  // Mes
+                "-",
+                { $substrCP: ["$fecha_publicacion", 0, 2] }   // Día
+              ]
+            }, format: "%Y-%m-%d" }},
+            new Date(Ffinal)
+          ]
+        }
+      }
+    ]};
 
     if (localizacion) {
       busqueda.localizacion = localizacion;
@@ -25,8 +79,8 @@ const datostabla = async (req, res, next) => {
     }
 
     console.log(habitaciones);
-    // console.log(busqueda);
-
+    //console.log(busqueda);
+    
     let precios;
     let preciom2;
     let promedioDolares;
@@ -37,6 +91,7 @@ const datostabla = async (req, res, next) => {
       .find(busqueda)
       .select({ precio: 1, m2: 1, m2_construccion: 1, precio_m2_terreno: 1 })
       .then((resultados) => {
+        //console.log(resultados)
         const resultadosZona21 = resultados.filter((p) => p["precio"]);
 
         // Imprimir resultados filtrados
