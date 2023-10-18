@@ -1,4 +1,4 @@
-import { Grid, TextField, Box, Button } from '@material-ui/core';
+import { Grid, TextField, Box, Button, Stack } from '@material-ui/core';
 import { DateRangePicker } from '@material-ui/lab';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
@@ -73,24 +73,30 @@ export default function DatePicker({ val, setVal, fechas, sxV }) {
     }, [])
 
     return (
-        <Grid container sx={sxV} justifyContent="flex-start" >
-            <DateRangePicker
-                startText="Fecha de inicio"
-                endText="Fecha fin"
-                value={val.length === 0 ? fechas : val}
-                inputFormat="dd/MM/yyyy"
-                onChange={(newValue) => {
-                    setVal(newValue);
-                }}
-                renderInput={(startProps, endProps) => (
-                    <>
-                        <TextField {...startProps} format="dd/MM/yyyy" />
-                        <Box sx={{ mx: 2 }}>a</Box>
-                        <TextField {...endProps} format="dd/MM/yyyy" />
-                    </>
-                )}
-            />
-            <Button variant="outlined" sx={{ ml: 1 }} onClick={() => { handleDispatch(val) }}>Filtrar</Button>
+        <Grid container sx={sxV} justifyContent="flex-start" spacing={2}>
+            <Grid className="component-boxing" item xs={12} sm={6} md={5}>
+                <DateRangePicker
+                    startText="Fecha de inicio"
+                    endText="Fecha fin"
+                    value={val.length === 0 ? fechas : val}
+                    inputFormat="dd/MM/yyyy"
+                    onChange={(newValue) => {
+                        setVal(newValue);
+                    }}
+                    renderInput={(startProps, endProps) => (
+                        <>
+                            <TextField {...startProps} format="dd/MM/yyyy" fullWidth/>
+                            <Box sx={{ mx: 2 }}>a</Box>
+                            <TextField {...endProps} format="dd/MM/yyyy" fullWidth/>
+                        </>
+                    )}
+                />
+            </Grid>
+            <Grid className="component-boxing" item xs={12} sm={6} md={2}>
+                <Stack spacing={2} direction="row">
+                    <Button variant="outlined" className="btns component-boxing" onClick={() => { handleDispatch(val) }}>Filtrar</Button>
+                </Stack>
+            </Grid>
         </Grid>
     )
 }

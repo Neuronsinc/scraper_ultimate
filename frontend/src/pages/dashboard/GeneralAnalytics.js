@@ -510,8 +510,8 @@ export default function GeneralAnalytics() {
     <Page title="General: Analytics | dataSracper">
       <Container maxWidth="100%">
         <DatePicker val={val} setVal={setVal} fechas={fechas} sxV={{ mb: 2 }} />
-        <Grid className="component-table" container spacing={3}>
-          <Grid className="component-boxing" item xs={5} md={4}>
+        <Grid className="component-table" container spacing={3} alignItems="stretch">
+          <Grid className="component-boxing" item xs={5} md={4} style={{ display: 'flex'}}>
             <TablaDatos
               moneda="Q"
               textmoneda="Quetzales"
@@ -559,7 +559,7 @@ export default function GeneralAnalytics() {
               }
             />
           </Grid>
-          <Grid className="component-boxing" item xs={5} md={4}>
+          <Grid className="component-boxing" item xs={5} md={4} style={{ display: 'flex'}}>
             <TablaDatos
               moneda="$"
               textmoneda="Dólares"
@@ -607,7 +607,7 @@ export default function GeneralAnalytics() {
               }
             />
           </Grid>
-          <Grid className="component-boxing" item xs={4} md={4}>
+          <Grid className="component-boxing" item xs={4} md={4} style={{ display: 'flex'}}>
             <TablaDatosTotal
               totalcantidades={
                 respuesta && respuesta.totalcantidades ? (
@@ -641,9 +641,9 @@ export default function GeneralAnalytics() {
           </Grid>
         </Grid>
 
-        <Grid className="component-table" container spacing={3}>
+        <Grid mt={1} className="component-table" container spacing={3}>
           <Grid className="component-boxing" item xs={12} sm={6} md={4}>
-            <Box sx={{ padding: '17px', width: '100%' }}>
+            <Box sx={{ width: '100%' }}>
               <Autocomplete
                 fullWidth
                 options={top100Films}
@@ -654,7 +654,7 @@ export default function GeneralAnalytics() {
             </Box>
           </Grid>
           <Grid className="component-boxing" item xs={12} sm={6} md={4}>
-            <Box sx={{ padding: '17px', width: '100%' }}>
+            <Box sx={{width: '100%' }}>
               <Autocomplete
                 multiple
                 fullWidth
@@ -668,9 +668,9 @@ export default function GeneralAnalytics() {
               />
             </Box>
           </Grid>
-          <Grid className="component-boxing" sx={{ padding: '17px' }} item xs={4}>
-            <Stack sx={{ width: '100%', padding: '17px' }} spacing={3} direction="row">
-              <Button onClick={handleGeneratePDF} className="btns component-boxing" variant="outlined">
+          <Grid className="component-boxing" item xs={4}>
+            <Stack spacing={3} direction="row">
+              <Button onClick={handleGeneratePDF} sx={{ minHeight: '56px' }} className="btns component-boxing" variant="outlined">
                 Exportar
               </Button>
             </Stack>
@@ -703,7 +703,7 @@ export default function GeneralAnalytics() {
 </Grid>
 */}
         </Grid>
-        <Grid className="component-table" container spacing={3}>
+        {/* <Grid className="component-table" container spacing={3}>
           {/* <Grid className="div-filtro component-boxing" item xs={6}>
             <LocalizationProvider dateAdapter={AdapterDateFns} locale={es}>
               <DateRangePicker
@@ -747,13 +747,12 @@ export default function GeneralAnalytics() {
             />
            
           </Grid> 
-          */}
           <Grid item xs={4}>
             <Button id="btnreset" variant="contained" sx={{ marginLeft: '50px' }} onClick={handleReset}>
               Resetear
             </Button>
           </Grid>
-        </Grid>
+        </Grid> */}
         <Grid container spacing={3}>
           <Grid item xs={12}>
             {data && (
