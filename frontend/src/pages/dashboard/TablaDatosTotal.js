@@ -4,8 +4,8 @@ export default function TablaDatosTotal(propss) {
   return (
     <Card id="totaldato" sx={{ display: 'flex', alignItems: 'center', p: 3, flexDirection: 'column', width: '100%' }}>
       <Grid container spacing={2} rowSpacing={1}>
-        <Grid item xs={12}>
-          <h5>Total de unidades ofertados</h5>
+        <Grid item xs={12} style={{ display: "grid" }}>
+          <h5 style={{ fontWeight: "normal", justifySelf: "center" }}>Total de unidades ofertados</h5>
         </Grid>
         <Grid item xs={12}>
           <div className="totalResul">
@@ -13,19 +13,19 @@ export default function TablaDatosTotal(propss) {
           </div>
         </Grid>
         <Grid item xs={12}>
-          <h5>Precio promedio</h5>
+          <h5 style={{ fontWeight: "normal" }}>Precio promedio</h5>
         </Grid>
         <Grid item xs={12}>
           <p className="dolar-total">{propss.preciopromedio}</p>
         </Grid>
         <Grid item xs={12}>
-          <h5>Precio por m²</h5>
+          <h5 style={{ fontWeight: "normal" }}>Precio por m²</h5>
         </Grid>
         <Grid item xs={12}>
           <p className="dolar-total">{propss.preciopromediom2}</p>
         </Grid>
         <Grid item xs={12}>
-          <h5>Total área</h5>
+          <h5 style={{ fontWeight: "normal" }}>Total área</h5>
         </Grid>
         <Grid item xs={12}>
           <p className="dolar-total">{typeof propss.totalcantidades !== 'object' ? `${String(Number((propss.totaarea).split(' ')[0]).toLocaleString('en-US', { style: 'decimal', minimumFractionDigits: 2, maximumFractionDigits: 2 }))} ${(propss.totaarea).split(' ')[1]}` : ''}</p>

@@ -14,22 +14,22 @@ export default function TablaDatos(props) {
   return (
     <Card id={iddato} sx={{ display: 'flex', alignItems: 'center', p: 3, flexDirection: 'column', width: '100%' }}>
       <Grid container spacing={2} rowSpacing={1}>
-        <Grid item xs={4}>
+        <Grid item xs={4} lg={4}>
           <div className="title-item" style={{ height: '100%' }}>
             <h1>{props.moneda}</h1>
           </div>
         </Grid>
         <Grid item xs={8}>
-          <div className="titlebox">Unidades que aparecen documentados en {props.textmoneda}</div>
+          <div className="titlebox">Unidades que aparecen documentados  en <br/> {props.textmoneda} </div>
         </Grid>
         <Grid item xs={12}>
-          <h5>Cantidad de unidades</h5>
+          <h5 style={{ fontWeight: "normal" }}>Cantidad de unidades</h5>
         </Grid>
         <Grid item xs={12}>
           <h3 style={{ textAlign: 'center' }}>{typeof props.cantunidades !== 'object' ? Number(props.cantunidades).toLocaleString('en-US', { style: 'decimal' }) : 0}</h3>
         </Grid>
         <Grid item xs={12}>
-          <h5>Precio promedio</h5>
+          <h5 style={{ fontWeight: "normal" }}>Precio promedio</h5>
         </Grid>
         <Grid item xs={12} sm={6} md={6} lg={6}>
           <div style={{ float: 'left', width: '100%'}}>
@@ -42,7 +42,7 @@ export default function TablaDatos(props) {
           </div>
         </Grid>
         <Grid item xs={12}>
-          <h5>Precio por m²</h5>
+          <h5 style={{ fontWeight: "normal" }} >Precio por m²</h5>
         </Grid>
         <Grid item xs={12} sm={6} md={6} lg={6}>
           <div style={{ float: 'left', width: '100%' }}>
@@ -55,10 +55,10 @@ export default function TablaDatos(props) {
           </div>
         </Grid>
         <Grid item xs={12}>
-          <h5>Área promedio</h5>
+          <h5 style={{ fontWeight: "normal" }}>Área promedio</h5>
         </Grid>
         <Grid item xs={12}>
-          <h3 style={{ textAlign: 'center' }}>{typeof props.areapromedio !== 'object' ? `${String(Number((props.areapromedio).split(' ')[0]).toLocaleString('en-US', { style: 'decimal', minimumFractionDigits: 2, maximumFractionDigits: 2 }))} ${(props.areapromedio).split(' ')[1]}` : ''}</h3>
+          <h3 style={{ textAlign: 'center', fontWeight: "normal" }}>{typeof props.areapromedio !== 'object' ? `${String(Number((props.areapromedio).split(' ')[0]).toLocaleString('en-US', { style: 'decimal', minimumFractionDigits: 2, maximumFractionDigits: 2 }))} ${(props.areapromedio).split(' ')[1]}` : ''}</h3>
         </Grid>
       </Grid>
     </Card>
