@@ -17,6 +17,7 @@ const { categorias } = require("../controllers/consultainputs");
 const { preciosfiltro } = require("../controllers/filtroprecio");
 const { rangoprecio } = require("../controllers/rangoprecios");
 const { UsersData } = require("../controllers/usuario");
+const { obtenerTodos } = require("../controllers/paises");
 //const { filtrotabla } = require("../controllers/filtrotabla");
 
 //Daga entrega
@@ -29,6 +30,7 @@ router.post("/table-filtro", tablefiltro);
 router.get("/categorias", categorias);
 router.get("/precios-filtro", preciosfiltro);
 router.post("/rango-precios", rangoprecio);
+router.get("/paises", obtenerTodos);
 
 // Usuarios
  router.get("/usarios", UsersData);
