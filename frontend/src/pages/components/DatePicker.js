@@ -1,6 +1,6 @@
-import { Grid, TextField, Box, Button } from '@material-ui/core';
+import { Grid, TextField, Box, Button, Stack, Autocomplete} from '@material-ui/core';
 import { DateRangePicker } from '@material-ui/lab';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import axios from 'axios';
 import closeFill from '@iconify/icons-eva/close-fill';
@@ -11,6 +11,8 @@ import { changeDates } from '../../redux/slices/Dates';
 
 export default function DatePicker({ val, setVal, fechas, sxV }) {
     const dispatch = useDispatch();
+    const [paises, setPaises] = useState([]);
+    const [selectedPais, setSelectedPais] = useState([]);
 
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     function myFunction(data, type) {
@@ -55,6 +57,10 @@ export default function DatePicker({ val, setVal, fechas, sxV }) {
         }
     }
 
+    const handlePais = (event, value) => {
+        setSelectedPais(value)
+      };
+
     useEffect(() => {
         if (fechas[0].toString() === "Invalid Date" && fechas[1].toString() === "Invalid Date") {
             axios.get(`${process.env.REACT_APP_APIBACKEND}/fecha-max`)
@@ -70,27 +76,61 @@ export default function DatePicker({ val, setVal, fechas, sxV }) {
                     }
                 })
         }
+
+        if (paises.length === 0) {
+            axios.get(`${process.env.REACT_APP_APIBACKEND}/paises`)
+                .then((res) => {
+                    if (res.status === 200) {
+                        const data = (res.data).map((val) => ({
+                            title: val.Nombre,
+                            id: val.id // o el valor que quieras asignarle
+                        }));
+                        setPaises(data);
+                        setSelectedPais(data[0]);
+                    }
+                })
+        }
+
+
     }, [])
 
     return (
-        <Grid container sx={sxV} justifyContent="flex-start" >
-            <DateRangePicker
-                startText="Fecha de inicio"
-                endText="Fecha fin"
-                value={val.length === 0 ? fechas : val}
-                inputFormat="dd/MM/yyyy"
-                onChange={(newValue) => {
-                    setVal(newValue);
-                }}
-                renderInput={(startProps, endProps) => (
-                    <>
-                        <TextField {...startProps} format="dd/MM/yyyy" />
-                        <Box sx={{ mx: 2 }}>a</Box>
-                        <TextField {...endProps} format="dd/MM/yyyy" />
-                    </>
-                )}
-            />
-            <Button variant="outlined" sx={{ ml: 1 }} onClick={() => { handleDispatch(val) }}>Filtrar</Button>
+        <Grid container sx={sxV} justifyContent="flex-start" spacing={2}>
+            <Grid className="component-boxing" item xs={12} sm={6} md={5}>
+                <DateRangePicker
+                    startText="Fecha de inicio"
+                    endText="Fecha fin"
+                    value={val.length === 0 ? fechas : val}
+                    inputFormat="dd/MM/yyyy"
+                    onChange={(newValue) => {
+                        setVal(newValue);
+                    }}
+                    renderInput={(startProps, endProps) => (
+                        <>
+                            <TextField {...startProps} format="dd/MM/yyyy" fullWidth />
+                            <Box sx={{ mx: 2 }}>a</Box>
+                            <TextField {...endProps} format="dd/MM/yyyy" fullWidth />
+                        </>
+                    )}
+                />
+            </Grid>
+            <Grid className="component-boxing" item xs={12} sm={6} md={5}>
+                <Box sx={{ width: '100%' }}>
+                    <Autocomplete
+                        fullWidth
+                        options={paises}
+                        value={selectedPais}
+                        onChange={handlePais}
+                        getOptionLabel={(option) => option.title}
+                        renderInput={(params) => <TextField {...params} label="Pais" margin="none" />}
+                    />
+                </Box>
+            </Grid>
+            <Grid className="component-boxing" item xs={12} sm={12} md={2}>
+                <Stack spacing={2} direction="row">
+                    <Button variant="outlined" className="btns component-boxing" onClick={() => { handleDispatch(val) }}>Filtrar</Button>
+                </Stack>
+            </Grid>
         </Grid>
     )
 }

@@ -1,54 +1,36 @@
-import { Card } from '@material-ui/core';
+import { Card, Grid } from '@material-ui/core';
 
 export default function TablaDatosTotal(propss) {
   return (
-    <Card id="totaldato" sx={{ display: 'flex', alignItems: 'center', p: 3 }}>
-      <table>
-        <thead>
-          <tr>
-            <th className="titles">Total de unidades ofertados</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>
-              <div className="totalResul">
-                <h1 style={{ textAlign: 'center' }}>{propss.totalcantidades}</h1>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td className="total-des">
-              <div style={{ float: 'left', width: '50%', padding: '5px' }}>
-                <p className="item-s">Precio promedio</p>
-              </div>
-              <div style={{ float: 'right', width: '50%', padding: '5px' }}>
-                <p className="dolar-total">{propss.preciopromedio}</p>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <div style={{ float: 'left', width: '50%', padding: '5px' }}>
-                <p className="item-s">Precio por M2</p>
-              </div>
-              <div style={{ float: 'right', width: '50%', padding: '5px' }}>
-                <p className="dolar-total">{propss.preciopromediom2}</p>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <div style={{ float: 'left', width: '50%', padding: '5px' }}>
-                <p className="item-s">Total Área</p>
-              </div>
-              <div style={{ float: 'right', width: '50%', padding: '5px' }}>
-                <p className="dolar-total">{propss.totaarea}</p>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <Card id="totaldato" sx={{ display: 'flex', alignItems: 'center', p: 3, flexDirection: 'column', width: '100%' }}>
+      <Grid container spacing={2} rowSpacing={1}>
+        <Grid item xs={12} style={{ display: "grid" }}>
+          <h5 style={{ fontWeight: "normal", justifySelf: "center" }}>Total de unidades ofertados</h5>
+        </Grid>
+        <Grid item xs={12}>
+          <div className="totalResul">
+          <h1 style={{ textAlign: 'center' }}>{typeof propss.totalcantidades !== 'object' ? Number(propss.totalcantidades).toLocaleString('en-US', { style: 'decimal' }) : 0}</h1>
+          </div>
+        </Grid>
+        <Grid item xs={12}>
+          <h5 style={{ fontWeight: "normal" }}>Precio promedio</h5>
+        </Grid>
+        <Grid item xs={12}>
+          <p className="dolar-total">{propss.preciopromedio}</p>
+        </Grid>
+        <Grid item xs={12}>
+          <h5 style={{ fontWeight: "normal" }}>Precio por m²</h5>
+        </Grid>
+        <Grid item xs={12}>
+          <p className="dolar-total">{propss.preciopromediom2}</p>
+        </Grid>
+        <Grid item xs={12}>
+          <h5 style={{ fontWeight: "normal" }}>Total área</h5>
+        </Grid>
+        <Grid item xs={12}>
+          <p className="dolar-total">{typeof propss.totalcantidades !== 'object' ? `${String(Number((propss.totaarea).split(' ')[0]).toLocaleString('en-US', { style: 'decimal', minimumFractionDigits: 2, maximumFractionDigits: 2 }))} ${(propss.totaarea).split(' ')[1]}` : ''}</p>
+        </Grid>
+      </Grid>
     </Card>
   );
 }

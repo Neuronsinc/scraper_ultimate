@@ -36,6 +36,7 @@ import TablaDatosTotal from './TablaDatosTotal';
 import ConsultaDataFiltro from './ConsultaDataFiltro';
 import SliderDan from './sliders';
 import DatePicker from '../components/DatePicker';
+import FilterCard from './FilterCard';
 // ----------------------------------------------------------------------
 
 const pricesD = [
@@ -100,30 +101,30 @@ export default function GeneralAnalytics() {
   const [valueF, setValueF] = useState([null, null]);
 
   const fetchData = async () => {
-      if (data.length !== 0) {
-        setData([]);
-      }
-      axios
-        .get(`${process.env.REACT_APP_APIBACKEND}/datos-mongo-new`, {
-          params: {
-            inicio: fechas[0],
-            fin: fechas[1]
-          }
-        })
-        .then((response) => {
-          // actualizar el estado con los datos de respuesta
-          setData(response.data);
-        })
-        .catch((error) => {
-          // manejar el error∫
-          console.error(error);
-        });
+    if (data.length !== 0) {
+      setData([]);
+    }
+    axios
+      .get(`${process.env.REACT_APP_APIBACKEND}/datos-mongo-new`, {
+        params: {
+          inicio: fechas[0],
+          fin: fechas[1]
+        }
+      })
+      .then((response) => {
+        // actualizar el estado con los datos de respuesta
+        setData(response.data);
+      })
+      .catch((error) => {
+        // manejar el error∫
+        console.error(error);
+      });
   };
 
   useEffect(() => {
     if (fechas[0].toString() !== "Invalid Date" && fechas[1].toString() !== "Invalid Date") {
-    fetchData();
-    enviarS();
+      fetchData();
+      enviarS();
     }
   }, [fechas]);
 
@@ -313,25 +314,25 @@ export default function GeneralAnalytics() {
       )
     });
   }
-  
+
   const enviarS = () => {
-      if (respuesta !== null) {
-        setRespuesta(null);
-      }
-      fetch(`${process.env.REACT_APP_APIBACKEND}/filtracion`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ localizacion: localizacionValue, habitaciones: habitacionesValue, inicio: fechas[0], fin: fechas[1] })
+    if (respuesta !== null) {
+      setRespuesta(null);
+    }
+    fetch(`${process.env.REACT_APP_APIBACKEND}/filtracion`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ localizacion: localizacionValue, habitaciones: habitacionesValue, inicio: fechas[0], fin: fechas[1] })
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setRespuesta(data);
+        // Llamar a la función que deseas ejecutar cada vez que se reciba una respuesta
+        myFunction(data);
       })
-        .then((response) => response.json())
-        .then((data) => {
-          setRespuesta(data);
-          // Llamar a la función que deseas ejecutar cada vez que se reciba una respuesta
-          myFunction(data);
-        })
-        .catch((error) => console.error(error));
+      .catch((error) => console.error(error));
   }
 
 
@@ -510,8 +511,11 @@ export default function GeneralAnalytics() {
     <Page title="General: Analytics | dataSracper">
       <Container maxWidth="100%">
         <DatePicker val={val} setVal={setVal} fechas={fechas} sxV={{ mb: 2 }} />
-        <Grid className="component-table" container spacing={3}>
-          <Grid className="component-boxing" item xs={5} md={4}>
+        <Grid className='component-boxing' mb={2}>
+          <FilterCard ubicacion={localizacionValue} categorias={multiplesValues} data={data} semanar={resultSemana}/>
+        </Grid>
+        <Grid className="component-table" container spacing={3} alignItems="stretch">
+          <Grid className="component-boxing" item xs={5} md={4} style={{ display: 'flex' }}>
             <TablaDatos
               moneda="Q"
               textmoneda="Quetzales"
@@ -559,7 +563,7 @@ export default function GeneralAnalytics() {
               }
             />
           </Grid>
-          <Grid className="component-boxing" item xs={5} md={4}>
+          <Grid className="component-boxing" item xs={5} md={4} style={{ display: 'flex' }}>
             <TablaDatos
               moneda="$"
               textmoneda="Dólares"
@@ -607,7 +611,7 @@ export default function GeneralAnalytics() {
               }
             />
           </Grid>
-          <Grid className="component-boxing" item xs={4} md={4}>
+          <Grid className="component-boxing" item xs={4} md={4} style={{ display: 'flex' }}>
             <TablaDatosTotal
               totalcantidades={
                 respuesta && respuesta.totalcantidades ? (
@@ -641,9 +645,9 @@ export default function GeneralAnalytics() {
           </Grid>
         </Grid>
 
-        <Grid className="component-table" container spacing={3}>
+        <Grid mt={1} className="component-table" container spacing={3}>
           <Grid className="component-boxing" item xs={12} sm={6} md={4}>
-            <Box sx={{ padding: '17px', width: '100%' }}>
+            <Box sx={{ width: '100%' }}>
               <Autocomplete
                 fullWidth
                 options={top100Films}
@@ -654,7 +658,7 @@ export default function GeneralAnalytics() {
             </Box>
           </Grid>
           <Grid className="component-boxing" item xs={12} sm={6} md={4}>
-            <Box sx={{ padding: '17px', width: '100%' }}>
+            <Box sx={{ width: '100%' }}>
               <Autocomplete
                 multiple
                 fullWidth
@@ -668,9 +672,9 @@ export default function GeneralAnalytics() {
               />
             </Box>
           </Grid>
-          <Grid className="component-boxing" sx={{ padding: '17px' }} item xs={4}>
-            <Stack sx={{ width: '100%', padding: '17px' }} spacing={3} direction="row">
-              <Button onClick={handleGeneratePDF} className="btns component-boxing" variant="outlined">
+          <Grid className="component-boxing" item xs={4}>
+            <Stack spacing={3} direction="row">
+              <Button onClick={handleGeneratePDF} sx={{ minHeight: '56px' }} className="btns component-boxing" variant="outlined">
                 Exportar
               </Button>
             </Stack>
@@ -703,7 +707,7 @@ export default function GeneralAnalytics() {
 </Grid>
 */}
         </Grid>
-        <Grid className="component-table" container spacing={3}>
+        {/* <Grid className="component-table" container spacing={3}>
           {/* <Grid className="div-filtro component-boxing" item xs={6}>
             <LocalizationProvider dateAdapter={AdapterDateFns} locale={es}>
               <DateRangePicker
@@ -724,7 +728,7 @@ export default function GeneralAnalytics() {
               />
             </LocalizationProvider>
           </Grid> */}
-          {/** 
+        {/** 
           <Grid className="div-filtro component-boxing" item xs={4}>
            
             <Autocomplete
@@ -747,13 +751,12 @@ export default function GeneralAnalytics() {
             />
            
           </Grid> 
-          */}
           <Grid item xs={4}>
             <Button id="btnreset" variant="contained" sx={{ marginLeft: '50px' }} onClick={handleReset}>
               Resetear
             </Button>
           </Grid>
-        </Grid>
+        </Grid> */}
         <Grid container spacing={3}>
           <Grid item xs={12}>
             {data && (

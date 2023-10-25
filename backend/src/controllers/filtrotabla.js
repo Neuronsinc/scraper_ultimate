@@ -296,9 +296,9 @@ const datostabla = async (req, res, next) => {
           cantidadDolaresm2: cantidadDolaresm2,
           cantidadQuetzalesm2: cantidadQuetzalesm2,
           totalcantidadesm2: totalcantidadesm2,
-          areaDolares: `${areaDolares_1.toFixed(2)} MT2`,
-          areadioQuetzales: `${areaQuetzales_1.toFixed(2)} MT2`,
-          totalarea: `${suma_total_area.toFixed(2)} MT2`,
+          areaDolares: `${areaDolares_1.toFixed(2)} m²`,
+          areadioQuetzales: `${areaQuetzales_1.toFixed(2)} m²`,
+          totalarea: `${suma_total_area.toFixed(2)} m²`,
           notifi: "Solicitud exitosa",
         };
         // console.log(response);
