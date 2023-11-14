@@ -37,6 +37,7 @@ import ConsultaDataFiltro from './ConsultaDataFiltro';
 import SliderDan from './sliders';
 import DatePicker from '../components/DatePicker';
 import FilterCard from './FilterCard';
+import Filters from '../components/Filters/index';
 // ----------------------------------------------------------------------
 
 const pricesD = [
@@ -509,6 +510,7 @@ export default function GeneralAnalytics() {
   };
   return (
     <Page title="General: Analytics | dataSracper">
+      <Filters/>
       <Container maxWidth="100%">
         <DatePicker val={val} setVal={setVal} fechas={fechas} sxV={{ mb: 2 }} />
         <Grid className='component-boxing' mb={2}>
