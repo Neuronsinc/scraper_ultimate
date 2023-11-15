@@ -9,7 +9,7 @@ const initialState = {
     filters: [{
         id: 0,
         D: ["Invalid Date", "Invalid Date"],
-        pais: 1,
+        pais: [1],
         localizacion: [],
         categoria: [],
         tableData: [],
