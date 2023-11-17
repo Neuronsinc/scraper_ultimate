@@ -58,7 +58,7 @@ export default function GeneralAnalytics() {
 
   // Obtener los precios
   const [precios, setPrecios] = useState([]);
-  const [vals, setVals] = useState({ Fechas: [], Pais: [] });
+  const [vals, setVals] = useState({ Fechas: [], Pais: [], Localizacion: '', categorias: [] });
 
   const [actualFilter, setActualFilter] = useState(scraper.filters.find(objeto => objeto.actual === true));
 
@@ -82,7 +82,7 @@ export default function GeneralAnalytics() {
   useEffect(() => {
     const actual = scraper.filters.find(objeto => objeto.actual === true);
     if (actualFilter?.id !== actual?.id) {
-      setVals({Fechas: [], Pais: []});
+      setVals({ Fechas: [], Pais: [], Localizacion: '', categorias: [] });
     }
     setActualFilter(actual);
   }, [scraper.filters]);
@@ -136,11 +136,10 @@ export default function GeneralAnalytics() {
 
   useEffect(() => {
     if (actualFilter.D[0].toString() !== "Invalid Date" && actualFilter.D[1].toString() !== "Invalid Date") {
-      console.log("entro aca para ir a traer la data");
       fetchData();
       enviarS();
     }
-  }, [actualFilter]);
+  }, [actualFilter.D, actualFilter.pais]);
 
   const fechaInicialFormateada = valueF[0]
     ? valueF[0]
@@ -298,7 +297,6 @@ export default function GeneralAnalytics() {
     }, 2500);
 
     if (scraper.filters.length === 1 && scraper.filters[0].id === 0) {
-      console.warn("entre en  linea 301 de general");
       if (scraper.filters[0].D[0] === "Invalid Date" && scraper.filters[0].D[1] === "Invalid Date") {
         axios.get(`${process.env.REACT_APP_APIBACKEND}/fecha-max`)
           .then((res) => {
@@ -360,11 +358,10 @@ export default function GeneralAnalytics() {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ localizacion: localizacionValue, habitaciones: habitacionesValue, inicio: actualFilter.D[0], fin: actualFilter.D[1] })
+      body: JSON.stringify({ localizacion: "", habitaciones: "", inicio: actualFilter.D[0], fin: actualFilter.D[1] })
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("aca data =>", data);
         setRespuesta(data);
         // Llamar a la función que deseas ejecutar cada vez que se reciba una respuesta
         myFunction(data);
@@ -544,13 +541,30 @@ export default function GeneralAnalytics() {
 
     html2pdf().set(options).from(html).save();
   };
+
+  const handleSetVal = (type, newvalue) => {
+    const copia = { ...vals };
+
+    switch (type) {
+      case 0: // Localizacion
+        setVals({ ...copia, Localizacion: newvalue })
+        dispatch(UpdateFilter({ ...actualFilter, localizacion: newvalue }))
+        break;
+      case 1: // Categoria
+        setVals({ ...copia, categorias: newvalue })
+        dispatch(UpdateFilter({ ...actualFilter, categoria: newvalue }))
+        break;
+      default:
+        break;
+    }
+  }
   return (
     <Page title="General: Analytics | dataSracper">
       <Filters />
       <Container maxWidth="100%">
         <TopInputs vals={vals} setVal={setVals} fechas={fechas} sxV={{ mb: 2 }} actualFilter={actualFilter} />
         <Grid className='component-boxing' mb={2}>
-          <FilterCard ubicacion={localizacionValue} categorias={multiplesValues} data={data} semanar={resultSemana} />
+          <FilterCard ubicacion={vals.Localizacion !== '' ? vals.Localizacion.title : actualFilter.localizacion?.title} categorias={vals.categorias.length > 0 ? vals.categorias.map((value) => value.title) : actualFilter.categoria.map((val) => val?.title)} data={data} semanar={resultSemana} actualFilter={actualFilter} />
         </Grid>
         <Grid className="component-table" container spacing={3} alignItems="stretch">
           <Grid className="component-boxing" item xs={5} md={4} style={{ display: 'flex' }}>
@@ -689,7 +703,10 @@ export default function GeneralAnalytics() {
               <Autocomplete
                 fullWidth
                 options={top100Films}
-                onChange={localizacionAutocompleteChange}
+                value={vals.Localizacion === '' ? actualFilter?.localizacion : vals.Localizacion}
+                onChange={(event, value) => {
+                  handleSetVal(0, value);
+                }}
                 getOptionLabel={(option) => option.title}
                 renderInput={(params) => <TextField {...params} label="Localización" margin="none" />}
               />
@@ -701,8 +718,11 @@ export default function GeneralAnalytics() {
                 multiple
                 fullWidth
                 options={categoriass}
+                value={vals.categorias.length === 0 ? actualFilter?.categoria : vals.categorias}
                 getOptionLabel={(option) => (option && option.title ? option.title : '')}
-                onChange={valuescategorias}
+                onChange={(event, value) => {
+                  handleSetVal(1, value);
+                }}
                 filterSelectedOptions
                 renderInput={(params) => (
                   <TextField {...params} label="Seleccione una categoría" placeholder="Apartamentos, casas..." />
@@ -804,8 +824,8 @@ export default function GeneralAnalytics() {
                   activo={activos}
                   fechainicio={fechaInicialFormateada}
                   fechafin={fechaFinalFormateada}
-                  categories={multiplesValues}
-                  ubicacion={localizacionValue}
+                  categories={vals.categorias.length > 0 ? vals.categorias.map((value) => value.title) : actualFilter.categoria.map((val) => val?.title)}
+                  ubicacion={vals.Localizacion !== '' ? vals.Localizacion.title : actualFilter.localizacion?.title}
                   semanar={resultSemana}
                 />
               </Box>

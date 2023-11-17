@@ -10,7 +10,7 @@ const initialState = {
         id: 0,
         D: ["Invalid Date", "Invalid Date"],
         pais: [{title: 'Guatemala', id: 1}],
-        localizacion: [],
+        localizacion: null,
         categoria: [],
         tableData: [],
         actual: true

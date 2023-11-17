@@ -93,7 +93,7 @@ export default function Filters() {
                 const obj = {
                     id: newId,
                     pais: [{ title: 'Guatemala', id: 1 }],
-                    localizacion: [],
+                    localizacion: null,
                     categoria: [],
                     tableData: [],
                     actual: true
@@ -184,7 +184,6 @@ export default function Filters() {
         if (checkedList.includes(actualFilter.id)) {
             if (checkedList.length === scraper.filters.length) {
                 await handleAddAS();
-                console.log("ACAAAAAAAAAAAAA")
                 setCheckedList(checkedList.filter(item => !checkedList.includes(item)))
                 handleCloseDialog();
                 dispatch(DeleteVariousFilters(checkedList));
@@ -307,6 +306,18 @@ export default function Filters() {
                                             </Typography>
                                             <Typography variant='body2'>
                                                 {val.pais.map(obj => obj.title).join(', ')}
+                                            </Typography>
+                                            <Typography variant='h5'>
+                                                Localización
+                                            </Typography>
+                                            <Typography variant='body2'>
+                                                {val.localizacion?.title}
+                                            </Typography>
+                                            <Typography variant='h5'>
+                                                {val.categoria.length > 1 ? 'Categoria' : 'Categorias'}
+                                            </Typography>
+                                            <Typography variant='body2'>
+                                                {val.categoria.map(obj => obj.title).join(', ')}
                                             </Typography>
                                         </CardContent>
                                     </CardActionArea>

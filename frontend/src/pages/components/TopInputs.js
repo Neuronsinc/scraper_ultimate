@@ -10,7 +10,6 @@ import { MIconButton } from '../../components/@material-extend';
 import { UpdateFilter } from '../../redux/slices/filters';
 
 export default function TopInputs({ vals, setVal, fechas, sxV, actualFilter }) {
-    console.warn(actualFilter);
     const dispatch = useDispatch();
     const [paises, setPaises] = useState([]);
     const [selectedPais, setSelectedPais] = useState([]);
@@ -59,7 +58,6 @@ export default function TopInputs({ vals, setVal, fechas, sxV, actualFilter }) {
             if (validarF.valid) {
                 myFunction("Buscando datos", 'success');
                 const copiaNuevo = { ...actualFilter };
-                console.warn("ando en topInputs =>", copiaNuevo)
                 dispatch(UpdateFilter({ ...copiaNuevo, D: val.Fechas, pais: val.Pais }));
             } else {
                 myFunction(validarF.message, 'error');
@@ -107,7 +105,6 @@ export default function TopInputs({ vals, setVal, fechas, sxV, actualFilter }) {
     }, [])
 
     const handleSetVal = (type, newvalue) => {
-        console.log(newvalue.map((value) => value.title));
         const copia = { ...vals };
 
         switch (type) {

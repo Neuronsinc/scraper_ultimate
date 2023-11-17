@@ -52,7 +52,8 @@ export default function FilterCard(props) {
     }
 
     const fechas = useSelector(state => state.date.D)
-
+    const { actualFilter }  = props
+    
     const filteredDataByCategory =
         props.categorias.length > 0
             ? props.data.filter((item) => props.categorias.includes(item.categoria))
@@ -178,7 +179,7 @@ export default function FilterCard(props) {
                         </Grid>
                         <Grid>
                             <h5 style={{ fontWeight: "normal" }}>Fecha de consulta</h5>
-                            <h4>{`${formatDate(fechas[0])} - ${formatDate(fechas[1])}`}</h4>
+                            <h4>{`${formatDate(actualFilter.D[0])} - ${formatDate(actualFilter.D[1])}`}</h4>
                         </Grid>
 
                     </Stack>
