@@ -3,12 +3,31 @@ import { Icon } from '@iconify/react';
 import closeFill from '@iconify/icons-eva/close-fill';
 import axios from 'axios';
 // material
-import { Box, Backdrop, Paper, Tooltip, Divider, Typography, Stack, Card, Button, CardActionArea, CardContent } from '@material-ui/core';
-import { ViewSidebar } from '@material-ui/icons';
+import {
+    Box,
+    Backdrop,
+    Paper,
+    Tooltip,
+    Divider,
+    Typography,
+    Stack,
+    Card,
+    Button,
+    CardActionArea,
+    CardContent,
+    Checkbox,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogContentText,
+    DialogActions,
+    CardHeader
+} from '@material-ui/core';
+import { ViewSidebar, AddCircleOutline, Delete } from '@material-ui/icons';
 import { format } from 'date-fns';
 //
 import { useSelector, useDispatch } from 'react-redux';
-import { AddFilter, UpdateFilter } from '../../../redux/slices/filters';
+import { AddFilter, UpdateFilter, DeleteVariousFilters } from '../../../redux/slices/filters';
 import Scrollbar from '../../../components/Scrollbar';
 import { MIconButton } from '../../../components/@material-extend';
 
@@ -19,10 +38,10 @@ export default function Filters() {
     const paperRef = useRef(null);
 
     const [open, setOpen] = useState(false);
+    const [checkedList, setCheckedList] = useState([]);
     const [actualFilter, setActualFilter] = useState(scraper.filters.find(objeto => objeto.actual === true));
+    const [openDialog, setOpenDialog] = useState(false);
     const reversedArray = [...scraper.filters].reverse();
-
-    console.log(reversedArray)
 
     const dispatch = useDispatch();
 
@@ -35,26 +54,9 @@ export default function Filters() {
     }, [open]);
 
     useEffect(() => {
-        if (scraper.filters.length === 1 && scraper.filters[0].id === 0) {
-            if (scraper.filters[0].D[0] === "Invalid Date" && scraper.filters[0].D[1] === "Invalid Date") {
-                axios.get(`${process.env.REACT_APP_APIBACKEND}/fecha-max`)
-                    .then((res) => {
-                        const copiaViejo = { ...scraper.filters[0] };
-                        const data = new Date(res.data[0].fecha_publicacion)
-                        const anioMax = data.getFullYear()
-                        const actual = [new Date(new Date().getFullYear(), 0, 1), new Date(new Date().getFullYear(), 11, 31)]
-                        if (actual[0].getFullYear() > anioMax) {
-                            const f = [new Date(actual[0].setFullYear(anioMax)), new Date(actual[1].setFullYear(anioMax))];
-                            dispatch(UpdateFilter({ ...copiaViejo, D: f }));
-                            setActualFilter({ ...copiaViejo, D: f });
-                        } else {
-                            dispatch(UpdateFilter({ ...copiaViejo, D: actual }));
-                            setActualFilter({ ...copiaViejo, D: actual });
-                        }
-                    })
-            }
-        }
-    }, []);
+        const actual = scraper.filters.find(objeto => objeto.actual === true);
+        setActualFilter(actual);
+    }, [scraper.filters]);
 
     const formatDate = (date) => {
         // Verifica si la fecha es válida
@@ -85,14 +87,12 @@ export default function Filters() {
     }
 
     const handleAdd = () => {
-        console.log("llamado")
-        console.log(scraper.filters.length)
         axios.get(`${process.env.REACT_APP_APIBACKEND}/fecha-max`)
             .then((res) => {
-                const newId = scraper.filters.length
+                const newId = scraper.filters.reduce((max, obj) => (obj.id > max ? obj.id : max), 0) + 1;
                 const obj = {
                     id: newId,
-                    pais: [1],
+                    pais: [{ title: 'Guatemala', id: 1 }],
                     localizacion: [],
                     categoria: [],
                     tableData: [],
@@ -115,9 +115,99 @@ export default function Filters() {
 
                 const copiaViejo = { ...actualFilter };
                 dispatch(UpdateFilter({ ...copiaViejo, actual: false }));
-                setActualFilter(obj);
             })
     }
+
+    const handleAddAS = async () => {
+        try {
+            const res = await axios.get(`${process.env.REACT_APP_APIBACKEND}/fecha-max`);
+            const newId = scraper.filters.reduce((max, obj) => (obj.id > max ? obj.id : max), 0) + 1;
+            const obj = {
+                id: newId,
+                pais: [{ title: 'Guatemala', id: 1 }],
+                localizacion: [],
+                categoria: [],
+                tableData: [],
+                actual: true
+            };
+
+            const data = new Date(res.data[0].fecha_publicacion);
+            const anioMax = data.getFullYear();
+            const actual = [new Date(new Date().getFullYear(), 0, 1), new Date(new Date().getFullYear(), 11, 31)];
+
+            if (actual[0].getFullYear() > anioMax) {
+                const f = [new Date(actual[0].setFullYear(anioMax)), new Date(actual[1].setFullYear(anioMax))];
+                obj.D = f;
+                dispatch(AddFilter(obj));
+            } else {
+                obj.D = actual;
+                dispatch(AddFilter(obj));
+            }
+
+            const copiaViejo = { ...actualFilter };
+            dispatch(UpdateFilter({ ...copiaViejo, actual: false }));
+        } catch (error) {
+            console.error('Hubo un error:', error);
+        }
+    };
+
+    const handleSelect = (e, id) => {
+        const { checked } = e.target
+        if (checked) {
+            setCheckedList([...checkedList, id])
+        } else {
+
+            const filteredList = checkedList.filter((item) => item !== id)
+
+            setCheckedList(filteredList)
+
+            // if (filteredList.length === 0) {
+            //     error()
+            // }
+        }
+
+    }
+
+    const handleCloseDialog = () => {
+        setOpenDialog(false);
+    };
+
+    const handleOpenDialog = () => {
+        setOpenDialog(true);
+    };
+
+    async function handleDelete() {
+        // const largoAntiguo = scraper.filters.length
+        // if (largoAntiguo === 1) {
+        //     handleAdd()
+        // }
+        if (checkedList.includes(actualFilter.id)) {
+            if (checkedList.length === scraper.filters.length) {
+                await handleAddAS();
+                console.log("ACAAAAAAAAAAAAA")
+                setCheckedList(checkedList.filter(item => !checkedList.includes(item)))
+                handleCloseDialog();
+                dispatch(DeleteVariousFilters(checkedList));
+                // setCheckedList(checkedList.filter(item => !checkedList.includes(item)))
+
+            } else {
+                const filteredArray = scraper.filters.filter(item => !checkedList.includes(item.id));
+                // Encontrar el valor más grande en el nuevo array filtrado
+                const maxValor = Math.max(...filteredArray.map(item => item.id));
+                const copiaNuevo = { ...scraper.filters.find(objeto => objeto.id === maxValor) };
+                dispatch(UpdateFilter({ ...copiaNuevo, actual: true }));
+                setActualFilter({ ...copiaNuevo, actual: true });
+                dispatch(DeleteVariousFilters(checkedList));
+                handleCloseDialog();
+                setCheckedList(checkedList.filter(item => !checkedList.includes(item)))
+
+            }
+        } else {
+            dispatch(DeleteVariousFilters(checkedList));
+            handleCloseDialog();
+            setCheckedList(checkedList.filter(item => !checkedList.includes(item)))
+        }
+    };
 
     return (
         <>
@@ -182,15 +272,29 @@ export default function Filters() {
                         </MIconButton>
                     </Stack>
                     <Divider />
-                    <Stack spacing={4} sx={{ pt: 3, px: 3, pb: 1 }}>
-                        <Stack spacing={1.5}>
-                            <Button onClick={() => handleAdd()}> Agregar</Button>
-                        </Stack>
+                    <Stack direction="row" justifyContent="center" spacing={2} sx={{ pt: 3, px: 3, pb: 1 }}>
+                        <Tooltip title="Agregar">
+                            <MIconButton onClick={() => handleAdd()}>
+                                <AddCircleOutline />
+                            </MIconButton>
+                        </Tooltip>
+                        <Tooltip title="Eliminar">
+                            <MIconButton onClick={() => handleOpenDialog()} disabled={checkedList.length < 1 || scraper.filters.length === 1}>
+                                <Delete />
+                            </MIconButton>
+                        </Tooltip>
+                        {/* <Button onClick={() => handleOpenDialog()} disabled={checkedList.length < 1}> Eliminar</Button> */}
                     </Stack>
-                        <Scrollbar sx={{ p: 1.5, maxHeight: '80%' }}>
-                            {reversedArray.map((val, index) => (
+                    <Scrollbar sx={{ p: 1.5, maxHeight: '80%' }}>
+                        {reversedArray.map((val, index) => (
+                            <Box>
+                                <Checkbox onChange={(e) => handleSelect(e, val.id)} checked={checkedList.includes(val.id)} />
                                 <Card key={index} onClick={() => handleClickCard(val.id)} sx={{ bgcolor: val.id === actualFilter.id ? 'text.disabled' : 'primary', margin: 0.5 }} >
                                     <CardActionArea>
+                                        <CardHeader
+                                            sx={{ marginBottom: '-23px', textAlign: 'end' }}
+                                            subheader={<Typography variant='body2'>No. {val.id + 1}</Typography>}
+                                        />
                                         <CardContent>
                                             <Typography variant='h5'>
                                                 Fechas
@@ -202,16 +306,35 @@ export default function Filters() {
                                                 {val.pais.length > 1 ? 'Paises' : 'País'}
                                             </Typography>
                                             <Typography variant='body2'>
-                                                algo aca
+                                                {val.pais.map(obj => obj.title).join(', ')}
                                             </Typography>
                                         </CardContent>
                                     </CardActionArea>
                                 </Card>
-                            )
-                            )}
-                        </Scrollbar>
+                            </Box>
+                        )
+                        )}
+                    </Scrollbar>
                 </Paper>
             </Box>
+
+            <Dialog
+                open={openDialog}
+                onClose={handleCloseDialog}
+            >
+                <DialogTitle>
+                    Eliminar seleccionados
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Está seguro que quiere eliminar todas las vistas seleccionadas?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseDialog}>No</Button>
+                    <Button onClick={handleDelete}>Si, eliminar</Button>
+                </DialogActions>
+            </Dialog>
         </>
     )
 

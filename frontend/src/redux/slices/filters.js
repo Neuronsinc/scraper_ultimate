@@ -9,7 +9,7 @@ const initialState = {
     filters: [{
         id: 0,
         D: ["Invalid Date", "Invalid Date"],
-        pais: [1],
+        pais: [{title: 'Guatemala', id: 1}],
         localizacion: [],
         categoria: [],
         tableData: [],
@@ -36,6 +36,12 @@ const slice = createSlice({
             const deletefilter = filter(state.filters, (filter) => filter.id !== filterId);
             state.filters = deletefilter;
         },
+        // Delete various filters
+        DeleteVariousFilters(state, action) {
+            const  Ids  = action.payload;
+            const deleteVarious = state.filters.filter(item => !Ids.includes(item.id));
+            state.filters = deleteVarious;
+        },
         // Update element to filter
         UpdateFilter(state, action) {
             const filter = action.payload;
@@ -60,5 +66,5 @@ const slice = createSlice({
 export default slice.reducer;
 
 // Actions
-export const { AddFilter, UpdateFilter, DeleteFilter } = slice.actions;
+export const { AddFilter, UpdateFilter, DeleteFilter, DeleteVariousFilters } = slice.actions;
 

@@ -25,6 +25,7 @@ import {
 } from '@material-ui/core';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
+import { UpdateFilter } from '../../redux/slices/filters';
 import { changeDates } from '../../redux/slices/Dates';
 import { MIconButton } from '../../components/@material-extend';
 import './estilos.css';
@@ -35,7 +36,7 @@ import TablaDatos from './TablaDatos';
 import TablaDatosTotal from './TablaDatosTotal';
 import ConsultaDataFiltro from './ConsultaDataFiltro';
 import SliderDan from './sliders';
-import DatePicker from '../components/DatePicker';
+import TopInputs from '../components/TopInputs';
 import FilterCard from './FilterCard';
 import Filters from '../components/Filters/index';
 // ----------------------------------------------------------------------
@@ -53,10 +54,13 @@ export default function GeneralAnalytics() {
   const dispatch = useDispatch()
   const varlink = `${process.env.REACT_APP_APIBACKEND}/precios-filtro`;
   const fechas = useSelector(state => state.date.D)
+  const scraper = useSelector(state => state.scraper);
 
   // Obtener los precios
   const [precios, setPrecios] = useState([]);
-  const [val, setVal] = useState([]);
+  const [vals, setVals] = useState({ Fechas: [], Pais: [] });
+
+  const [actualFilter, setActualFilter] = useState(scraper.filters.find(objeto => objeto.actual === true));
 
   useEffect(() => {
     const fetchData = async () => {
@@ -74,6 +78,14 @@ export default function GeneralAnalytics() {
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const actual = scraper.filters.find(objeto => objeto.actual === true);
+    if (actualFilter?.id !== actual?.id) {
+      setVals({Fechas: [], Pais: []});
+    }
+    setActualFilter(actual);
+  }, [scraper.filters]);
 
   // VALORES EN QUETZLES
   const pricesQ = precios.quetzales;
@@ -108,8 +120,8 @@ export default function GeneralAnalytics() {
     axios
       .get(`${process.env.REACT_APP_APIBACKEND}/datos-mongo-new`, {
         params: {
-          inicio: fechas[0],
-          fin: fechas[1]
+          inicio: actualFilter.D[0],
+          fin: actualFilter.D[1]
         }
       })
       .then((response) => {
@@ -123,11 +135,12 @@ export default function GeneralAnalytics() {
   };
 
   useEffect(() => {
-    if (fechas[0].toString() !== "Invalid Date" && fechas[1].toString() !== "Invalid Date") {
+    if (actualFilter.D[0].toString() !== "Invalid Date" && actualFilter.D[1].toString() !== "Invalid Date") {
+      console.log("entro aca para ir a traer la data");
       fetchData();
       enviarS();
     }
-  }, [fechas]);
+  }, [actualFilter]);
 
   const fechaInicialFormateada = valueF[0]
     ? valueF[0]
@@ -283,6 +296,28 @@ export default function GeneralAnalytics() {
       setRows(rowes);
       setLoading(false);
     }, 2500);
+
+    if (scraper.filters.length === 1 && scraper.filters[0].id === 0) {
+      console.warn("entre en  linea 301 de general");
+      if (scraper.filters[0].D[0] === "Invalid Date" && scraper.filters[0].D[1] === "Invalid Date") {
+        axios.get(`${process.env.REACT_APP_APIBACKEND}/fecha-max`)
+          .then((res) => {
+            const copiaViejo = { ...scraper.filters[0] };
+            const data = new Date(res.data[0].fecha_publicacion)
+            const anioMax = data.getFullYear()
+            const actual = [new Date(new Date().getFullYear(), 0, 1), new Date(new Date().getFullYear(), 11, 31)]
+            if (actual[0].getFullYear() > anioMax) {
+              const f = [new Date(actual[0].setFullYear(anioMax)), new Date(actual[1].setFullYear(anioMax))];
+              dispatch(UpdateFilter({ ...copiaViejo, D: f }));
+              setActualFilter({ ...copiaViejo, D: f });
+            } else {
+              dispatch(UpdateFilter({ ...copiaViejo, D: actual }));
+              setActualFilter({ ...copiaViejo, D: actual });
+            }
+          })
+      }
+    }
+
   }, []);
 
   // ENVIAR POST PARA FILTRAR
@@ -325,10 +360,11 @@ export default function GeneralAnalytics() {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ localizacion: localizacionValue, habitaciones: habitacionesValue, inicio: fechas[0], fin: fechas[1] })
+      body: JSON.stringify({ localizacion: localizacionValue, habitaciones: habitacionesValue, inicio: actualFilter.D[0], fin: actualFilter.D[1] })
     })
       .then((response) => response.json())
       .then((data) => {
+        console.log("aca data =>", data);
         setRespuesta(data);
         // Llamar a la función que deseas ejecutar cada vez que se reciba una respuesta
         myFunction(data);
@@ -510,11 +546,11 @@ export default function GeneralAnalytics() {
   };
   return (
     <Page title="General: Analytics | dataSracper">
-      <Filters/>
+      <Filters />
       <Container maxWidth="100%">
-        <DatePicker val={val} setVal={setVal} fechas={fechas} sxV={{ mb: 2 }} />
+        <TopInputs vals={vals} setVal={setVals} fechas={fechas} sxV={{ mb: 2 }} actualFilter={actualFilter} />
         <Grid className='component-boxing' mb={2}>
-          <FilterCard ubicacion={localizacionValue} categorias={multiplesValues} data={data} semanar={resultSemana}/>
+          <FilterCard ubicacion={localizacionValue} categorias={multiplesValues} data={data} semanar={resultSemana} />
         </Grid>
         <Grid className="component-table" container spacing={3} alignItems="stretch">
           <Grid className="component-boxing" item xs={5} md={4} style={{ display: 'flex' }}>
