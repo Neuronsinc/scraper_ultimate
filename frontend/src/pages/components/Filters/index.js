@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Icon } from '@iconify/react';
 import closeFill from '@iconify/icons-eva/close-fill';
 import axios from 'axios';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 // material
 import {
     Box,
@@ -27,7 +28,7 @@ import { ViewSidebar, AddCircleOutline, Delete } from '@material-ui/icons';
 import { format } from 'date-fns';
 //
 import { useSelector, useDispatch } from 'react-redux';
-import { AddFilter, UpdateFilter, DeleteVariousFilters } from '../../../redux/slices/filters';
+import { AddFilter, UpdateFilter, DeleteVariousFilters, UpdateOrder, UpdateAllFilter } from '../../../redux/slices/filters';
 import Scrollbar from '../../../components/Scrollbar';
 import { MIconButton } from '../../../components/@material-extend';
 
@@ -41,7 +42,7 @@ export default function Filters() {
     const [checkedList, setCheckedList] = useState([]);
     const [actualFilter, setActualFilter] = useState(scraper.filters.find(objeto => objeto.actual === true));
     const [openDialog, setOpenDialog] = useState(false);
-    const reversedArray = [...scraper.filters].reverse();
+    const reversedArray = scraper.filters;
 
     const dispatch = useDispatch();
 
@@ -208,6 +209,20 @@ export default function Filters() {
         }
     };
 
+    const onDragEnd = (result) => {
+        console.log(result)
+        if (!result.destination) return;
+
+        const newItems = Array.from(reversedArray);
+        const [movedItem] = newItems.splice(result.source.index, 1);
+        newItems.splice(result.destination.index, 0, movedItem);
+        console.warn("new items => ", newItems);
+        // reversedArray = newItems;
+        dispatch(UpdateOrder("default"));
+        dispatch(UpdateAllFilter(newItems));
+        // setItems(newItems);
+    }
+
     return (
         <>
             <Backdrop sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }} open={open} onClick={handleClose} />
@@ -284,47 +299,63 @@ export default function Filters() {
                         </Tooltip>
                         {/* <Button onClick={() => handleOpenDialog()} disabled={checkedList.length < 1}> Eliminar</Button> */}
                     </Stack>
-                    <Scrollbar sx={{ p: 1.5, maxHeight: '80%' }}>
-                        {reversedArray.map((val, index) => (
-                            <Box>
-                                <Checkbox onChange={(e) => handleSelect(e, val.id)} checked={checkedList.includes(val.id)} />
-                                <Card key={index} onClick={() => handleClickCard(val.id)} sx={{ bgcolor: val.id === actualFilter.id ? 'text.disabled' : 'primary', margin: 0.5 }} >
-                                    <CardActionArea>
-                                        <CardHeader
-                                            sx={{ marginBottom: '-23px', textAlign: 'end' }}
-                                            subheader={<Typography variant='body2'>No. {val.id + 1}</Typography>}
-                                        />
-                                        <CardContent>
-                                            <Typography variant='h5'>
-                                                Fechas
-                                            </Typography>
-                                            <Typography variant='body2'>
-                                                {`${formatDate(val.D[0])}-${formatDate(val.D[1])}`}
-                                            </Typography>
-                                            <Typography variant='h5'>
-                                                {val.pais.length > 1 ? 'Paises' : 'País'}
-                                            </Typography>
-                                            <Typography variant='body2'>
-                                                {val.pais.map(obj => obj.title).join(', ')}
-                                            </Typography>
-                                            <Typography variant='h5'>
-                                                Localización
-                                            </Typography>
-                                            <Typography variant='body2'>
-                                                {val.localizacion?.title}
-                                            </Typography>
-                                            <Typography variant='h5'>
-                                                {val.categoria.length > 1 ? 'Categoria' : 'Categorias'}
-                                            </Typography>
-                                            <Typography variant='body2'>
-                                                {val.categoria.map(obj => obj.title).join(', ')}
-                                            </Typography>
-                                        </CardContent>
-                                    </CardActionArea>
-                                </Card>
-                            </Box>
-                        )
-                        )}
+                    <Scrollbar style={{ height: '80%' }}>
+                        <DragDropContext onDragEnd={onDragEnd}>
+                            <Droppable droppableId="droppable">
+                                {(provided) => (
+                                    <div {...provided.droppableProps} ref={provided.innerRef}>
+                                        {reversedArray.map((val, index) => (
+                                            <Draggable key={String(val.id)} draggableId={String(val.id)} index={index}>
+                                                {(provided) => (
+                                                    <div
+                                                        ref={provided.innerRef}
+                                                        {...provided.draggableProps}
+                                                        {...provided.dragHandleProps}
+                                                    >
+                                                        <Checkbox onChange={(e) => handleSelect(e, val.id)} checked={checkedList.includes(val.id)} style={{ margin: 5 }} />
+                                                        <Card key={index} onClick={() => handleClickCard(val.id)} sx={{ bgcolor: val.id === actualFilter.id ? 'text.disabled' : 'primary', margin: 2 }} >
+                                                            {/* <CardActionArea> */}
+                                                                <CardHeader
+                                                                    sx={{ marginBottom: '-23px', textAlign: 'end' }}
+                                                                    subheader={<Typography variant='body2'>No. {val.id + 1}</Typography>}
+                                                                />
+                                                                <CardContent>
+                                                                    <Typography variant='h5'>
+                                                                        Fechas
+                                                                    </Typography>
+                                                                    <Typography variant='body2'>
+                                                                        {`${formatDate(val.D[0])}-${formatDate(val.D[1])}`}
+                                                                    </Typography>
+                                                                    <Typography variant='h5'>
+                                                                        {val.pais.length > 1 ? 'Paises' : 'País'}
+                                                                    </Typography>
+                                                                    <Typography variant='body2'>
+                                                                        {val.pais.map(obj => obj.title).join(', ')}
+                                                                    </Typography>
+                                                                    <Typography variant='h5'>
+                                                                        Localización
+                                                                    </Typography>
+                                                                    <Typography variant='body2'>
+                                                                        {val.localizacion?.title}
+                                                                    </Typography>
+                                                                    <Typography variant='h5'>
+                                                                        {val.categoria.length > 1 ? 'Categoria' : 'Categorias'}
+                                                                    </Typography>
+                                                                    <Typography variant='body2'>
+                                                                        {val.categoria.map(obj => obj.title).join(', ')}
+                                                                    </Typography>
+                                                                </CardContent>
+                                                            {/* </CardActionArea> */}
+                                                        </Card>
+                                                    </div>
+                                                )}
+                                            </Draggable>
+                                        )
+                                        )}
+                                        {provided.placeholder}
+                                    </div>)}
+                            </Droppable>
+                        </DragDropContext>
                     </Scrollbar>
                 </Paper>
             </Box>
