@@ -8,6 +8,7 @@ import axios from '../../utils/axios';
 const initialState = {
     filters: [{
         id: 0,
+        nombre: "Vista-nueva",
         D: ["Invalid Date", "Invalid Date"],
         pais: [{ title: 'Guatemala', id: 1 }],
         localizacion: null,

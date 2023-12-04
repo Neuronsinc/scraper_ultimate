@@ -22,9 +22,10 @@ import {
     DialogContent,
     DialogContentText,
     DialogActions,
-    CardHeader
+    CardHeader,
+    TextField
 } from '@material-ui/core';
-import { ViewSidebar, AddCircleOutline, Delete } from '@material-ui/icons';
+import { ViewSidebar, AddCircleOutline, Delete, Edit } from '@material-ui/icons';
 import { format } from 'date-fns';
 //
 import { useSelector, useDispatch } from 'react-redux';
@@ -42,6 +43,9 @@ export default function Filters() {
     const [checkedList, setCheckedList] = useState([]);
     const [actualFilter, setActualFilter] = useState(scraper.filters.find(objeto => objeto.actual === true));
     const [openDialog, setOpenDialog] = useState(false);
+    const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
+    const [openEditDialog, setOpenEditDialog] = useState({ id: null, val: false });
+    const [vistaName, setVistaName] = useState(null);
     const reversedArray = scraper.filters;
 
     const dispatch = useDispatch();
@@ -93,6 +97,7 @@ export default function Filters() {
                 const newId = scraper.filters.reduce((max, obj) => (obj.id > max ? obj.id : max), 0) + 1;
                 const obj = {
                     id: newId,
+                    nombre: vistaName,
                     pais: [{ title: 'Guatemala', id: 1 }],
                     localizacion: null,
                     categoria: [],
@@ -117,6 +122,7 @@ export default function Filters() {
                 const copiaViejo = { ...actualFilter };
                 dispatch(UpdateFilter({ ...copiaViejo, actual: false }));
             })
+        setVistaName(null)
     }
 
     const handleAddAS = async () => {
@@ -125,6 +131,7 @@ export default function Filters() {
             const newId = scraper.filters.reduce((max, obj) => (obj.id > max ? obj.id : max), 0) + 1;
             const obj = {
                 id: newId,
+                nombre: "Vista-nueva",
                 pais: [{ title: 'Guatemala', id: 1 }],
                 localizacion: [],
                 categoria: [],
@@ -150,6 +157,7 @@ export default function Filters() {
         } catch (error) {
             console.error('Hubo un error:', error);
         }
+        setVistaName(null);
     };
 
     const handleSelect = (e, id) => {
@@ -176,6 +184,25 @@ export default function Filters() {
     const handleOpenDialog = () => {
         setOpenDialog(true);
     };
+
+
+    const handleConfirmOpenDialog = () => {
+        setOpenConfirmDialog(true);
+    };
+
+    const handleConfirmCloseDialog = () => {
+        setOpenConfirmDialog(false);
+    };
+
+    const handleOpenEditDialog = (id) => {
+        setOpenEditDialog({ id, val: true });
+    };
+
+    const handleCloseEditDialog = () => {
+        setOpenEditDialog({ id: null, val: false });
+    };
+
+
 
     async function handleDelete() {
         // const largoAntiguo = scraper.filters.length
@@ -221,6 +248,13 @@ export default function Filters() {
         dispatch(UpdateOrder("default"));
         dispatch(UpdateAllFilter(newItems));
         // setItems(newItems);
+    }
+
+    const handleEditName = (id) => {
+        const copiaNuevo = { ...scraper.filters.find(objeto => objeto.id === id) };
+        dispatch(UpdateFilter({ ...copiaNuevo, nombre: vistaName }));
+        setActualFilter({ ...copiaNuevo, nombre: vistaName });
+        setVistaName(null);
     }
 
     return (
@@ -288,7 +322,7 @@ export default function Filters() {
                     <Divider />
                     <Stack direction="row" justifyContent="center" spacing={2} sx={{ pt: 3, px: 3, pb: 1 }}>
                         <Tooltip title="Agregar">
-                            <MIconButton onClick={() => handleAdd()}>
+                            <MIconButton onClick={() => handleConfirmOpenDialog()}>
                                 <AddCircleOutline />
                             </MIconButton>
                         </Tooltip>
@@ -312,39 +346,44 @@ export default function Filters() {
                                                         {...provided.draggableProps}
                                                         {...provided.dragHandleProps}
                                                     >
-                                                        <Checkbox onChange={(e) => handleSelect(e, val.id)} checked={checkedList.includes(val.id)} style={{ margin: 5 }} />
+                                                        <Stack direction="row" spacing={1} style={{ marginLeft: 10 }}>
+                                                            <Checkbox onChange={(e) => handleSelect(e, val.id)} checked={checkedList.includes(val.id)} />
+                                                            <MIconButton onClick={() => handleOpenEditDialog(val.id)} >
+                                                                <Edit />
+                                                            </MIconButton>
+                                                        </Stack>
                                                         <Card key={index} onClick={() => handleClickCard(val.id)} sx={{ bgcolor: val.id === actualFilter.id ? 'text.disabled' : 'primary', margin: 2 }} >
                                                             {/* <CardActionArea> */}
-                                                                <CardHeader
-                                                                    sx={{ marginBottom: '-23px', textAlign: 'end' }}
-                                                                    subheader={<Typography variant='body2'>No. {val.id + 1}</Typography>}
-                                                                />
-                                                                <CardContent>
-                                                                    <Typography variant='h5'>
-                                                                        Fechas
-                                                                    </Typography>
-                                                                    <Typography variant='body2'>
-                                                                        {`${formatDate(val.D[0])}-${formatDate(val.D[1])}`}
-                                                                    </Typography>
-                                                                    <Typography variant='h5'>
-                                                                        {val.pais.length > 1 ? 'Paises' : 'País'}
-                                                                    </Typography>
-                                                                    <Typography variant='body2'>
-                                                                        {val.pais.map(obj => obj.title).join(', ')}
-                                                                    </Typography>
-                                                                    <Typography variant='h5'>
-                                                                        Localización
-                                                                    </Typography>
-                                                                    <Typography variant='body2'>
-                                                                        {val.localizacion?.title}
-                                                                    </Typography>
-                                                                    <Typography variant='h5'>
-                                                                        {val.categoria.length > 1 ? 'Categoria' : 'Categorias'}
-                                                                    </Typography>
-                                                                    <Typography variant='body2'>
-                                                                        {val.categoria.map(obj => obj.title).join(', ')}
-                                                                    </Typography>
-                                                                </CardContent>
+                                                            <CardHeader
+                                                                sx={{ marginBottom: '-23px', textAlign: 'end' }}
+                                                                subheader={<Typography variant='body2'>{val.nombre}  No. {val.id + 1}</Typography>}
+                                                            />
+                                                            <CardContent>
+                                                                <Typography variant='h5'>
+                                                                    Fechas
+                                                                </Typography>
+                                                                <Typography variant='body2'>
+                                                                    {`${formatDate(val.D[0])}-${formatDate(val.D[1])}`}
+                                                                </Typography>
+                                                                <Typography variant='h5'>
+                                                                    {val.pais.length > 1 ? 'Paises' : 'País'}
+                                                                </Typography>
+                                                                <Typography variant='body2'>
+                                                                    {val.pais.map(obj => obj.title).join(', ')}
+                                                                </Typography>
+                                                                <Typography variant='h5'>
+                                                                    Localización
+                                                                </Typography>
+                                                                <Typography variant='body2'>
+                                                                    {val.localizacion?.title}
+                                                                </Typography>
+                                                                <Typography variant='h5'>
+                                                                    {val.categoria.length > 1 ? 'Categoria' : 'Categorias'}
+                                                                </Typography>
+                                                                <Typography variant='body2'>
+                                                                    {val.categoria.map(obj => obj.title).join(', ')}
+                                                                </Typography>
+                                                            </CardContent>
                                                             {/* </CardActionArea> */}
                                                         </Card>
                                                     </div>
@@ -359,7 +398,7 @@ export default function Filters() {
                     </Scrollbar>
                 </Paper>
             </Box>
-
+            {/* Eliminar vista */}
             <Dialog
                 open={openDialog}
                 onClose={handleCloseDialog}
@@ -377,6 +416,67 @@ export default function Filters() {
                     <Button onClick={handleDelete}>Si, eliminar</Button>
                 </DialogActions>
             </Dialog>
+            {/* Crear vista */}
+            <Dialog
+                open={openConfirmDialog}
+                onClose={handleConfirmCloseDialog}
+            >
+                <DialogTitle>
+                    Crear vista
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Para crear una nueva vista debe proporcionarle un nombre
+                    </DialogContentText>
+                    <TextField
+                        autofocus
+                        margin="dense"
+                        id="name"
+                        label="Nombre de la vista"
+                        type="text"
+                        fullWidth
+                        value={vistaName}
+                        onChange={(event) => {
+                            setVistaName(event.target.value)
+                        }}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleConfirmCloseDialog}>cancelar</Button>
+                    <Button onClick={() => { handleAdd(); handleConfirmCloseDialog() }}>crear vista</Button>
+                </DialogActions>
+            </Dialog>
+            {/* Editar vista */}
+            <Dialog
+                open={openEditDialog.val}
+                onClose={handleCloseEditDialog}
+            >
+                <DialogTitle>
+                    Editar vista
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Ingrese el nuevo nombre de la vista número {openEditDialog.id + 1}.
+                    </DialogContentText>
+                    <TextField
+                        autofocus
+                        margin="dense"
+                        id="name"
+                        label="Nombre de la vista"
+                        type="text"
+                        fullWidth
+                        value={vistaName}
+                        onChange={(event) => {
+                            setVistaName(event.target.value)
+                        }}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseEditDialog}>cancelar</Button>
+                    <Button onClick={() => { handleEditName(openEditDialog.id); handleCloseEditDialog() }}>Editar nombre</Button>
+                </DialogActions>
+            </Dialog>
+
         </>
     )
 
